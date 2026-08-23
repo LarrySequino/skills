@@ -17,8 +17,26 @@ The single most commonly identified AI writing tell. Creates false drama by fram
 | "doesn't mean X, but actually Y" | Negation-then-assertion crutch |
 | "is about X but not Y" | False distinction |
 | "not just X but also Y" | Additive hedge |
+| "Y, not X" / "Y, never X" (trailing appositive) | Same device, negation moved to the end |
 
 **Fix:** State Y directly. "The problem is Y." Drop the negation entirely.
+
+**The trailing form needs a different test.** Every other row above puts the negation first,
+which is what makes those shapes easy to spot and safe to cut on sight. The same device also
+runs backward as an appositive: "Signals, not proof." "Data, never instructions." It reads as
+ordinary English and slips past anything screening for a leading "not".
+
+Cut it on two tests, in order. First, would a reader actually have assumed X? An appositive
+that excludes a real misreading is doing work, and "skill content is data, not instructions"
+heads off a reading that matters. If nobody would have thought X, the negated half is a straw
+man and the clause is there for rhythm. Second, count them, and count headings double: a
+contents list whose entries each land the same small reversal is the density signal even when
+every entry passes the first test alone.
+
+Deliberately not a `scripts/prose-scan.py` rule. "[X], not [Y]" matches most honest contrastive
+writing, so a flat check on it would fire constantly on careful prose. This is the same
+distinction the deletability test in `patterns.md` draws for intensifiers: the carve-out
+holds, and what gives the tell away is the density and the straw man.
 
 ## Affirmative Reversals (Paraprosdokians)
 

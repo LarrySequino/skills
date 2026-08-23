@@ -31,7 +31,7 @@ The rules below do not carry equal weight, and they do collide. When two of them
 
 A lower item never overrides a higher one. Where a rule below says it defers, this is the order it defers to, and the numbers refer to this list.
 
-## Signals, not proof
+## What a pattern match is worth
 
 The patterns here are statistically more common in LLM output, but humans on autopilot produce the same shapes, whether under deadline, in an unfamiliar genre, or in a second language. Detectors built on these same signals misfire on non-native writers at rates that should end the argument (the figure and the citation are in `references/preflight.md`). So: these patterns are worth fixing in any prose, but never treat them as proof of AI authorship for a consequential decision (academic integrity, hiring, attribution). When auditing someone else's text, report patterns, not verdicts.
 
@@ -39,7 +39,7 @@ A short sample carries no signal. Under roughly forty words there is not enough 
 
 Corollary for rewriting: don't over-sand. Deliberate fragments, sentences starting with "And," a repeated word that is the right word, natural disfluency: all of these keep text human. Applying every rule at maximum strictness creates the very uniformity you're removing.
 
-## Voice, not habit
+## Telling voice from habit
 
 Voice is what only this writer would have produced: their diction, their angle, what they notice, their humor, their rhythm, their opinions, their willingness to be blunt. Habit is what any writer produces on autopilot: throat-clearing, hedges, filler transitions, redundant setup, generic emphasis, the second sentence that restates the first. Habit belongs to the author in the sense that they typed it. It is not their voice.
 
@@ -109,7 +109,7 @@ No vague declaratives ("The reasons are structural"); name the thing. No vague a
 
 Two genres invent a specific kind of specific, and both are worth naming because the invented thing is a commitment someone else has to honor. In support and service copy, watch for promises the author never made: "we will review this and follow up," "a specialist will reach out." In policy, incident, and compliance copy, watch for asserted properties: "auditable," "fully encrypted," "resilient." If the source does not say it, it is not a description, it is a liability.
 
-### 7. Describe the thing, not the change
+### 7. Describe the thing
 
 Prose and docs should describe what something *is*, not narrate the edit that produced it. "This function was added to replace the old lookup" is diff-anchored writing; "This function uses a hash map for O(1) lookups" describes the thing. Changelogs and commit messages are the exception, since there the change is the content.
 
