@@ -1,11 +1,35 @@
 ---
 name: natural-writing
-description: Remove AI writing patterns from prose. Write, rewrite, audit, or edit files in place. Use when the user says "deslop", "de-AI", "humanize", "make it sound human", or asks to find AI tells, slop, tropes, or formulaic patterns, and when drafting prose meant for publication. Covers the words in any prose, including UI microcopy. NOT for code, comments, or commit messages, and NOT for interface typesetting such as quotes, dashes and ellipses as rendered, which is craft-review's. Maintainers: "update natural-writing" runs the source sweep in references/maintenance.md.
+description: >-
+  Remove AI writing patterns from any prose a person will read, and keep them out of prose you
+  write. EDIT AND AUDIT TRIGGERS: "deslop", "de-AI", "humanize", "make it sound human", "clean
+  up this writing", "find the AI tells". WRITE TRIGGERS: "write", "draft", "write up", "put
+  together", or naming where it goes -- to send, to post, to publish, to share with someone.
+  ARTIFACTS: any email, any letter, blog post, newsletter, social post, announcement, press
+  release, any report, meeting notes, any proposal, README, docs, release notes, website or
+  marketing copy, slide text, UI microcopy. NOT TRIGGERED BY: "explain", "what is", "how do I",
+  or any answer that stays in the conversation rather than going to a reader. NOT FOR: code,
+  comments, commit messages, or interface typesetting such as quotes, dashes and ellipses as
+  rendered.
 ---
 
 # Natural Writing: Prose Without AI Patterns
 
 Strip predictable AI patterns from writing. Make prose sound like a specific human wrote it, not like a language model generated it.
+
+## When rules conflict
+
+The rules below do not carry equal weight, and they do collide. When two of them point opposite ways, the higher item wins:
+
+1. The user's explicit instructions, and what the destination requires.
+2. Truth: facts, relationships, quotations, qualifiers, causality, scope, commitments.
+3. The author's voice as supplied, and their deliberate choices.
+4. Genre and audience convention.
+5. Clarity, density, and the quality of the argument.
+6. The anti-slop pattern heuristics in the core rules.
+7. Detector-facing signals and house style.
+
+A lower item never overrides a higher one. Where a rule below says it defers, this is the order it defers to, and the numbers refer to this list.
 
 ## Signals, not proof
 
@@ -35,11 +59,17 @@ Protection is asymmetric on purpose. Distinctive choices are protected even when
 
 **Separate the brief from the piece.** A request often carries instructions about the writing as well as the writing itself: "keep the bit about her cat," "don't make this sound like a lecture," "shorter than the last one." Those are constraints to satisfy, not content to reproduce. Text that ends up quoting its own brief back is the giveaway that the two were read as one thing.
 
+**Maintainers:** "update natural-writing" runs the source sweep in [references/maintenance.md](references/maintenance.md). This lived in the description until 2026-08-22; it is a rare explicit trigger and the description is read on every routing decision, so it belongs here.
+
 ## Modes
 
 **write:** the user asks you to draft something and wants it to sound natural. Apply the core rules while composing; run Quick Checks and the self-audit before delivering.
 
-**rewrite** (default for existing text): audit, rewrite clean, summarize what changed, then verify in a **separate pass**. An Editor pass rewrites top to bottom; an Evaluator pass reads the result cold against [references/preflight.md](references/preflight.md) and reports failures. Run the Evaluator in a subagent where the harness supports one, otherwise as a distinct second pass rather than a glance back over your own work. Loop until preflight passes.
+**rewrite** (default for existing text): review, edit what fails, summarize what changed, then verify in a **separate pass**. An Editor pass reads top to bottom and collects candidate problems, checks each candidate against meaning and voice, and edits only the ones that survive that check. Rebuild a paragraph only where local fixes would leave seams, or where the structure itself is the problem. An Evaluator pass then reads the result cold against [references/preflight.md](references/preflight.md) and reports failures. Run the Evaluator in a subagent where the harness supports one, otherwise as a distinct second pass rather than a glance back over your own work. Loop until preflight passes.
+
+**When to stop.** Stop when the irregularities still in the text are deliberate voice, correct genre convention, or harmless variation. Being invoked does not mean a rewrite is owed.
+
+**Returned unchanged** is one of the outcomes, not a failure to find anything. If no candidate survives the check, say the draft is already clean, name the few things you looked at and left alone, and hand it back as it stands. That is a finished rewrite-mode response.
 
 **Minimum effective edit** means don't rewrite what already works. It does not mean cut sparingly. Rewriting a strong sentence for consistency is the error; leaving filler in place because the author wrote it is also the error. The writer should recognize the result as their own voice, sharpened.
 
@@ -51,11 +81,11 @@ Protection is asymmetric on purpose. Distinctive choices are protected even when
 
 ### 1. Cut filler phrases
 
-Remove throat-clearing openers ("Here's the thing:"), emphasis crutches ("Let that sink in."), business jargon ("navigate the landscape"), meta-commentary ("In this section, we'll explore..."), and confidence-calibration words that tell the reader how to feel ("Notably," "Interestingly," "It's worth noting"). See [references/phrases.md](references/phrases.md).
+Remove throat-clearing openers ("Here's the thing:"), emphasis crutches ("Let that sink in."), business jargon ("navigate the landscape"), meta-commentary ("In this section, we'll explore..."), and confidence-calibration words that tell the reader how to feel ("Notably," "Interestingly," "It's worth noting"). See [references/phrases.md](references/phrases.md). A device the supplied sample actually uses is item 3 and outranks this paragraph, the same way a sample's dash rate outranks the cap: if the writer puts an exclamation mark on a number ("Twelve nodes. Twelve!"), that is their emphasis and it survives. What this paragraph removes is emphasis the draft reached for on autopilot, not emphasis the author demonstrated.
 
 ### 2. Replace AI vocabulary by tier
 
-Not all flagged words are equal. Tier 1 words (delve, tapestry, leverage, seamless, testament to) appear 5–20x more often in AI text, so replace on sight. Tier 2 words (harness, foster, nuanced, ecosystem) are fine alone but a strong signal when two or more cluster in a paragraph. Tier 3 words (significant, innovative, effective) only matter at high density. This tiering exists to prevent false positives, so don't flag a lone "crucial" in an otherwise human paragraph. See [references/vocabulary.md](references/vocabulary.md) for the full tables.
+Not all flagged words are equal. Tier 1 words (delve, tapestry, leverage, seamless, testament to) appear 5–20x more often in AI text, so replace on sight. Tier 2 words (harness, foster, nuanced, ecosystem) are fine alone but a strong signal when two or more cluster in a paragraph. Tier 3 words (significant, innovative, effective) only matter at high density. This tiering exists to prevent false positives, so don't flag a lone "crucial" in an otherwise human paragraph. A word used in its field's technical sense defers upward and stays: truth and genre convention are items 2 and 4, the vocabulary heuristics are item 6, so "leverage" in a finance model and "ecosystem" in an ecology paper survive the pass. See [references/vocabulary.md](references/vocabulary.md) for the full tables.
 
 ### 3. Break formulaic structures
 
@@ -63,7 +93,7 @@ Avoid binary contrasts ("Not X. Y."), affirmative reversals that do the same wor
 
 ### 4. Eliminate AI tropes and artifacts
 
-Watch for "quietly" and other magic adverbs, the "serves as" dodge, false ranges, superficial participle analyses, invented concept labels, grandiose stakes inflation, and false vulnerability ([references/tropes.md](references/tropes.md)). Separately, hunt **artifacts**: chatbot residue that is near-proof of pasted AI output: "Great question!", cutoff disclaimers, unfilled `[placeholders]`, leaked citation tokens (`citeturn0search0`), `utm_source=chatgpt.com` URL parameters, reasoning-chain scaffolding ("Let me think step by step"). Artifacts are always P0. See [references/patterns.md](references/patterns.md).
+Watch for "quietly" and other magic adverbs, the "serves as" dodge, false ranges, superficial participle analyses, invented concept labels, grandiose stakes inflation, and false vulnerability ([references/structures.md](references/structures.md)). Separately, hunt **artifacts**: chatbot residue that is near-proof of pasted AI output: "Great question!", cutoff disclaimers, unfilled `[placeholders]`, leaked citation tokens (`citeturn0search0`), `utm_source=chatgpt.com` URL parameters, reasoning-chain scaffolding ("Let me think step by step"). Artifacts are always P0. See [references/patterns.md](references/patterns.md).
 
 ### 5. Prefer active voice with human subjects
 
@@ -75,7 +105,7 @@ No vague declaratives ("The reasons are structural"); name the thing. No vague a
 
 **Protect the specific fact.** Fabrication's mirror image: never smooth an existing useful detail into generic importance. "Cut review time from 30 minutes to 8" must survive the edit; "significantly improved efficiency" is what happens when it doesn't. Specifics in the source are the most valuable thing in it.
 
-**No-fabrication rule (hard constraint):** specificity must come from the source text or the author, never from the rewrite. Never invent facts, names, numbers, dates, quotes, or citations to replace a vague claim. When a claim needs a specific the text doesn't contain, either cut the claim, keep it and flag it ("[needs a number: how many customers?]"), or ask the author. A vague true sentence beats a specific invented one. Also flag citations that look fake or unrelated to the claim they support, since AI text frequently cites real sources that don't say what's claimed.
+**No-fabrication rule (hard constraint):** specificity must come from the source text or the author, never from the rewrite. Never invent facts, names, numbers, dates, quotes, or citations to replace a vague claim. When a claim needs a specific the text doesn't contain, either cut the claim, keep it and flag it ("[needs a number: how many customers?]"), or ask the author. A bare slot such as "[N]" or "[DATE]" counts as the same thing; `--compare` treats any bracketed span as a flag, so the form is yours to choose as long as the value is not asserted outside one. A vague true sentence beats a specific invented one. Also flag citations that look fake or unrelated to the claim they support, since AI text frequently cites real sources that don't say what's claimed.
 
 Two genres invent a specific kind of specific, and both are worth naming because the invented thing is a commitment someone else has to honor. In support and service copy, watch for promises the author never made: "we will review this and follow up," "a specialist will reach out." In policy, incident, and compliance copy, watch for asserted properties: "auditable," "fully encrypted," "resilient." If the source does not say it, it is not a description, it is a liability.
 
@@ -87,11 +117,15 @@ Prose and docs should describe what something *is*, not narrate the edit that pr
 
 Blog posts: put the reader in the room; "you" beats "people." Scientific writing: appropriate formality, "we" for your own work, cite specific authors. Docs: clarity over voice, imperative mood for instructions. Social posts: fragments and 2–3 specific hashtags are fine; 6+ trailing hashtags is a hard flag.
 
-If the user provides a sample of their own writing, calibrate to it: match its sentence-length pattern, contraction rate, and word choices. Don't "upgrade" their vocabulary. If they write "stuff," keep "stuff." If text already has a voice, don't impose one. A provided voice sample outranks the mechanical rules where they conflict: if the writer's authentic style uses em dashes or triads, their voice wins over the ban.
+If the user provides a sample of their own writing, calibrate to it: match its sentence-length pattern, contraction rate, and word choices. Don't "upgrade" their vocabulary. If they write "stuff," keep "stuff." If text already has a voice, don't impose one. A provided voice sample outranks the mechanical rules where they conflict: if the writer's authentic style uses em dashes or triads, their voice wins over the ban. That holds for every rule below, not only the ones that name the exemption.
+
+**Then check it with `scripts/prose-scan.py --voice <sample> <rewrite>`.** It counts the devices the sample demonstrates and reports each one the rewrite dropped or thinned to under half the sample's rate. Reading the sample and naming its habits is not the same as carrying them: on 2026-08-22 a benchmark run catalogued "exclamation for emphasis (\"Twelve!\")" in its own notes and then shipped a rewrite with no exclamation mark in it, five runs out of five. A rule stated more clearly does not fix that. A count does. Traits the sample uses only once are skipped, because one instance is not a habit, and it reports `IMPOSED` when the rewrite runs a device at more than twice the sample's rate: a voice matched by overshooting is not matched.
+
+It protects voice and never habit. Nothing in `references/phrases.md` is covered — throat-clearing, emphasis crutches, meta-commentary, vague declaratives are what any writer produces on autopilot, and a sample full of them is a writer with bad habits rather than a writer whose bad habits are sacred. Where the sample carries any, `--voice` names the categories and says they are not protected, so the exemption cannot be read wider than it is. The plain scan now counts those phrases too, live from `phrases.md`, which is what keeps the two halves the same strength: before that, keeping the author's devices was a count and cutting the author's filler was a memory.
 
 ### 9. Vary rhythm
 
-Structure is the #1 detection signal, and detectors weight rhythm uniformity above vocabulary. Mix short sentences (3–8 words) with long ones (20+). Vary paragraph lengths deliberately; some should be one sentence. Don't stack punchy fragments for manufactured emphasis. Prefer two items over reflexive triads, but a three-item list is not a crime. The flag is *compulsive* rule of three, not any tricolon.
+Structure is the #1 detection signal, and detectors weight rhythm uniformity above vocabulary. Mix short sentences (3–8 words) with long ones (20+). Vary paragraph lengths deliberately; some should be one sentence. Don't stack punchy fragments for manufactured emphasis. A fragment that carries the author's voice is item 3 and this rule is item 6, so the fragment stays; what goes is the stacking that came from the draft's habit. Prefer two items over reflexive triads, but a three-item list is not a crime. The flag is *compulsive* rule of three, not any tricolon.
 
 ### 10. Trust readers
 
@@ -103,11 +137,11 @@ One point per section. Ask of every paragraph: what's actually new here? If you 
 
 ### 12. Watch formatting tells
 
-No bold-first bullets. No unicode arrows or emoji in headers. Sentence case for subheadings, not Title Case. No "In conclusion..." signposts. Bullets only for list-like content; a list of 5+ bare noun phrases with no verbs ("Reliable pool connectivity / Optimized performance") should become prose or full claims. Em dashes: if the writer supplied a voice sample, its dash rate is the rule and nothing in this paragraph applies; match it. Absent a sample, target zero, hard max one per 1,000 words, including headings. The basis is reader perception, not detection science: it's the most widely circulated AI tell there is, so dash-dense text reads as machine-written whatever detectors weight. Keep the cap even where the tell is argued to be aging out. The sample wins because the cap is a proxy for "this reads as machine-written" and a writer who uses dashes is the counterexample in hand.
+No bold-first bullets. No unicode arrows or emoji in headers. Sentence case for subheadings, not Title Case. No "In conclusion..." signposts. Bullets only for list-like content; a list of 5+ bare noun phrases with no verbs ("Reliable pool connectivity / Optimized performance") should become prose or full claims. Em dashes: the cap is house style, item 7, and a supplied voice sample is item 3, so if the writer supplied one its dash rate is the rule and nothing else in this paragraph applies; match it. Absent a sample, target zero, hard max one per 1,000 words, including headings. The basis is reader perception, not detection science: it's the most widely circulated AI tell there is, so dash-dense text reads as machine-written whatever detectors weight. Keep the cap even where the tell is argued to be aging out.
 
 ### 13. Front-load every unit
 
-Put the conclusion first at the levels a reader navigates by: the draft, the section, the paragraph. Point, then detail, then background. Most AI structure inverts this, building context toward a conclusion the reader needed up front. It stops at the paragraph on purpose. Front-loading every *sentence* produces the one-thought-per-sentence profile that rule 9 and the dramatic-fragmentation entry are trying to undo; inside a paragraph, let sentences build. Exception: narrative and persuasive setups that earn their delay. Front-loading a joke ruins it.
+Put the conclusion first at the levels a reader navigates by: the draft, the section, the paragraph. Point, then detail, then background. Most AI structure inverts this, building context toward a conclusion the reader needed up front. It stops at the paragraph on purpose. Front-loading every *sentence* produces the one-thought-per-sentence profile that rule 9 and the dramatic-fragmentation entry are trying to undo; inside a paragraph, let sentences build. Exception: narrative and persuasive setups that earn their delay. Front-loading a joke ruins it. Front-loading is item 5, below both the author's deliberate structure and genre convention, so an order the writer chose on purpose is not a candidate; and no reordering may separate a claim from the qualifier that limits it, which is item 2.
 
 ### 14. Open it up, don't dumb it down
 
@@ -127,7 +161,7 @@ Applying answer discipline to a deliverable produces a thin artifact. Applying d
 
 ## Quick checks
 
-**Run `scripts/prose-scan.py <file>` first.** It does every mechanical pass exactly and in about a second: dash density against the per-1,000 cap with numeric ranges and markdown rules exempted, vocabulary hits read live from `references/vocabulary.md` with their sense gates flagged, paragraph density and co-occurrence, chatbot artifacts and leaked tokens, invisible characters and homoglyphs, Title Case headings, and sentence and paragraph uniformity. It reports counts and never a score, and it skips and counts anything that sits inside a quoted example, including single-quoted ones. Add `--plain-text` for a target where nothing auto-curls (code comments, commit messages) to also flag curly quotes; in prose they are the editor's default and mean nothing. `--compare original rewrite` reports every number, year, citation and name the rewrite ADDED, every one it DROPPED, a name coined from source words that never appeared as that phrase, and how much of the source survived the edit; zero findings is the only acceptable result.
+**Run `scripts/prose-scan.py <file>` first, and run it rather than reading it — `--help` prints the usage and every flag, and the source is about 14,000 tokens that say the same thing.** It does every mechanical pass exactly and in about a second: dash density against the per-1,000 cap with numeric ranges and markdown rules exempted, vocabulary hits read live from `references/vocabulary.md` with their sense gates flagged, paragraph density and co-occurrence, chatbot artifacts and leaked tokens, invisible characters and homoglyphs, Title Case headings, and sentence and paragraph uniformity. It reports counts and never a score, and it skips and counts anything that sits inside a quoted example, including single-quoted ones. Add `--plain-text` for a target where nothing auto-curls (code comments, commit messages) to also flag curly quotes; in prose they are the editor's default and mean nothing. `--compare original rewrite` reports every number, year, citation and name the rewrite ADDED, every one it DROPPED, a standard or algorithm it names that the source did not (`SOC 2`, `AES-256`), a name coined from source words that never appeared as that phrase, and how much of the source survived the edit; zero findings is the only acceptable result. It also warns where every token survived and the meaning moved anyway: two facts that traded neighbors, a term now sitting beside a different number, a hedge or an obligation that changed class, a caveat whose sentence mostly disappeared. Those are warnings, not failures, because a rewrite can move a clause for good reasons; read them, do not gate on them. Specifics inside a bracketed flag are listed on an `[IN-FLAG]` line and do not count as added, because a flag asks the author for a value rather than asserting one — read that line anyway, since a fact stated inside brackets is still a fact stated.
 
 Three passes stay manual because they need a reader, and they run in every mode:
 
@@ -161,14 +195,13 @@ When writing *about* AI patterns, quoted examples are exempt. Only flag patterns
 
 **Edit mode:** (1) list of edits with location and before → after, only the spans touched; (2) verification that flags are resolved, noting anything deliberately left alone.
 
-If the original is already strong, say so and cut only what's needed. Don't manufacture findings.
+If the original is already strong, say so and cut only what's needed. Don't manufacture findings. Returned unchanged is a complete result in any mode.
 
 ## Reference files
 
 - [references/vocabulary.md](references/vocabulary.md): Tiered word tables (Tier 1/2/3), template phrases, transition phrases. Read when auditing or when vocabulary is in question.
 - [references/phrases.md](references/phrases.md): Throat-clearing, emphasis crutches, business jargon, meta-commentary, vague declaratives.
-- [references/structures.md](references/structures.md): Structural patterns: binary contrasts, negative listings, fragmentation, false agency, rhythm problems.
-- [references/tropes.md](references/tropes.md): Word-choice, tone, formatting, and composition tropes with examples.
+- [references/structures.md](references/structures.md): Structural patterns (binary contrasts, negative listings, fragmentation, false agency, rhythm problems) plus word-choice, tone, formatting, and composition tropes with examples.
 - [references/patterns.md](references/patterns.md): Artifacts and fingerprints, whole-text tests (rhythm, density, reshuffle immunity), and the newer pattern catalog. Read for full audits and for social or published content.
 - [references/preflight.md](references/preflight.md): The authoritative pass/fail checklist. Run on every rewrite and edit before delivery.
 - [references/maintenance.md](references/maintenance.md): How to update this skill. Read ONLY when asked to update, refresh, or check its sources, never during writing or editing work.

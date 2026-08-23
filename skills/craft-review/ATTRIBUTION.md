@@ -14,15 +14,25 @@ Results are recorded per source.
 Licensed under the Apache License, Version 2.0:
 https://www.apache.org/licenses/LICENSE-2.0
 
-Contributed the category-reflex test and the idea of deterministic slop
-detectors, which informed `references/design-tropes.md` and
-`scripts/slop-scan.py`.
+Contributed the category-reflex test, the idea of deterministic slop
+detectors, and the four-part color-strategy taxonomy — one restrained accent,
+a committed saturation, a full semantic palette, or color as the ground — which
+`references/design-tropes.md` names as theirs at the entry that uses it.
 
 *Statement of changes (required by Apache-2.0 §4b):* no file from impeccable is
 reproduced here. Its detection concepts were reimplemented from scratch against
-this skill's own three-score model and trope catalog. The overlap scan found a
-single 8-word fragment spanning a sentence boundary, consisting of color
-terminology.
+this skill's own three-score model and trope catalog. The color-strategy
+taxonomy is used as a taxonomy — its four categories, not its wording — and the
+entry using it credits impeccable by name.
+
+Corrected 2026-08-22. This paragraph previously described the overlap scan's one
+8-word hit as an incidental fragment of color terminology. It was not incidental:
+the four category names were impeccable's and the sentence carrying them repeated
+their gloss almost exactly. Legal under Apache-2.0 with the attribution above,
+and against this repo's own practice of taking the idea and writing the
+expression fresh, so the entry was rewritten. Found by two independent harvest
+passes on the same night, which is the argument for running the scan rather than
+trusting the last person's reading of it.
 
 ## MIT
 

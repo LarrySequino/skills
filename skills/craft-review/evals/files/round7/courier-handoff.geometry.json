@@ -1,0 +1,83 @@
+{
+  "source": "figma get_metadata + get_variable_defs",
+  "file": "Wrenlink Courier — Android",
+  "node": "3812:2044",
+  "page": "Delivery / Active delivery",
+  "device": "Pixel 8, 360 x 800 dp, 1x",
+  "grid_base": 8,
+  "tolerance": 1,
+  "variables": {
+    "space/xs": 4,
+    "space/sm": 8,
+    "space/md": 16,
+    "space/lg": 24,
+    "space/xl": 32,
+    "space/2xl": 48,
+    "radius/card": 16,
+    "radius/control": 8,
+    "type/label": 12,
+    "type/body": 14,
+    "type/title": 16,
+    "type/display": 20
+  },
+  "frames": [
+    {
+      "name": "Card / Pickup",
+      "bounds": {"x": 16, "y": 88, "w": 328, "h": 128},
+      "children": [
+        {"name": "Label / PICKUP", "bounds": {"x": 40, "y": 112, "w": 80, "h": 16}},
+        {"name": "Text / Rosewater Deli, 118 Marsh Ln", "bounds": {"x": 40, "y": 136, "w": 264, "h": 44}},
+        {"name": "Text / Order ready 4 min ago", "bounds": {"x": 40, "y": 184, "w": 200, "h": 16}}
+      ]
+    },
+    {
+      "name": "Card / Dropoff",
+      "bounds": {"x": 16, "y": 232, "w": 328, "h": 128},
+      "children": [
+        {"name": "Label / DROPOFF", "bounds": {"x": 32, "y": 256, "w": 88, "h": 16}},
+        {"name": "Text / Apt 3R, 44 Kestrel St", "bounds": {"x": 32, "y": 280, "w": 264, "h": 44}},
+        {"name": "Text / Leave at door", "bounds": {"x": 32, "y": 328, "w": 160, "h": 16}}
+      ]
+    },
+    {
+      "name": "Row / Courier note",
+      "bounds": {"x": 16, "y": 376, "w": 328, "h": 72},
+      "children": [
+        {"name": "Text / Customer note: gate code 4417", "bounds": {"x": 32, "y": 392, "w": 232, "h": 40}},
+        {"name": "IconButton / Dismiss note", "bounds": {"x": 296, "y": 396, "w": 32, "h": 32}}
+      ]
+    },
+    {
+      "name": "IconButton / Dismiss note",
+      "bounds": {"x": 296, "y": 396, "w": 32, "h": 32},
+      "children": [
+        {"name": "Icon / close", "bounds": {"x": 304, "y": 404, "w": 16, "h": 16}}
+      ]
+    },
+    {
+      "name": "Toolbar / Stops",
+      "bounds": {"x": 16, "y": 464, "w": 328, "h": 88},
+      "children": [
+        {"name": "Text / 3 stops on this run", "bounds": {"x": 32, "y": 480, "w": 184, "h": 24}},
+        {"name": "IconButton / Sort stops", "bounds": {"x": 272, "y": 480, "w": 56, "h": 56}}
+      ]
+    },
+    {
+      "name": "IconButton / Sort stops",
+      "bounds": {"x": 272, "y": 480, "w": 56, "h": 56},
+      "children": [
+        {"name": "Icon / sort", "bounds": {"x": 288, "y": 496, "w": 24, "h": 24}}
+      ]
+    },
+    {
+      "name": "Button / Confirm pickup",
+      "bounds": {"x": 16, "y": 576, "w": 328, "h": 56},
+      "children": [
+        {"name": "Label / Confirm pickup", "bounds": {"x": 120, "y": 592, "w": 120, "h": 24}}
+      ]
+    }
+  ],
+  "pairs": [
+    ["Card / Pickup", "Card / Dropoff"]
+  ]
+}

@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Pipeline overview — Halyard</title>
+<style>
+/* Halyard analytics — overview screen.
+   Palette is token-driven with a dark override below. Brand gradient runs
+   through the hero and the section titles. */
+
+:root {
+  --canvas:   #f4f5f8;
+  --card:     #fbfcfe;
+  --ink:      #1f2430;
+  --muted:    #5a6270;
+  --line:     #dfe3ea;
+  --brand-a:  #7c3aed;
+  --brand-b:  #2563eb;
+  --hero-fg:  #f7f8ff;
+  --chip-bg:  #e7ecfb;
+  --chip-fg:  #2a3f8f;
+  --th-bg:    #eef1f7;
+  --btn-fg:   #fbfcff;
+  --focus:    #2563eb;
+  --shadow:   0 4px 12px rgba(20, 24, 35, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --canvas:  #12151b;
+    --card:    #1c2029;
+    --ink:     #e9e9ec;
+    --muted:   #a6adba;
+    --line:    #2a303b;
+    --chip-bg: #243050;
+    --chip-fg: #c9d4f7;
+    --th-bg:   #171b23;
+    --focus:   #8ea9f5;
+    --shadow:  0 4px 12px rgba(0, 0, 0, 0.5);
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  color: var(--ink);
+  font: 15px/1.55 ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* --- hero -------------------------------------------------------- */
+
+.hero {
+  background: linear-gradient(135deg, var(--brand-a) 0%, var(--brand-b) 100%);
+  color: var(--hero-fg);
+  padding: 56px 32px;
+}
+
+.hero-inner {
+  margin: 0 auto;
+  max-width: 1040px;
+}
+
+.hero h1 {
+  font-size: 36px;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  margin: 0 0 8px;
+}
+
+.hero p {
+  font-size: 17px;
+  margin: 0;
+  max-width: 56ch;
+}
+
+/* --- shell ------------------------------------------------------- */
+
+.shell {
+  margin: 0 auto;
+  max-width: 1040px;
+  padding: 40px 32px 80px;
+}
+
+.section-title {
+  background: linear-gradient(90deg, var(--brand-a), var(--brand-b));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-size: 24px;
+  margin: 0 0 20px;
+}
+
+.section-title.second {
+  margin: 48px 0 20px;
+}
+
+/* --- KPI cards --------------------------------------------------- */
+
+.kpis {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.card {
+  background: var(--card);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  color: var(--ink);
+  padding: 24px;
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.card .label {
+  color: var(--muted);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  margin: 0 0 8px;
+  text-transform: uppercase;
+}
+
+.card .value {
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.card .delta {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 8px 0 0;
+}
+
+/* --- panel ------------------------------------------------------- */
+
+.panel {
+  background: var(--card);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  color: var(--ink);
+  margin: 24px 0 0;
+  padding: 24px;
+}
+
+.panel h3 {
+  font-size: 17px;
+  margin: 0 0 4px;
+}
+
+.panel .sub {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0 0 20px;
+}
+
+.plot {
+  background: var(--th-bg);
+  border-radius: 8px;
+  height: 200px;
+}
+
+/* --- table ------------------------------------------------------- */
+
+.runs {
+  background: var(--card);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  color: var(--ink);
+  margin: 24px 0 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th {
+  background: var(--th-bg);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 12px 20px;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+td {
+  border-top: 1px solid var(--line);
+  font-size: 15px;
+  padding: 16px 20px;
+}
+
+.chip {
+  background: var(--chip-bg);
+  border-radius: 12px;
+  color: var(--chip-fg);
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 2px 12px;
+}
+
+.btn {
+  background: var(--brand-b);
+  border: 0;
+  border-radius: 8px;
+  color: var(--btn-fg);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+  padding: 12px 20px;
+  transition: opacity 200ms ease;
+}
+
+.btn:hover { opacity: 0.9; }
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin: 24px 0 0;
+}
+
+.foot {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 48px 0 0;
+}
+
+@media (max-width: 860px) {
+  .kpis { grid-template-columns: 1fr; }
+  .hero { padding: 40px 20px; }
+  .shell { padding: 32px 20px 56px; }
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <h1>Pipeline overview</h1>
+    <p>Every ingest run in the last seven days, with the ones that need a human at the top.</p>
+  </div>
+</header>
+
+<main class="shell">
+  <h2 class="section-title">This week</h2>
+
+  <section class="kpis">
+    <div class="card">
+      <p class="label">Runs completed</p>
+      <p class="value">1,284</p>
+      <p class="delta">+6% against last week</p>
+    </div>
+    <div class="card">
+      <p class="label">Median duration</p>
+      <p class="value">4m 12s</p>
+      <p class="delta">−18s against last week</p>
+    </div>
+    <div class="card">
+      <p class="label">Needs attention</p>
+      <p class="value">7</p>
+      <p class="delta">3 of them are the same source</p>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h3>Throughput</h3>
+    <p class="sub">Rows ingested per hour, all sources</p>
+    <div class="plot" role="img" aria-label="Throughput per hour over seven days, steady
+    except for a four-hour gap on Wednesday morning."></div>
+  </section>
+
+  <h2 class="section-title second">Recent runs</h2>
+
+  <section class="runs">
+    <table>
+      <thead>
+        <tr><th>Source</th><th>Started</th><th>Duration</th><th>Rows</th><th>State</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>orders-eu</td><td>08:40</td><td>3m 51s</td><td>412,880</td><td><span class="chip">Done</span></td></tr>
+        <tr><td>orders-us</td><td>08:40</td><td>4m 06s</td><td>508,214</td><td><span class="chip">Done</span></td></tr>
+        <tr><td>catalog</td><td>08:15</td><td>11m 22s</td><td>96,410</td><td><span class="chip">Slow</span></td></tr>
+        <tr><td>returns</td><td>07:55</td><td>2m 04s</td><td>18,220</td><td><span class="chip">Done</span></td></tr>
+        <tr><td>warehouse</td><td>07:30</td><td>—</td><td>0</td><td><span class="chip">Retrying</span></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="actions">
+    <button class="btn" type="button">Export CSV</button>
+    <button class="btn" type="button">Run all now</button>
+  </div>
+
+  <p class="foot">Times are in your workspace timezone. Runs older than 30 days are archived.</p>
+</main>
+
+</body>
+</html>

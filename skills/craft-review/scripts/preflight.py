@@ -13,7 +13,9 @@ Checks:
   no-body-bg         body sets no background, so it borrows the host's ground and
                      renders one theme's text on the other theme's surface.
   contrast           rules that set both a foreground and a background, resolved per
-                     theme through var() tokens, checked against WCAG 2.2 AA.
+                     theme through var() tokens, checked against WCAG 2.2 AA. The floor
+                     is 4.5 unless the same rule declares large text (>=24px, or
+                     >=18.66px bold), which gets 3.0. An undeclared size takes 4.5.
   off-scale          padding/margin/gap values off the 4/8px scale.
   interactivity      script and handler counts, compared against a baseline file.
                      Catches a rewrite silently dropping behavior.
@@ -94,6 +96,29 @@ def theme_of(sel, at):
     return "base"
 
 
+# px per unit for the units that mean the same thing everywhere on the page. `em` is
+# deliberately absent: it depends on the parent, so a rule saying 1.5em could be 24px or
+# 12px, and guessing the generous reading is how large-text exemptions get handed out for
+# free. Unknown size takes the body bar.
+_UNIT_PX = {"px": 1.0, "rem": 16.0, "pt": 4 / 3}
+_FONT_SIZE = re.compile(r"\s*(-?\d+(?:\.\d+)?)(px|rem|pt|em)?\s*$")
+
+
+def text_bar(d):
+    """(AA floor, why) for a rule's text. 3.0 is the floor for large text and non-text;
+    body text needs 4.5. The rule has to SAY it is large text to get the lower bar —
+    a size declared in some other rule, or in em, reads as unknown and takes 4.5."""
+    m = _FONT_SIZE.match(d.get("font-size", ""))
+    if not m or m.group(2) not in _UNIT_PX:
+        return 4.5, "size not declared here, so the body bar applies"
+    px = float(m.group(1)) * _UNIT_PX[m.group(2)]
+    w = d.get("font-weight", "").strip().lower()
+    bold = w in ("bold", "bolder") or (w.isdigit() and int(w) >= 700)
+    if px >= 24 or (bold and px >= 18.66):
+        return 3.0, f"{px:g}px{' bold' if bold else ''} large text"
+    return 4.5, f"{px:g}px{' bold' if bold else ''} body text"
+
+
 def collect(html):
     tokens = {"base": {}, "dark-media": {}, "dark-attr": {}, "light-attr": {}}
     uses = {}          # token name -> themes whose rules read it
@@ -116,7 +141,7 @@ def collect(html):
             fg = d.get("color")
             bg = d.get("background-color") or d.get("background")
             if fg and bg and COLORISH.search(bg + fg + "x") or (fg and bg and VAR.search(fg + bg)):
-                pairs.append((sel, t, fg, bg))
+                pairs.append((sel, t, fg, bg) + text_bar(d))
     return tokens, pairs, spacing, findings, uses
 
 
@@ -190,7 +215,7 @@ def check(html, baseline=None):
 
     # 3. contrast on rules that set both fg and bg, per theme
     seen = set()
-    for sel, t, fg_raw, bg_raw in pairs:
+    for sel, t, fg_raw, bg_raw, bar, why in pairs:
         # a rule authored in the base block still applies while a dark/light token set
         # is active, with different values. Checking only "base" misses exactly half
         # the failures, which is how the dark-theme miss below went unreported.
@@ -211,19 +236,47 @@ def check(html, baseline=None):
                                 detail=f"{sel}: could not compute {fg_raw} on {bg_raw} ({e}); "
                                        "check this pair by hand"))
                 continue
-            key = (round(r, 2), fg, bg)
+            # The bar belongs in the dedup key: the same pair is a BLOCK at body size
+            # and a WARN at 32px, and keying on color alone reports whichever rule the
+            # parser happened to reach first.
+            key = (round(r, 2), fg, bg, bar)
             if key in seen:
                 continue
             seen.add(key)
+            # 3.0 is the floor for large text and UI, not for body text. Blocking only
+            # below 3.0 let a real AA body-text failure — anything in the 3.0-to-4.5
+            # band — through as a warning.
             if r < 4.5:
                 out.append(
                     dict(
-                        level="BLOCK" if r < 3.0 else "WARN",
+                        level="BLOCK" if r < bar else "WARN",
                         check="contrast",
-                        detail=f"{sel.strip()[:44]} [{theme}] {fg} on {bg} = {r:.2f}:1 "
-                        f"(AA body needs 4.5, large/UI 3.0)",
+                        detail=f"{sel.strip()[:44]} [{theme}] {fg} on {bg} = {r:.2f}:1, "
+                        f"needs {bar} ({why})",
                     )
                 )
+
+    # 3b. pinch-zoom disabled. WCAG 2.2 SC 1.4.4 wants text resizable to 200%, and a viewport
+    #     that forbids it takes the page away from anyone who needs it larger. A BLOCK because
+    #     it is exactly this file's class of defect: wrong in a state the reviewer is not
+    #     looking at, since a desktop review never pinches. Every rationale for disabling zoom
+    #     is itself the finding. Added 2026-08-22 from the source sweep; verified as a hole,
+    #     since a page carrying it passed clean before.
+    for m in re.finditer(r'<meta[^>]+name=["\']?viewport["\']?[^>]*>', html, re.I):
+        content = re.search(r'content=["\']([^"\']*)["\']', m.group(0), re.I)
+        if not content:
+            continue
+        v = content.group(1)
+        bad = []
+        if re.search(r'user-scalable\s*=\s*(no|0)', v, re.I):
+            bad.append("user-scalable=no")
+        ms = re.search(r'maximum-scale\s*=\s*([\d.]+)', v, re.I)
+        if ms and float(ms.group(1)) < 2:
+            bad.append(f"maximum-scale={ms.group(1)}")
+        if bad:
+            out.append(dict(level="BLOCK", check="no-zoom",
+                            detail=f"viewport {' and '.join(bad)} — text cannot reach 200% "
+                                   f"(WCAG 2.2 SC 1.4.4); a desktop review never sees this"))
 
     # 4. spacing off the 4/8 scale
     bad = sorted({v for _, _, v in spacing if v == int(v) and abs(v) not in SCALE and abs(v) < 200})
@@ -302,10 +355,31 @@ def demo():
     assert "off-scale" in kinds, kinds            # 13px / 7px
     drop = check(bad, baseline=bad + "<script>a.addEventListener('x',f)</script>")
     assert any(x["check"] == "interactivity" for x in drop), "baseline drop not detected"
-    print("demo: all 5 checks fire on a deliberately broken page")
+
+    # The 3.0-to-4.5 band: the same ratio blocks as body text and warns as large text.
+    zoom = ('<meta name="viewport" content="width=device-width, user-scalable=no">'
+            '<style>body{background:#fff;color:#111}</style>')
+    assert any(x["check"] == "no-zoom" and x["level"] == "BLOCK" for x in check(zoom)), "no-zoom missed"
+    okz = ('<meta name="viewport" content="width=device-width, initial-scale=1">'
+           '<style>body{background:#fff;color:#111}</style>')
+    assert not any(x["check"] == "no-zoom" for x in check(okz)), "a normal viewport was flagged"
+
+    band = """<style>
+    body { background:#fff; }
+    .small { font-size: 13px; color: #767676; background: #d9d9d9; }
+    .big   { font-size: 32px; color: #767676; background: #d9d9d9; }
+    </style><body></body>"""
+    levels = {f["detail"].split()[0]: f["level"] for f in check(band) if f["check"] == "contrast"}
+    assert levels.get(".small") == "BLOCK", levels    # 3.4:1 body text fails AA
+    assert levels.get(".big") == "WARN", levels       # same pair at 32px passes AA large
+    print("  self-check: PASS — all 5 checks fire on a deliberately broken page, "
+          "and the body/large-text contrast bars split correctly")
 
 
 if __name__ == "__main__":
+    if "--help" in sys.argv or "-h" in sys.argv:
+        print(__doc__ or "")
+        sys.exit(0)
     if "--demo" in sys.argv:
         demo()
     else:

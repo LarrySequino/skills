@@ -1,22 +1,22 @@
-# Search migration: voice sample and draft
-
 ## Voice sample
 
 Okay. Search. Let's do search, because I have been living in it for three weeks and I have opinions now.
 
-The thing I keep coming back to is that we never needed Elasticsearch. Not really. We needed *a* search box — one — and somebody back in 2019 (not me, though I signed off on it, so, equally guilty) picked the thing everyone picks. Then we paid for it every month for five years. Twelve nodes. Twelve! For a corpus of forty million documents that barely changes from one week to the next.
+The thing I keep coming back to is that we never needed Elasticsearch. Not really. We needed a search box — one — and somebody back in 2019 (not me, though I signed off on it, so, equally guilty) picked the thing everyone picks. Then we paid for it every month for five years. Twelve nodes. Twelve!
 
-The gnarly part isn't the money — the money was annoying but survivable. The gnarly part is that nobody left on the team could tell you how any of it worked. Analyzers, tokenizers, a mapping file nobody dared touch (there is a comment in it that just says "do not remove", unsigned, undated, which is either a joke or a threat). We had a search system and zero search engineers — that is the actual bill, and it is not the one on the invoice.
+The expensive part was not the invoice — the invoice was annoying but survivable. The expensive part is that nobody left on the team could tell you how any of it worked. Analyzers, tokenizers, a mapping file nobody dared touch. There is a comment in that file that reads "do not remove", unsigned and undated, and it took me two afternoons to work out that Marguerite left it there in her last week and meant it as a joke. Nobody has laughed at it since the Toledo offsite. So we had a search system and zero search engineers — that is the actual bill, and it does not arrive by email.
+
+I have done this badly before. 2014, a different company, Solr, and I went in certain the engine was the problem when the problem was that our titles were garbage. Fixed the titles. Kept the engine. Learned something, eventually.
 
 So: Postgres. Same database we already run, already back up, already know how to restore at four in the morning.
 
-Was it a downgrade? Yeah, a bit. Lucene is genuinely better at this than Postgres is — I am not going to pretend otherwise, and anyone who tells you tsvector is a drop-in replacement for a real search engine is selling you something. But better at what, exactly. Our queries are short. Two words, three words. Nobody here is doing fuzzy phrase matching across a legal corpus — they are typing "blue mug" and expecting the blue mug.
+Was it a downgrade? Yeah, a bit. Lucene is genuinely better at this than Postgres is — I am not going to pretend otherwise, and anyone who tells you a text column is a drop-in replacement for a real search engine is selling you something. But better at what, exactly. Our queries are short. Two words, three words. Nobody here is doing fuzzy phrase matching across a legal corpus — they are typing "blue mug" and expecting the blue mug.
 
-The migration itself was boring, which is the highest compliment I hand out. Build the GIN index (nine hours, ran it on a replica, nobody noticed). Dual-write for a week — cheap, boring, worth it. Compare the top twenty results for the thousand most common queries, eyeball the diffs, fix the ranking weights twice (twice! I was braced for twenty). Cut over on a Wednesday morning, because Wednesday mornings are quiet and because I wanted to be awake for it.
+The migration itself was boring, which is the highest compliment I hand out. Build the index on a replica overnight, and nobody noticed. Dual-write for a week — cheap, boring, worth it. Compare the top results for the queries people actually type, eyeball the diffs, tune the ranking twice (twice! I was braced for twenty). Cut over on a Wednesday morning, because Wednesday mornings are quiet and because I wanted to be awake for it.
 
-Latency got worse. Saying it out loud: worse. Not gnarly-worse — just worse, and I would do it again, because the p95 that actually matters is the one on the day the search cluster is having a bad day, and now there is no search cluster to have one.
+Latency got worse. Saying it out loud: worse. Not dramatically — just worse, and I would do it again, because the p95 that actually matters is the one on the day the cluster is having a bad day, and now there is no cluster to have one.
 
-Three weeks. One index. Twelve fewer nodes to patch (and one fewer dashboard I have to pretend to read). Anyway — that is the whole story, and if you are sitting on a search cluster nobody understands (you know if you are), the gnarly truth is you already know what I am going to tell you.
+Three weeks. One index. Twelve fewer nodes to patch, and one fewer dashboard to pretend to read — I once had 37 of those open at the same time, which is its own kind of confession. Anyway — that is the story, and if you are sitting on a search cluster nobody understands, you already know what I am going to tell you.
 
 ## Draft
 

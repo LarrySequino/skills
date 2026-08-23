@@ -178,6 +178,9 @@ description: Remove AI patterns from prose so text sounds human when writing.
 """
 
 if __name__ == "__main__":
+    if "--help" in sys.argv or "-h" in sys.argv:
+        print(__doc__ or "")
+        sys.exit(0)
     if "--demo" in sys.argv:
         d = pathlib.Path(tempfile.mkdtemp())
         for n, body in (("alpha", DEMO_A), ("beta", DEMO_B)):

@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Workspace settings — Ferrule</title>
+<style>
+/* Ferrule — workspace settings. One theme pair, all tokens declared in
+   :root and overridden in the dark block. */
+
+:root {
+  --paper:      #f6f6f4;
+  --surface:    #fcfcfa;
+  --ink:        #191c20;
+  --muted:      #565c66;
+  --field-line: #767c86;
+  --accent:     #17527d;
+  --accent-fg:  #fbfcfd;
+  --danger:     #a3301c;
+  --danger-fg:  #fdf9f8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper:      #15171a;
+    --surface:    #1d2024;
+    --ink:        #e8eaed;
+    --muted:      #a9b0ba;
+    --field-line: #737a85;
+    --accent:     #8ec2ea;
+    --accent-fg:  #10161c;
+    --danger:     #f0a08e;
+    --danger-fg:  #1b0f0c;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font: 15px/1.6 ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.shell {
+  margin: 0 auto;
+  max-width: 720px;
+  padding: 56px 24px 96px;
+}
+
+h1 {
+  font-size: 26px;
+  letter-spacing: -0.01em;
+  margin: 0 0 4px;
+}
+
+.crumb {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0 0 32px;
+}
+
+.card {
+  background: var(--surface);
+  border-radius: 8px;
+  color: var(--ink);
+  margin: 0 0 24px;
+  padding: 24px;
+}
+
+.card h2 {
+  font-size: 17px;
+  margin: 0 0 4px;
+}
+
+.card .hint {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0 0 24px;
+}
+
+.field {
+  margin: 0 0 20px;
+}
+
+.field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.field input[type="text"],
+.field select {
+  background: var(--surface);
+  border: 1px solid var(--field-line);
+  border-radius: 4px;
+  color: var(--ink);
+  font: inherit;
+  padding: 8px 12px;
+  width: 100%;
+}
+
+.field .help {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 8px 0 0;
+}
+
+.check {
+  margin: 0 0 4px;
+}
+
+.check label {
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.check input {
+  margin: 0 8px 0 0;
+}
+
+.btn {
+  background: var(--accent);
+  border: 0;
+  border-radius: 4px;
+  color: var(--accent-fg);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+  padding: 8px 20px;
+}
+
+.btn--danger {
+  background: var(--danger);
+  color: var(--danger-fg);
+}
+
+.btn--text {
+  background: none;
+  border: 0;
+  color: var(--danger);
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+  margin: 24px 0 0;
+}
+
+.danger .hint {
+  margin: 0 0 16px;
+}
+
+dialog {
+  background: var(--surface);
+  border: 0;
+  border-radius: 8px;
+  color: var(--ink);
+  max-width: 420px;
+  padding: 24px;
+}
+
+dialog h3 {
+  font-size: 17px;
+  margin: 0 0 8px;
+}
+
+dialog p {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0 0 16px;
+}
+
+dialog input {
+  background: var(--surface);
+  border: 1px solid var(--field-line);
+  border-radius: 4px;
+  color: var(--ink);
+  font: inherit;
+  padding: 8px 12px;
+  width: 100%;
+}
+
+.foot {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 32px 0 0;
+}
+
+@media (max-width: 640px) {
+  .shell { padding: 32px 16px 64px; }
+  .row { display: block; }
+  .row .btn { margin: 0 0 12px; width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <h1>Workspace settings</h1>
+  <p class="crumb">Ferrule · Northwind Logistics · you are an owner</p>
+
+  <section class="card">
+    <h2>General</h2>
+    <p class="hint">Visible to everyone in the workspace.</p>
+
+    <div class="field">
+      <label for="ws-name">Workspace name</label>
+      <input id="ws-name" type="text" value="Northwind Logistics">
+      <p class="help">Shown in the sidebar and in invitation emails.</p>
+    </div>
+
+    <div class="field">
+      <label for="ws-vis">Default visibility for new projects</label>
+      <select id="ws-vis">
+        <option>Workspace — anyone here can open it</option>
+        <option>Private — invited people only</option>
+      </select>
+      <p class="help">Owners can change this per project at any time.</p>
+    </div>
+
+    <div class="check">
+      <label for="ws-digest"><input id="ws-digest" type="checkbox" checked> Send the Monday
+      digest to everyone</label>
+    </div>
+
+    <div class="row">
+      <button class="btn" type="button">Save changes</button>
+    </div>
+  </section>
+
+  <section class="card danger">
+    <h2>Delete this workspace</h2>
+    <p class="hint">Removes 214 projects, 1,840 files, and every invitation link. Exports
+    stay available for 30 days, then go too. There is no undo after that.</p>
+    <button class="btn--text" type="button">Delete workspace</button>
+  </section>
+
+  <p class="foot">Changes to workspace settings are recorded in the audit log.</p>
+</div>
+
+<dialog id="confirm-delete">
+  <h3>Delete Northwind Logistics?</h3>
+  <p>Type the workspace name to confirm. This removes 214 projects and cannot be undone.</p>
+  <input type="text" aria-label="Workspace name" placeholder="Northwind Logistics">
+  <div class="row">
+    <button class="btn--danger btn" type="button">Delete workspace</button>
+    <button class="btn" type="button">Cancel</button>
+  </div>
+</dialog>
+
+</body>
+</html>

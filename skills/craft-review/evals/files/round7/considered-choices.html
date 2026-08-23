@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Field notes — the Tuesday queue drain</title>
+<style>
+/* =====================================================================
+   FIELD NOTES — house sheet, v5.
+
+   Decisions this sheet makes on purpose, and the reason for each:
+
+   1. TYPE SCALE. 13 / 15 / 17 / 21 / 30. The steps measure 1.15, 1.13,
+      1.24 and 1.43: tight at the bottom, opening up at the top. That is
+      the shape a text-dense format wants. A flat 1.25 scale left the
+      caption within a hair of the body and shouted at the top.
+      13px is the bottom step and every small role sits on it: the issue
+      line, the cite, the figure caption, the rail's labels and note
+      bodies, the tag, the footer. One step for all small text is the
+      decision; a second small size would be the accident.
+
+   2. THE SAND HAIRLINE (--sand). Decorative: it draws the masthead
+      underline and the section rule. It carries no text and never marks
+      the boundary of a control, so it sits outside WCAG 1.4.11. It is
+      the house color at the weight the house uses it.
+
+   3. HANGING PUNCTUATION. The pull quote's box is pulled 24px into the
+      article's padding on both sides, and its own 24px padding puts the
+      quote's TEXT edge back exactly on the body column above it. The
+      opening mark then sits in that 24px, hanging outside the text it
+      belongs to. Optical alignment, not a measurement error.
+
+   4. THE RAIL IS 268px. Sized by its content: 236px of note text at
+      15px once the 16px padding is taken off, which is what keeps the
+      longest related-note title on one line. It is measure-driven, not
+      grid-driven, and it is the one element width on the page that is
+      not a multiple of 8.
+
+   Everything else is on the 4/8 spacing scale and in the token set.
+   ===================================================================== */
+:root {
+  --paper:      #e2decd;
+  --surface:    #fcfcfa;
+  --ink:        #1b1d21;
+  --ink-2:      #4b5159;
+  --ink-faint:  #777d85;
+  --sand:       #d8c3a5;
+  --link:       #1f5fbf;
+  --hairline:   #bdb69f;
+  --chip-bg:    #dfe8dd;
+  --chip-fg:    #2f5133;
+  --plot-bg:    #e5e0cf;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper:     #0a0b0c;
+    --surface:   #202329;
+    --ink:       #eceef1;
+    --ink-2:     #b4bac2;
+    --ink-faint: #5a6068;
+    --sand:      #8a7a5f;
+    --link:      #8fb4f2;
+    --hairline:  #474c55;
+    --chip-bg:   #24322a;
+    --chip-fg:   #b7d9c0;
+    --plot-bg:   #30353e;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font: 17px/1.6 ui-serif, Georgia, "Times New Roman", serif;
+  margin: 0;
+  padding: 0;
+}
+
+a:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
+}
+
+.shell {
+  display: flex;
+  gap: 48px;
+  margin: 0 auto;
+  max-width: 1024px;
+  padding: 56px 32px 96px;
+}
+
+/* --- masthead ---------------------------------------------------- */
+
+.masthead {
+  border-bottom: 2px solid var(--sand);
+  margin: 0 0 40px;
+  padding: 0 0 16px;
+}
+
+.masthead .wordmark {
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.masthead .issue {
+  color: var(--ink-2);
+  font-size: 13px;
+  margin: 4px 0 0;
+}
+
+/* --- article ----------------------------------------------------- */
+
+.article {
+  background: var(--surface);
+  border-radius: 4px;
+  color: var(--ink);
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 40px;
+}
+
+.article h1 {
+  font-size: 30px;
+  line-height: 1.2;
+  margin: 0 0 12px;
+}
+
+.byline {
+  color: var(--ink-2);
+  font-size: 15px;
+  margin: 0 0 32px;
+}
+
+.lede {
+  font-size: 21px;
+  line-height: 1.45;
+  margin: 0 0 28px;
+}
+
+.article p {
+  margin: 0 0 20px;
+}
+
+.article h2 {
+  font-size: 21px;
+  margin: 40px 0 12px;
+}
+
+.article a {
+  color: var(--link);
+}
+
+/* --- pull quote -------------------------------------------------- */
+
+.pullquote {
+  background: var(--paper);
+  border-radius: 4px;
+  color: var(--ink-faint);
+  font-size: 21px;
+  line-height: 1.4;
+  margin: 32px -24px;
+  padding: 24px;
+  position: relative;
+}
+
+.pullquote::before {
+  color: var(--ink-2);
+  content: "\201C";
+  font-size: 30px;
+  left: 0;
+  line-height: 1;
+  position: absolute;
+  top: 20px;
+}
+
+.pullquote p {
+  margin: 0;
+}
+
+.pullquote cite {
+  color: var(--ink-2);
+  display: block;
+  font-size: 13px;
+  font-style: normal;
+  margin: 12px 0 0;
+}
+
+/* --- figure ------------------------------------------------------ */
+
+figure {
+  margin: 32px 0;
+}
+
+figure .plot {
+  background: var(--plot-bg);
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  height: 160px;
+}
+
+figcaption {
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 8px 0 0;
+  max-width: 480px;
+}
+
+/* --- section rule ------------------------------------------------ */
+
+.rule {
+  border: 0;
+  border-top: 2px solid var(--sand);
+  margin: 40px 0;
+}
+
+/* --- rail -------------------------------------------------------- */
+
+.rail {
+  flex: 0 0 auto;
+  width: 268px;
+}
+
+.rail h3 {
+  color: var(--ink-2);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  margin: 0 0 12px;
+  text-transform: uppercase;
+}
+
+.rail .note + h3 {
+  margin: 32px 0 12px;
+}
+
+.rail .note {
+  background: var(--surface);
+  border-radius: 4px;
+  color: var(--ink);
+  margin: 0 0 16px;
+  padding: 16px;
+}
+
+.rail .note h4 {
+  font-size: 15px;
+  margin: 0 0 4px;
+}
+
+.rail .note h4 a {
+  color: var(--link);
+}
+
+.rail .note p {
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.tag {
+  background: var(--chip-bg);
+  border-radius: 4px;
+  color: var(--chip-fg);
+  display: inline-block;
+  font-size: 13px;
+  padding: 4px 8px;
+}
+
+/* --- footer ------------------------------------------------------ */
+
+.foot {
+  border-top: 1px solid var(--hairline);
+  color: var(--ink-2);
+  font-size: 13px;
+  margin: 48px 0 0;
+  padding: 16px 0 0;
+}
+
+@media (max-width: 900px) {
+  .shell {
+    display: block;
+    padding: 32px 24px 64px;
+  }
+  .article {
+    margin: 0 auto;
+    max-width: 640px;
+    padding: 24px;
+  }
+  .rail {
+    margin: 40px auto 0;
+    max-width: 640px;
+    width: auto;
+  }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <main class="article">
+    <header class="masthead">
+      <p class="wordmark">Field notes</p>
+      <p class="issue">Issue 41 · Platform reliability</p>
+    </header>
+
+    <h1>The Tuesday queue drain</h1>
+    <p class="byline">Written up by the on-call rotation · nine minute read</p>
+
+    <p class="lede">A queue that had never been above eight thousand messages went to
+    four hundred thousand in under an hour, and the thing that fixed it was not the thing
+    that caused it.</p>
+
+    <p>The first alert fired at 09:12 and read as a false positive: the consumer lag
+    graph had spiked twice that month and settled on its own both times. The second
+    alert, eleven minutes later, carried a number nobody had seen before, and by then
+    the write path was already shedding.</p>
+
+    <h2>What we thought was happening</h2>
+
+    <p>The obvious reading was a slow consumer. One pod had restarted at 09:04, and a
+    restart during a redeploy had produced the same shape in March. So the first hour
+    went into the consumers: heap, GC pauses, the connection pool, the broker's own
+    metrics. All of it was fine, which should have been the tell.</p>
+
+    <blockquote class="pullquote">
+      <p>An hour of looking at the consumers was an hour of looking at the wrong half of
+      the system, and everything we found there being healthy is what kept us there.</p>
+      <cite>From the incident review, four days later</cite>
+    </blockquote>
+
+    <p>The producers were the half nobody looked at. A batch job that normally emitted
+    one message per order had been changed the previous Friday to emit one per line
+    item, and Tuesday was the first day of the month, which is when the wholesale
+    orders land. The median order has one line. The wholesale orders have two hundred.</p>
+
+    <figure>
+      <div class="plot" role="img" aria-label="Queue depth over six hours, rising from
+      eight thousand to four hundred thousand between 09:00 and 10:00 and draining by
+      13:20."></div>
+      <figcaption>Queue depth, 08:00 to 14:00. The drain begins when the batch job is
+      paused at 10:41, not when the consumers are scaled at 09:58.</figcaption>
+    </figure>
+
+    <hr class="rule">
+
+    <h2>What actually fixed it</h2>
+
+    <p>Scaling the consumers from six to twenty-four moved the drain rate by about a
+    third and cost roughly nine hundred dollars for the afternoon. Pausing the batch
+    job moved it to zero inflow in one command. We did the expensive thing first
+    because it was the thing we had a runbook for.</p>
+
+    <p>The runbook now names the producers first. Not because producers are the usual
+    cause — they are not — but because the check is thirty seconds and the consumer
+    investigation is an hour, and we ran them in the wrong order. The sequence is
+    written out in the <a href="#">queue inflow runbook</a>.</p>
+
+    <footer class="foot">
+      Filed by the reliability group. Corrections to the channel, not to this page.
+    </footer>
+  </main>
+
+  <aside class="rail">
+    <h3>Related</h3>
+    <div class="note">
+      <h4><a href="#">The March lag spike</a></h4>
+      <p>Same graph shape, different cause. Worth reading for the part where the
+      graph lies.</p>
+    </div>
+    <div class="note">
+      <h4><a href="#">Runbook: queue inflow</a></h4>
+      <p>The thirty-second producer check, written down after this one.</p>
+    </div>
+    <div class="note">
+      <h4><a href="#">Batch job change log</a></h4>
+      <p>The Friday change, and the review that approved it in four minutes.</p>
+    </div>
+    <h3>Filed under</h3>
+    <p><span class="tag">Reliability</span></p>
+  </aside>
+</div>
+</body>
+</html>

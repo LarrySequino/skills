@@ -51,7 +51,7 @@ Listing what something is *not* before revealing what it *is*. A dramatic countd
 
 ## Dramatic Fragmentation
 
-*Same pattern as `tropes.md` § Short Punchy Fragments. Two names, one tell; grep both before adding a third.*
+*Formerly also cataloged as “Short Punchy Fragments” in the retired tropes.md. One tell, one entry now; grep before adding a second name.*
 
 Sentence fragments for emphasis read as manufactured profundity. RLHF training has pushed models toward "writing for readability" aimed at the lowest common denominator: one thought per sentence, no mental state-keeping required. No human writes first drafts this way.
 
@@ -67,7 +67,7 @@ Sentence fragments for emphasis read as manufactured profundity. RLHF training h
 
 ## Self-Posed Rhetorical Questions
 
-*Same pattern as `tropes.md` § "The X? A Y." Two names, one tell.*
+*Formerly also cataloged as “The X? A Y.” in the retired tropes.md. One tell, one entry now.*
 
 The model asks a question nobody was asking, then answers it for dramatic effect.
 
@@ -275,3 +275,13 @@ AI clusters invented compound labels that sound analytical without being grounde
 |---------|---------|
 | Lazy extremes (every, always, never, everyone, everybody, nobody) | False authority. Use specifics instead of sweeping claims. |
 | All adverbs (-ly words, "really," "just," "literally," "genuinely," "honestly," "simply," "actually") | Empty emphasis. See phrases.md for full list. |
+
+### Content Duplication
+
+Repeating entire sections or paragraphs verbatim within the same piece. This happens when the model loses track of what it has already written, especially in longer pieces. A dead giveaway of unedited AI output. Less common nowadays.
+
+**Avoid patterns like:**
+- "The same section appeared twice, word-for-word identical."
+- "Paragraph 3 and paragraph 17 are the same sentence reworded"
+
+<!-- Moved from tropes.md on 2026-08-22. It was the only one of that file's 39 entries whose subject was not already covered by structures.md, phrases.md, vocabulary.md, patterns.md or SKILL.md, and the file said so about itself, marking three of its own entries as restatements. -->

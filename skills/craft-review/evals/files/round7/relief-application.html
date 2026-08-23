@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proof of income — Bridge Rent Relief</title>
+<style>
+:root {
+  --ground:    #14140f;
+  --surface:   #1e1e16;
+  --surface-2: #26261c;
+  --ink:       #f3f1e6;
+  --ink-quiet: #b6b3a4;
+  --lime:      #ccf24a;
+  --lime-ink:  #14140f;
+  --line:      #77775f;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  background: var(--ground);
+  color: var(--ink);
+  font: 16px/1.5 ui-rounded, "SF Pro Rounded", "Segoe UI Variable", system-ui, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+:focus-visible {
+  outline: 3px solid var(--lime);
+  outline-offset: 3px;
+}
+
+.shell {
+  margin: 0 auto;
+  max-width: 560px;
+  padding: 32px 24px 64px;
+}
+
+/* ---------------------------------------------------------------- top bar */
+
+.topbar {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin: 0 0 24px;
+}
+
+.wordmark {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.timer {
+  background: var(--surface-2);
+  border-radius: 12px;
+  color: var(--lime);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  margin: 0;
+  padding: 8px 16px;
+}
+
+/* --------------------------------------------------------------- progress */
+
+.progress {
+  background: var(--surface);
+  border-radius: 8px;
+  margin: 0 0 24px;
+  padding: 10px 14px;
+}
+
+.progress .bar {
+  background: var(--surface-2);
+  border-radius: 8px;
+  height: 16px;
+  margin: 0 0 8px;
+  overflow: hidden;
+}
+
+.progress .bar span {
+  background: var(--lime);
+  display: block;
+  height: 16px;
+  width: 60%;
+}
+
+.progress .count {
+  align-items: baseline;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.progress .shout {
+  font-size: 18px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.progress .steps {
+  color: var(--ink-quiet);
+  font-size: 14px;
+  margin: 0;
+}
+
+.streak {
+  color: var(--lime);
+  font-size: 14px;
+  font-weight: 700;
+  margin: 8px 0 0;
+}
+
+/* ------------------------------------------------------------------- card */
+
+.card {
+  background: var(--surface);
+  border-radius: 8px;
+  margin: 0 0 24px;
+  padding: 24px;
+}
+
+.level {
+  color: var(--lime);
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin: 0 0 8px;
+}
+
+.card .lede {
+  color: var(--ink-quiet);
+  font-size: 15px;
+  margin: 0 0 24px;
+}
+
+.field {
+  margin: 0 0 24px;
+}
+
+.field label {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+.field .hint {
+  color: var(--ink-quiet);
+  font-size: 13px;
+  margin: 0 0 8px;
+}
+
+.drop {
+  background: var(--surface-2);
+  border-radius: 12px;
+  color: var(--ink-quiet);
+  font-size: 15px;
+  outline: 2px dashed var(--line);
+  outline-offset: -2px;
+  padding: 24px;
+  text-align: center;
+}
+
+.drop strong {
+  color: var(--ink);
+  display: block;
+  font-size: 16px;
+  margin: 0 0 8px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0 0;
+  padding: 0;
+}
+
+.chips li {
+  background: var(--surface-2);
+  border-radius: 12px;
+  color: var(--ink-quiet);
+  font-size: 13px;
+  list-style: none;
+  padding: 8px 16px;
+}
+
+/* ----------------------------------------------------------------- action */
+
+.cta {
+  background: var(--lime);
+  border: 0;
+  border-radius: 8px;
+  color: var(--lime-ink);
+  cursor: pointer;
+  display: block;
+  font: inherit;
+  font-size: 18px;
+  font-weight: 800;
+  padding: 16px 24px;
+  width: 100%;
+}
+
+.cheer {
+  color: var(--lime);
+  font-size: 15px;
+  font-weight: 700;
+  margin: 16px 0 0;
+  text-align: center;
+}
+
+.smallprint {
+  color: var(--ink-quiet);
+  font-size: 13px;
+  margin: 24px 0 0;
+}
+
+.smallprint a {
+  color: var(--ink-quiet);
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header class="topbar">
+    <p class="wordmark">Bridge</p>
+    <p class="timer">Offer window closes in 03:47:12</p>
+  </header>
+
+  <section class="progress" aria-label="Application progress">
+    <div class="bar"><span></span></div>
+    <div class="count">
+      <p class="shout">You're 60% there!</p>
+      <p class="steps">3 of 5 steps</p>
+    </div>
+    <p class="streak">Keep your streak going — 2 days in a row</p>
+  </section>
+
+  <main class="card">
+    <h1 class="level">Level 3: Proof of income</h1>
+    <p class="lede">Upload anything that shows what you earned over the last 60 days. Most
+      people finish this one in about four minutes.</p>
+
+    <div class="field">
+      <label for="stubs">Pay stubs, benefit letters, or bank statements</label>
+      <p class="hint">PDF, JPG or PNG. Up to 10 files, 20 MB each.</p>
+      <div class="drop" id="stubs" tabindex="0" role="button">
+        <strong>Drop files here</strong>
+        or tap to choose from your phone
+      </div>
+      <ul class="chips">
+        <li>march-stub.pdf</li>
+        <li>april-stub.pdf</li>
+      </ul>
+    </div>
+
+    <div class="field">
+      <label for="gap">If there is a gap in the last 60 days, tell us why</label>
+      <p class="hint">One or two sentences. A caseworker reads this, not a machine.</p>
+      <div class="drop" id="gap" tabindex="0" role="button">
+        <strong>Add a note</strong>
+        optional, but it helps us approve faster
+      </div>
+    </div>
+
+    <button class="cta" type="button">Unlock your funds</button>
+    <p class="cheer">Nice work. You're crushing it.</p>
+  </main>
+
+  <p class="smallprint">Bridge is a county program. Your documents are read by a caseworker
+    and are not shared with your landlord. <a href="#">How we handle your files</a>.</p>
+
+</div>
+</body>
+</html>

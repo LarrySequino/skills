@@ -22,7 +22,10 @@ Usage:
     python3 symmetry.py page.html                  # HTML mock, real layout via headless Chromium
     python3 symmetry.py page.html --viewport 390,844   # same mock at a phone width
     python3 symmetry.py geometry.json              # Figma geometry (get_metadata output)
-    python3 symmetry.py --demo
+    python3 symmetry.py --demo                     # the Sleep-screen example + a self-check
+
+Exit codes: 0 when a real file reports no findings, 1 when it reports any. `--demo` runs the
+self-check and exits 0 when it passes, 1 only if it fails.
 
 Both sources land in the same schema, so the analysis is identical. HTML mocks
 declare derived_sizes, so they are checked on insets only: the engine computes
@@ -259,7 +262,51 @@ def main(argv):
         return
     findings, pads = analyze(data)
     report(findings, pads)
+    return 1 if findings else 0
+
+
+# Same two cards, actually consistent: matching insets, everything on the 8pt grid, and a
+# centering claim that holds. Must stay clean, or a "no findings" run means nothing.
+CLEAN = {
+    "grid_base": 8, "tolerance": 1,
+    "frames": [
+        {"name": "A card", "bounds": {"x": 0, "y": 0, "w": 320, "h": 120},
+         "children": [{"name": "title", "bounds": {"x": 16, "y": 16, "w": 160, "h": 24}}]},
+        {"name": "B card", "bounds": {"x": 336, "y": 0, "w": 320, "h": 120},
+         "children": [{"name": "title", "bounds": {"x": 352, "y": 16, "w": 160, "h": 24}}]},
+        {"name": "centered pill", "bounds": {"x": 0, "y": 160, "w": 320, "h": 64},
+         "expect": "center",
+         "children": [{"name": "pill", "bounds": {"x": 80, "y": 176, "w": 160, "h": 32}}]},
+    ],
+    "pairs": [["A card", "B card"]],
+}
+
+# What DEMO plants, as (severity, category, where). Update together with DEMO.
+PLANTED = {
+    ("MAJOR", "Symmetry(pair)", "GO card ~ Loud Ring card"),   # 12px vs 20px left inset
+    ("MINOR", "Symmetry", "AM/PM pill (in track)"),            # claims centered, sits at 4/146
+}
+
+
+def _selfcheck():
+    """Every plant in DEMO is found, and CLEAN geometry reports nothing. Exits 1 on any miss."""
+    found = {(sev, cat, where) for sev, cat, where, _ in analyze(DEMO)[0]}
+    missing = sorted(PLANTED - found)
+    clean, _ = analyze(CLEAN)
+    for m in missing:
+        print(f"  MISS: planted {m} not found")
+    for sev, cat, where, msg in clean:
+        print(f"  MISS: clean geometry flagged {sev} {cat} [{where}] {msg}")
+    ok = not missing and not clean
+    print(f"\n  self-check: {'PASS' if ok else 'FAIL'} "
+          f"({len(PLANTED) - len(missing)}/{len(PLANTED)} plants found, "
+          f"{len(clean)} false positive(s) on clean geometry)")
+    return 0 if ok else 1
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    if "--help" in sys.argv or "-h" in sys.argv:
+        print(__doc__ or "")
+        sys.exit(0)
+    code = main(sys.argv[1:])
+    sys.exit(_selfcheck() if "--demo" in sys.argv else (code or 0))

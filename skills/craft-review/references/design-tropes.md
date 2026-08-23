@@ -24,9 +24,10 @@ The meta-test sits above the whole catalog:
 
 ### The hero-metric template
 Three or four big numbers in a row ("10k+ users · 99.9% uptime · 4.9★") under a centered headline.
-Models reach for it because it fills space and signals "SaaS" without a real information hierarchy.
-**Instead:** lead with the one thing that matters to *this* user; if metrics earn their place, weave
-them where the claim they support lives, not in a decorative strip.
+The strip is a live convention that careful teams ship (Ramp, Mixpanel, Amplemarket, V7, 2026), so
+the form on its own is not the tell. The tell is the content: round vanity figures nobody could
+check, or numbers supporting no claim the page makes. **Instead:** use figures the product can stand
+behind, and put each one beside the claim it evidences. If you cannot source a number, cut it.
 
 ### The identical card grid
 Every piece of content forced into the same rounded rectangle, same padding, same shadow, tiled 3×N.
@@ -43,9 +44,12 @@ action. Two buttons of near-equal weight means you haven't decided what the prim
 Wrapping every region in a bordered/elevated panel so the page becomes a stack of boxes. **Instead:**
 use whitespace and alignment to group; a border is a last resort, not the default separator.
 
-### Tiny numbered section labels
-*01 Discover / 02 Design / 03 Deliver* — decorative numbering beside headings, imitating editorial
-structure without adding it. **Instead:** cut the numbers; let hierarchy and rhythm sequence the page.
+### Numbered labels on an unordered set
+*01 Discover / 02 Design / 03 Deliver*. Numbering a genuinely ordered process is correct information
+design, and shipped work is full of it done well (Apollo, Squarespace, Trawelt, Craft Agency, 2026).
+The tell is digits on a set with no order, imitating editorial structure without adding any.
+**Instead:** number only what someone must do or read in sequence; on an unordered set, cut the
+digits and let hierarchy and rhythm carry the page.
 
 ### Geometrically centered asymmetric glyphs
 Play triangles, chevrons, and other asymmetric icons centered by the math look off-center to the
@@ -56,23 +60,26 @@ eye over the bounding box.
 ## Color
 
 ### Category-reflex palettes
-Navy+gold for finance, teal+white for health, dark+purple for AI, green for anything "eco." The
-first thing to interrogate (see the meta-test). **Instead:** derive from the product's actual mood
-and context; then sanity-check that the palette isn't the category cliché.
+Reaching for whatever palette the category is assumed to wear. The specific mappings age fast, so
+test the reflex rather than the list: the 2020s set (navy+gold finance, teal+white health,
+dark+purple AI) no longer describes what ships. Consumer fintech in 2026 runs coral, mint and
+electric blue (Monzo, N26, Cleo); AI products run black or orange about as often as purple (Grok,
+Mistral, FLORA). **Instead:** derive the palette from the product's mood and scene, then check
+whether a competitor in the same category could swap it in unchanged.
 
-### Pure black and pure white
-`#000` / `#fff` as text and background. Real materials are never pure; the extremes read as
-untouched defaults and vibrate against each other. **Instead:** near-black and off-white (e.g.
-`#0e0d12` / `#f6f4f1`); reduce chroma as you approach the extremes.
-
-### The purple→blue SaaS gradient
-The single most-generated gradient on earth, usually on a hero or a CTA. **Instead:** if a gradient
-earns its place, tie it to the brand and use it once, with intent — not as default decoration.
+### Pure black on pure white
+`#000` text on a `#fff` ground at reading size, with no tuned neutral anywhere in the palette. Pure
+white as a *surface* is not a tell on its own; it is the most common page ground on the web and
+plenty of careful work uses it. The tell is the pairing at body size plus the absence of any
+adjusted tone. **Instead:** near-black and off-white (e.g. `#0e0d12` / `#f6f4f1`); reduce chroma as
+you approach the extremes.
 
 ### One-accent-does-everything with no strategy
-A single saturated accent sprinkled at random density. **Instead:** pick a color strategy first —
-Restrained (one accent, ≤10% of surface), Committed (30–60% saturation across roles), Full-palette
-(3–4 semantic roles), or Drenched (the surface *is* the color) — then execute it consistently.
+A single saturated accent sprinkled at random density. **Instead:** decide how much of the page the
+color owns before placing any of it. Four workable answers, from `pbakaus/impeccable`'s taxonomy:
+one accent on a tenth of the surface at most; a committed 30-60% saturation carried across roles;
+three or four hues each holding a distinct semantic job; or color as the ground itself, where the
+page has no neutral to retreat to. Any of the four survives a review. Sprinkling does not.
 
 ### The cream/beige "tasteful default"
 Warm cream or beige page background reached for by reflex — the current wave's replacement for the
@@ -91,10 +98,12 @@ The default UI font at a single weight, hierarchy faked with size alone. Not wro
 it *without a reason* is the tell. **Instead:** choose type with intent; build hierarchy from
 weight+size+leading as a set (aim for ≥1.25× scale steps), and cap body line length at 65–75ch.
 
-### Gradient text as decoration
-Gradient fills on headings "to add interest." It adds AI signature and usually hurts contrast.
-**Instead:** reserve gradient text for a deliberate brand mark, if at all; earn emphasis with weight
-and size.
+### Gradient text across the whole headline
+A gradient fill carrying an entire heading, or every heading on the page. One gradient word used as
+an accent is a live and deliberate move (Apple, Dub, Vanta, 2026), so the single instance is not the
+tell. Across a full line it costs contrast at the light stop and reads as decoration. **Instead:**
+give a gradient one word or one mark, measure the contrast of its lightest stop, and earn the rest
+of the emphasis with weight and size.
 
 ### Proportional numerals on dynamic values
 Timers, counters, prices, and table columns set in default proportional figures jitter and reflow as
@@ -123,19 +132,23 @@ fine; the tell is length × size together. **Instead:** tighten the copy or shri
 
 ## Surface & depth
 
-### Glassmorphism by default
-Frosted translucent panels everywhere because they look "modern." Decorative blur with no functional
-layering is a strong tell. **Instead:** use translucency only where a real layer floats over scrolling
-content; otherwise a solid surface.
+### Glassmorphism where nothing is layered
+Frosted translucent panels on surfaces that float over nothing. This is the entry most likely to
+misfire now: since iOS 26 the system material *is* glass, SwiftUI hands it to you by name, and
+shipped iOS work is full of it by convention rather than by reflex (Revolut Business, Starling, HBO
+Max, 2026). On Apple platforms, translucency that follows the system material is the correct default
+and flagging it is a false positive. **Instead:** flag decorative blur on a static surface, or blur
+over a solid ground with nothing scrolling beneath it, and leave platform-native materials alone.
 
 ### The uniform soft drop-shadow
 The same `0 4px 12px rgba(0,0,0,.1)` on every element, so nothing has a real elevation story.
 **Instead:** one shadow/elevation scale mapped to actual z-order; most elements sit flat.
 
-### Side-stripe accent borders
-A 2–4px colored left border on cards/callouts to "add color." A recognizable reflex. **Instead:**
-signal category with a small icon, a label, or a tint — reserve the stripe for a genuine
-quote/citation semantic.
+### Side-stripe accent borders on plain cards
+A 2–4px colored left border added to a content card to "add color." Severity coding on alerts,
+callouts and docs admonitions is a semantic use and stays (Stripe's callouts, 2026). The tell is the
+stripe on a card that carries no status, where the color means nothing. **Instead:** signal category
+with a small icon, a label, or a tint, and keep the stripe for callout, alert and quote roles.
 
 ### Hairline border + wide soft shadow
 A 1px border paired with a wide diffuse shadow on the same card — a generated-UI signature.
@@ -148,12 +161,11 @@ outer radius = inner radius + padding between them. **Instead:** compute nested 
 parent, don't restate the same token at every level.
 
 ### The over-rounded blob
-24px+ radii on small cards, sections, and inputs rounds everything into the same soft blob.
-**Instead:** cards top out around 12–16px; reserve full-pill for tags and buttons.
-
-### Decorative grid-line backgrounds
-A grid texture covering a surface that isn't a canvas, map, or measurement task. **Instead:** product
-structure or a plain field.
+One large radius restated at every scale, so a 40px input, a card and a full-width section all wear
+the same corner and the composition softens into a single blob. The 12–16px ceiling this entry used
+to state was invented rather than sourced, and current work disproves it: consumer fintech routinely
+ships 16 to 24px cards and reads as crisp (Monzo, Cleo, Zing, N26, 2026). **Instead:** let radius
+scale with the element rather than repeating one token, and keep full-pill for tags and buttons.
 
 ## Motion
 
@@ -183,7 +195,10 @@ available, ship no illustration.
 ## UI copy (shared border with `deslop`)
 
 ### Generic control labels
-"Submit," "Learn more," "Get started," "Click here." **Instead:** name the specific action —
+"Submit," "Click here," "Continue" on a control whose destination the label could have named.
+"Get started" and "Learn more" are signup and detail conventions with a known destination, shipped
+by almost everyone (Figma, Coda, Vercel, 2026); flagging those alone is a false positive. The tell is
+a label that would sit unchanged on any button in any product. **Instead:** name the specific action,
 "Start a pod," "Hear their answers." (This is the design edge of the same anti-slop doctrine `deslop`
 applies to prose.)
 
@@ -195,9 +210,34 @@ non-happy states with the same care as the happy path; errors say what happened 
 Label, sublabel, helper text, and placeholder all saying the same thing in slightly different words.
 **Instead:** say it once, where it matters.
 
-### Theater framing
-"We killed the growth theater" — dismissing things as performative as a copy reflex. **Instead:**
-say plainly what the thing does or doesn't do. (Also in `deslop`'s catalog; flag on either surface.)
+---
+
+## Historical
+
+Retired tropes, kept so the record survives and the next sweep does not re-harvest them from an
+older catalog. Each carries the year it stopped earning a place and why. They stay useful when
+reviewing a surface built in the era named.
+
+### The purple→blue SaaS gradient *(active 2020–2024, retired 2026-08)*
+Was: the single most-generated gradient on earth, on a hero or a CTA. Retired on visual evidence:
+two Mobbin sweeps aimed straight at it turned up one instance across roughly sixty current sections,
+and that one was a brand CTA. Purple survives as a brand color in the AI category, which the
+category-reflex test already covers, but the purple-to-blue ramp as default decoration has gone.
+Keeping it flags any indigo brand ramp, which several careful products ship.
+**Note for maintainers:** `scripts/slop-scan.py` still has a `purple-blue-gradient` check, in its
+`PLANTED` set and its `--demo`. Retiring this entry means that check now fires on work the catalog
+no longer calls slop.
+
+### Decorative grid-line backgrounds *(active 2023–2025, retired 2026-08)*
+Was: a grid texture on a surface that isn't a canvas, map, or measurement task. The blueprint
+background was a developer-tool reflex. Current instances are deliberate brand moves on 404s and
+editorial pages (Mistral, Shopify Editions, Locomotive, Craft), which is exactly the well-executed
+choice this rule would have flagged.
+
+### Theater framing *(moved to `deslop` 2026-08)*
+Was: "We killed the growth theater," dismissing things as performative as a copy reflex. Not retired
+for going away, retired on the boundary rule in `maintenance.md`: the fix is entirely a change of
+words, so it belongs to `deslop` and duplicating it here buys nothing.
 
 ---
 
@@ -207,16 +247,17 @@ Run before calling a design done:
 
 - Could you guess the palette/theme from the product's category alone? (category reflex)
 - Every card the same size, padding, and shadow?
-- Pure `#000` or `#fff` anywhere as text/background?
-- A purple→blue gradient, or gradient text as decoration?
+- Pure `#000` text on pure `#fff` at body size, with no tuned neutral anywhere?
+- A gradient carrying a whole headline rather than one accent word?
 - The same soft drop-shadow on everything?
-- A colored left-stripe border used decoratively?
+- A colored left-stripe border on a card that carries no status?
 - Does *everything* fade-up on scroll?
 - One duration for all motion? Any layout-property animation?
 - Any generic control label ("Submit," "Learn more")?
 - An icon tile above every feature heading? An eyebrow chip or repeated section kickers?
 - Cream/beige background, italic-serif hero, or dark-mode glow reached for by reflex?
-- Hairline border + wide shadow on the same card? Anything over-rounded into a blob?
+- Numbers labeling a set that has no order?
+- Hairline border + wide shadow on the same card? One radius restated at every scale?
 - Any decorative liveliness (pulsing dot, fake cursor, marquee, hover-scale)?
 - Nested radii concentric (outer = inner + padding)? Dynamic numbers tabular? Asymmetric icons optically centered?
 - Would two different briefs, run through this system, produce visibly different designs — or just
@@ -239,3 +280,11 @@ structure of our own `deslop` skill. Same doctrine as `deslop`, applied to pixel
 2026-07 against Impeccable's 64-pattern slop catalog (impeccable.style/slop), adding the current-wave
 tells: cream/beige default, italic serif hero, eyebrow chips, kickers, icon tiles, hairline+shadow,
 over-rounding, decorative liveliness, imagery, redundant field writing, theater framing.*
+
+*Retirement pass 2026-08-22, the first run against shipped product rather than other catalogs. Nine
+Mobbin searches across marketing sites, consumer fintech, AI products and iOS apps, sampled across
+categories so a category convention could be told apart from a reflex. Three entries retired below,
+nine rewritten where the pattern held but the reasoning had rotted. Two classes of entry cannot be
+settled this way and rest on reasoning instead: the motion entries, since Mobbin is still frames
+rather than film, and the entries about what generators emit (shape-assembled illustration, empty
+states as afterthoughts), since a library of shipped work has no unshipped slop in it to measure.*

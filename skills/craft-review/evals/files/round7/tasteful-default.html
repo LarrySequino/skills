@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Cadence — meeting notes, handled</title>
+<style>
+:root {
+  color-scheme: light;
+  --paper:    #f7f3ea;
+  --surface:  #fdfbf6;
+  --ink:      #232019;
+  --muted:    #5b564b;
+  --line:     #e2dbcb;
+  --accent:   #8a4b32;
+  --accent-fg:#fdfbf6;
+  --tile:     #efe7d7;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font: 17px/1.6 ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.wrap {
+  margin: 0 auto;
+  max-width: 1088px;
+  padding: 0 24px;
+}
+
+.kicker {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  margin: 0 0 16px;
+  text-transform: uppercase;
+}
+
+/* ------------------------------------------------------------------- nav */
+
+.nav {
+  align-items: center;
+  display: flex;
+  gap: 32px;
+  justify-content: space-between;
+  padding: 24px 0;
+}
+
+.nav .mark {
+  font-family: "Instrument Serif", Georgia, "Times New Roman", serif;
+  font-size: 24px;
+  margin: 0;
+}
+
+.nav ul {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav a {
+  color: var(--muted);
+  font-size: 15px;
+  text-decoration: none;
+}
+
+/* ----------------------------------------------------------------- hero */
+
+.hero {
+  padding: 64px 0 48px;
+  text-align: center;
+}
+
+.eyebrow {
+  background: var(--tile);
+  border-radius: 16px;
+  color: var(--muted);
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  margin: 0 0 24px;
+  padding: 8px 16px;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  font-family: "Instrument Serif", Georgia, "Times New Roman", serif;
+  font-size: 64px;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  margin: 0 0 24px;
+}
+
+.hero p {
+  color: var(--muted);
+  margin: 0 auto 32px;
+  max-width: 56ch;
+}
+
+.buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin: 0 auto;
+  width: fit-content;
+}
+
+.btn {
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-block;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 16px 32px;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  color: var(--accent-fg);
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--muted);
+  color: var(--ink);
+}
+
+/* ---------------------------------------------------------------- metrics */
+
+.metrics {
+  box-shadow: inset 0 1px 0 var(--line);
+  display: flex;
+  gap: 32px;
+  justify-content: center;
+  list-style: none;
+  margin: 48px auto 0;
+  padding: 32px 0 0;
+  width: fit-content;
+}
+
+.metrics li {
+  color: var(--muted);
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.metrics b {
+  color: var(--ink);
+  display: block;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------- sections */
+
+section {
+  padding: 64px 0;
+}
+
+section h2 {
+  font-family: "Instrument Serif", Georgia, "Times New Roman", serif;
+  font-size: 40px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.2;
+  margin: 0 0 16px;
+}
+
+section .lede {
+  color: var(--muted);
+  margin: 0 0 40px;
+  max-width: 56ch;
+}
+
+/* ------------------------------------------------------------------ cards */
+
+.cards {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(3, 1fr);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.card {
+  background: var(--surface);
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(35, 32, 25, 0.06);
+  padding: 32px;
+}
+
+.card .tile {
+  align-items: center;
+  background: var(--tile);
+  border-radius: 12px;
+  display: flex;
+  height: 56px;
+  justify-content: center;
+  margin: 0 0 24px;
+  width: 56px;
+}
+
+.card .tile svg {
+  height: 24px;
+  width: 24px;
+}
+
+.card h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.card p {
+  color: var(--muted);
+  font-size: 15px;
+  margin: 0;
+}
+
+/* -------------------------------------------------------------- numbered */
+
+.numbered {
+  display: grid;
+  gap: 32px;
+  grid-template-columns: repeat(3, 1fr);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.numbered .n {
+  color: var(--accent);
+  font-family: "Instrument Serif", Georgia, "Times New Roman", serif;
+  font-size: 32px;
+  font-variant-numeric: tabular-nums;
+  margin: 0 0 8px;
+}
+
+.numbered h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.numbered p {
+  color: var(--muted);
+  font-size: 15px;
+  margin: 0;
+}
+
+/* ------------------------------------------------------------------ foot */
+
+footer {
+  box-shadow: inset 0 1px 0 var(--line);
+  color: var(--muted);
+  font-size: 14px;
+  padding: 32px 0 64px;
+}
+
+footer p {
+  margin: 0;
+}
+
+footer a {
+  color: var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+@media (max-width: 720px) {
+  .cards, .numbered { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 40px; }
+  .metrics { flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+
+<header class="wrap nav">
+  <p class="mark">Cadence</p>
+  <nav aria-label="Main">
+    <ul>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+
+  <div class="wrap hero">
+    <p class="eyebrow">AI meeting notes</p>
+    <h1>Every meeting, written down before you leave the room</h1>
+    <p>Cadence joins the call, keeps the transcript, and hands back a summary with the
+      decisions and the owners already pulled out.</p>
+    <div class="buttons">
+      <a class="btn btn-primary" href="#">Get started</a>
+      <a class="btn btn-secondary" href="#">Learn more</a>
+    </div>
+    <ul class="metrics">
+      <li><b>10k+</b> teams</li>
+      <li><b>99.9%</b> uptime</li>
+      <li><b>4.9&#9733;</b> average rating</li>
+    </ul>
+  </div>
+
+  <section class="wrap" id="features">
+    <p class="kicker">Features</p>
+    <h2>Notes that know what happened</h2>
+    <p class="lede">Three things Cadence does in the ninety seconds after a call ends.</p>
+    <ul class="cards">
+      <li class="card">
+        <div class="tile" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#8a4b32" stroke-width="1.8">
+            <path d="M4 5h16M4 12h16M4 19h9"/>
+          </svg>
+        </div>
+        <h3>Summaries</h3>
+        <p>A paragraph a person would actually send, not a wall of bullets nobody reads.</p>
+      </li>
+      <li class="card">
+        <div class="tile" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#8a4b32" stroke-width="1.8">
+            <path d="M5 12l5 5L19 7"/>
+          </svg>
+        </div>
+        <h3>Action items</h3>
+        <p>Every commitment with the name attached, pushed to your tracker on the same day.</p>
+      </li>
+      <li class="card">
+        <div class="tile" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#8a4b32" stroke-width="1.8">
+            <circle cx="11" cy="11" r="7"/><path d="M16 16l4 4"/>
+          </svg>
+        </div>
+        <h3>Search</h3>
+        <p>Ask what the team decided about pricing in March and read the minute it happened.</p>
+      </li>
+    </ul>
+  </section>
+
+  <section class="wrap" id="how">
+    <p class="kicker">How it works</p>
+    <h2>Three things worth knowing</h2>
+    <p class="lede">The parts people ask about before they let a recorder into a meeting.</p>
+    <ul class="numbered">
+      <li>
+        <p class="n">01</p>
+        <h3>Security</h3>
+        <p>Recordings live in your own storage bucket. We keep the index, not the audio.</p>
+      </li>
+      <li>
+        <p class="n">02</p>
+        <h3>Integrations</h3>
+        <p>Zoom, Meet, Teams, and a webhook for whatever your team built in-house.</p>
+      </li>
+      <li>
+        <p class="n">03</p>
+        <h3>Support</h3>
+        <p>A human answers within a working day, and the same human follows it through.</p>
+      </li>
+    </ul>
+  </section>
+
+  <section class="wrap" id="pricing">
+    <p class="kicker">Pricing</p>
+    <h2>Simple, transparent pricing</h2>
+    <p class="lede">Per seat, per month, billed yearly. Cancel whenever you like.</p>
+    <div class="buttons">
+      <a class="btn btn-primary" href="#">Get started</a>
+      <a class="btn btn-secondary" href="#">Learn more</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <p>Cadence Labs &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a> &middot;
+    <a href="#">Status</a></p>
+</footer>
+
+</body>
+</html>

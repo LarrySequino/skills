@@ -230,6 +230,8 @@ body {
 .detail dt { color: var(--text-muted); }
 .detail dd { margin: 0; color: var(--text-secondary); }
 
+/* Bubbles sit on the sunken surface so the thread reads as a distinct
+   layer inside the panel. */
 .thread { margin: 0 0 16px; padding: 0; list-style: none; }
 .thread li {
   padding: 12px;
@@ -241,8 +243,6 @@ body {
 }
 .thread li b { display: block; margin: 0 0 4px; color: var(--text-primary); font-weight: 600; }
 
-/* The composer was nudged off the scale to line its first text row up with
-   the thread bubble above it. It never got put back. */
 .composer {
   padding: 13px 17px;
   margin: 0 0 12px;

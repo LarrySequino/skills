@@ -6,7 +6,7 @@ one for UI review, one for keeping a skill library honest.
 
 ## Why these exist
 
-Most skills are a checklist the model reads and then grades itself against. These
+A skill is usually a checklist the model reads and then grades itself against. These
 three put the arithmetic in scripts and leave the model only the judgment. A dash
 count, a contrast ratio, a pairwise description comparison across a library: a script
 does those exactly in a second, and a model does them approximately and differently
@@ -24,13 +24,13 @@ text came from as a measurement rather than a recollection.
 
 ## What you get
 
-**natural-writing** runs its scanner before it reads. Counts, never a verdict:
+**natural-writing** runs its scanner before it reads:
 
 ```
 $ python3 skills/natural-writing/scripts/prose-scan.py draft.md
 
 === draft.md (80 words) ===
-  vocabulary: references/vocabulary.md (58/41/37 terms)
+  vocabulary: references/vocabulary.md (62/42/17 terms)
   [DASH] 1 in 80 words = 12.5 per 1,000 (cap is 1). A voice sample overrides this.
   [INVISIBLE] 1x zero-width space (U+200B)
   [ARTIFACT] sycophantic opener: "Great question"
@@ -116,7 +116,7 @@ Every skill carries an `ATTRIBUTION.md` naming what it descends from, what was
 harvested as ideas and written fresh, and what expression carried over. Those files
 record measurements: each skill is scanned against every source in runs of eight
 words, short enough to catch a lifted sentence and long enough to skip most coincidence.
-A single hit is a lead to read, not proof: generic prose can collide. Volume and run
+Generic prose can collide, so a single hit is a lead to read rather than proof; volume and run
 length are what settle it.
 
 That method found a gap in this repo's own work. **natural-writing began as a fork of
@@ -128,129 +128,80 @@ fork. All three are now in `ATTRIBUTION.md`, and the scanner is at
 
 ## Evals
 
-Each skill ships `evals/evals.json` in the format Anthropic's `skill-creator` uses:
-prompts with checkable expectations, run with the skill and without, three runs each.
-Scripts decide every expectation a script can decide; a reader decides the rest, with a
-quoted line of evidence per verdict. The full per-run record is in each skill's
-`evals/results/`. First run, 2026-08-21, Opus 5, 96 executor runs:
+Each skill ships `evals/evals.json` in Anthropic's `skill-creator` format: prompts with
+checkable expectations, run with the skill and without. Scripts decide every expectation a
+script can decide; a reader decides the rest, with a quoted line of evidence per verdict.
+Opus 5 throughout.
 
-| Skill | With | Without | Delta | Behavior-only delta* |
+| Skill | With | Without | Delta | Basis |
 |---|---|---|---|---|
-| natural-writing | 0.905 | 0.790 | **+0.11** | +0.11 |
-| skill-curator | 0.979 | 0.804 | **+0.17** | +0.12 |
-| craft-review | 0.750 | 0.833 | **−0.08** | −0.13 |
+| natural-writing 3.0 | 0.95 | 0.83 | **+0.12** | 233 clean runs, pre-registered, 2026-08-23 |
+| craft-review | 1.000 | 0.867 | +0.13 | 2026-08-22, still under review |
+| skill-curator | 1.000 | 0.906 | +0.09 | 2026-08-22, still under review |
 
-*Excluding expectations of the form "the transcript shows the skill's script was run,"
-which can only pass with the skill present and so measure availability, not behavior.
+**Only the first row is safe to quote.** natural-writing was re-run from scratch on
+2026-08-23 under rules written down before the first run: 28 evals (27 ship here; one runs
+on another lab's model output, which this repo evaluates rather than redistributes), both
+arms, a floor of three runs per arm with escalation to five or eight where the difference
+warranted it, exact permutation tests, and a reader batch graded blind to which arm produced
+each answer. Four evals separate at the pre-registered alpha:
+voice-survives-a-house-style-pass +0.38 (p=0.0025, n=8), trust-the-reader +0.23, wh-opener
++0.20, voice-sample-at-length +0.20 (each p=0.0079, n=5). Eight more sit at 1.00 in both
+arms; each carries a wrong-answer control proving it can fail, so a tie there is a floor the
+unaided model already clears, not a blind spot. One eval scores 0.08 lower with the skill,
+on report fidelity, and is filed rather than hidden.
 
-**craft-review lost to its own baseline in round 1**, and the per-eval record says why. It wins
-where its scripts catch what a reader misses (a color defined only inside a dark-mode block:
-+0.33), ties where the model already does the arithmetic unaided (contrast ratios, a 6px
-inset), and loses on the two evals that test restraint. Handed a one-line verbal description
-with nothing to measure, all three with-skill runs scored the page anyway ("Distinctiveness
-3/10, in the rework band") and issued severity-tagged findings about a screen they had never
-seen. On a well-built page, it tagged taste remarks `[judged]` and still chipped them Major.
-One defect: the severity and scoring machinery fired on things it had not measured.
+That +0.12 is not comparable to the +0.06 this table published before it. Three things
+changed at once: the skill went from 2.x to 3.0, the runs stopped being contaminated, and
+fifteen grader defects were fixed, eleven of which had been penalizing the with-skill arm
+because the skill's richer report format gave the checks more places to misread. Which of the
+three moved the number, and by how much, is not recoverable from the data, so no causal claim
+is made here.
 
-**Round 2** re-ran the three affected evals against the fixed skills, same day, same model,
-3+3 runs each, round 1 left intact at `76d11d7` for comparison:
+**The other two rows are the old, contaminated numbers**, kept visible rather than deleted so
+the record stays honest. Every run behind them inherited a persona hook, a `CLAUDE.md`, and
+the full skill roster from the session that launched them, and the contamination is not
+symmetric between arms. They also predate the grader fixes. Both skills need the same clean
+re-run natural-writing has now had. [EVALS.md](EVALS.md) carries the detail.
 
-| Eval | Skill | Round 1 | Round 2 |
-|---|---|---|---|
-| unmeasurable-is-said-so | craft-review | 0.50 vs 1.00 | **1.00 vs 0.92** |
-| clean-page-is-called-clean | craft-review | 0.25 vs 0.50 | **1.00 vs 0.58** |
-| voice-sample-precedence | natural-writing | 0.92 vs 1.00 | **1.00 vs 1.00** |
+Availability expectations, of the form "the transcript shows the skill's script was run,"
+can only pass with the skill present, so they measure availability rather than behavior.
+`aggregate.py` prints a behavior-only delta on every per-eval line and says so in words when
+a whole delta is availability. The 2026-08-23 natural-writing figures above are unaffected:
+that suite's separating evals turn on judgment, not on script availability.
 
-All three with-skill runs on the description-only prompt now refuse to score and quarantine
-advice under a heading that says it is not a review of the screen. On the well-built page,
-every severity chip traces to `[computed]` or `[observed]` evidence and taste sits unchipped
-under a Judgment calls section; the baseline put taste among its fixes in 2 of 3 runs. The
-voice sample's dash rate now wins 3 of 3.
+Four things these numbers have taught us, all of them uncomfortable:
 
-Two things the second round exposed about the evals themselves, recorded in each
-`evals.json`. The "clean" page was not clean under a review deeper than `preflight.py`: a
-`64ch` measure runs about 87 characters, and the page had no `lang`, no `color-scheme`, and a
-48/64px frame. The skill was right to find those, and the round-1 expectations that rewarded
-not looking were rewritten to test reporting discipline instead; round 1 was re-graded on the
-same yardstick, which is why its craft-review number above is lower than first published. And
-four of the sixteen evals are floors both arms clear, because inline CSS hands the baseline
-every value. The skills' edge is on inputs a reader cannot hold in their head, and the next
-set of fixtures has to be built that way.
+- **A skill can lose.** craft-review scored below its own baseline in round 1, on the two evals
+  that test restraint, and the fix came from that. The number that made the case for this repo
+  is the negative one.
+- **More evals are floors than we thought.** An audit on 2026-08-22 counted every expectation
+  verdict across every round and arm: **14 of 34 evals had never recorded a single behavior
+  failure**, and **nine published a delta that was entirely availability**, flat at 0.00 on
+  behavior. A tie is worth keeping only when a wrong-answer control proves the eval can fail;
+  the 2026-08-23 suite ships one for every eval that ties.
+- **The instrument is wrong more often than the skills are.** Twenty-three grader defects
+  found to date across two audits, and every single one failed a correct answer rather than
+  passing a wrong one. Fifteen came in one night, eleven of those against the with-skill arm,
+  because a richer report format gives a pattern more places to misread. A grader audited only
+  when the headline looks wrong will systematically under-measure the treated arm.
+- **Contaminated runs cannot be un-contaminated by grading them again.** Every eval run before
+  2026-08-23 inherited a persona hook, a `CLAUDE.md`, and the full skill roster from its
+  launching session, asymmetrically between arms. Re-grading fixes the checks; it does not fix
+  the answers. Two of the three skills above are still waiting on a clean re-run.
 
-**natural-writing** is ahead on five of seven evals, even on one, and behind on none after
-round 2.
+Each skill ships its eval definitions in `evals/`: the prompts, the checkable expectations,
+and a wrong-answer control per differentiating eval so you can see what each one is able to
+catch. The per-run records stay in the private repo. The round-by-round history, including
+every correction and what it moved, is in **[EVALS.md](EVALS.md)**.
 
-The grader was wrong before any skill was, each time against the skill: a regex that read
-"named `landscape` and cleared it" as flagging it, a synonym check that failed "watch the
-results" for not saying "monitor," "AA needs 4.5:1" cited as a standard read as a reported
-finding, and a chip counter that took "a minor point" for a severity label. Each was caught
-by reading the answers, and each would have published a wrong number. The method held; the
-first draft of the grader did not, which is the argument for the method.
+## Across model families
 
-### Round 3: fixtures a reader cannot hold in their head
-
-Round 1 left four evals as floors both arms cleared, because inline CSS and three-file
-libraries hand the baseline every value. Round 3 built inputs where the answer is not visible at a
-glance. A 1,537-word document with seven scattered tells, a 442-line stylesheet
-whose only contrast failure sits inside a dark-mode block behind three `var()` hops, one
-off-scale padding among 62 declarations, an asymmetry no source value states, and a
-twelve-skill library with one real collision and one red herring that scores higher on raw
-term overlap. 48 runs, same day, same model:
-
-| Skill | With | Without | Delta | Behavior-only |
-|---|---|---|---|---|
-| natural-writing | 0.907 | 0.811 | **+0.10** | +0.06 |
-| skill-curator | 1.000 | 0.833 | **+0.17** | +0.07 |
-| craft-review | 0.967 | 0.775 | **+0.19** | −0.04 |
-
-The per-eval deltas are where the design shows: the 62-value spacing page **+0.25**, the
-layout-only asymmetry **+0.25**, the long audit **+0.29**.
-
-craft-review's behavior-only number is negative for a reason worth publishing. In 2 of 3
-runs its own contrast machinery generated Critical findings that outranked the defect
-`preflight.py` had explicitly blocked on, and one run demoted that blocked defect to Major
-and put two of its own findings above it. The skill found more and buried what it was
-pointed at. `SKILL.md` §6 now says a `[BLOCK]` is Critical and sorts first; three re-runs
-against the fixed skill put it at row 1 every time.
-
-Three round-3 expectations turned out to encode false premises, all in craft-review, all
-from verifying a fixture only with the tool under test. The control borders really are
-1.43:1, the layout really has no breakpoint, and runs were being marked wrong for finding
-them. All three are rewritten to test reporting discipline, both rounds re-graded on one
-yardstick, and each correction is recorded in `evals.json` with what changed and why.
-
-### Round 5: what happens when the checks get their own evals
-
-Every check added while fixing round 3 shipped without eval coverage. Round 5 built six
-fixtures for them and ran 36 more runs. The result is mostly negative, and that is the
-useful part:
-
-| Eval | With | Without | What it measures |
-|---|---|---|---|
-| no-invented-names-when-made-concrete | 0.94 | 0.50 | **+0.44, the one real discriminator** |
-| light-edit-keeps-facts-and-voice | 0.78 | 0.67 | mostly a floor |
-| dark-only-token-is-not-a-defect | 1.00 | 0.73 | regression guard; behavior identical |
-| copied-code-under-original-prose | 1.00 | 0.80 | availability, not behavior |
-| disowned-script-is-not-a-missing-script | 1.00 | 0.80 | availability, not behavior |
-| alpha-only-contrast-failure | 1.00 | 1.00 | floor |
-
-Behavior-only: natural-writing **+0.28**, craft-review **+0.04**, skill-curator **+0.00**.
-
-One of six evals separates the arms on behavior. On the fabrication test all three baselines
-invented figures, invented product names, and flagged **zero** gaps: asked to make vague copy
-concrete, they filled the vagueness in rather than asking what belonged there. The with-skill
-runs flagged the gaps and left the names alone. The other five evals are floors or regression
-guards, and are labeled as such in each `evals.json` so a headline delta is not mistaken for a
-behavioral win. Their value is that they fail loudly if a future change re-breaks a check, which two
-changes did during this round.
-
-### Across model families
-
-The same two prompts went to eight model and harness combinations with no skill attached:
+The same two prompts went to seven model and harness combinations with no skill attached:
 "rewrite this and make it specific" over a vague paragraph, and "deslop this" over prose that
-was already human. Every one invented specifics the source never contained (`$4,200/month`,
-`Redis`, `March 4`, `420ms`) and every one rewrote the already-good prose, keeping between 29
-and 59 percent of it.
+was already human. Six of the seven invented specifics the source never contained
+(`$4,200/month`, `Redis`, `March 4`, `420ms`), the seventh used bracketed placeholders instead,
+and every one rewrote the already-good prose, keeping between 29 and 59 percent of it.
 
 | Model | Invented specifics | Source surviving the rewrite |
 |---|---|---|
@@ -263,16 +214,16 @@ and 59 percent of it.
 | Grok via its CLI | 7 numbers, 3 names | 40% |
 
 These are the two failures `natural-writing` exists to prevent, and no family is exempt.
-`prose-scan.py --compare` now catches 7 of the 8 fabrications and all 8 over-rewrites; the
-one it passes used bracketed placeholders instead of inventing values, which is the correct
-answer.
+`prose-scan.py --compare` catches all six fabrications and all seven over-rewrites. It passes
+the run that used placeholders, which is the correct answer.
 
 Running the skills themselves on another family is a smaller claim. GPT with `skill-curator`
 scored 1.00 on the twelve-skill audit against 0.90 unaided, and with `craft-review` 1.00
 against 0.80, but behavior-only both deltas are **+0.00**: GPT found the buried 3.74:1 chip by
 writing its own luminance function in a heredoc, and read the twelve-skill library closely
 enough to catch every planted defect. The skills are usable by a non-Anthropic agent, which
-was worth establishing. On these fixtures they do not measurably change what it produces.
+usable by a non-Anthropic agent. On these fixtures they do not measurably change what it
+produces.
 
 ## This repo is generated
 

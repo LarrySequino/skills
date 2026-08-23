@@ -1,10 +1,11 @@
 {
   "skill_name": "craft-review",
-  "format": "Anthropic skill-creator evals.json. Each eval runs with the skill and without, three runs each, graded on the expectations below with evidence. Rounds 1-2 (ids 1-5) inline the HTML in the prompt; round 3 (ids 6-9) passes a file path instead, with the defect buried in a long stylesheet under evals/files/round3/.",
+  "format": "Anthropic skill-creator evals.json. Each eval runs with the skill and without, three runs each, graded on the expectations below with evidence. Rounds 1-2 (ids 1-5) inline the HTML in the prompt; round 3 (ids 6-9) passes a file path instead, with the defect buried in a long stylesheet under evals/files/round3/. Round 7 (ids 12-15) is aimed at over-reporting and mis-ranking rather than at finding: each differentiating fixture has a wrong answer a competent reviewer would plausibly give, kept under evals/wrong-answers/. Ids 16-19 add the four SKILL.md claims that had no eval: Group C usability and inclusion, Group D brand and emotional fit, the three-score model, and the unison test; 16 uses a Figma geometry dump rather than HTML, since keyboard operability and focus order are genuinely untestable from it. Every eval carries a \"class\": differentiating, regression, or mechanism.",
   "evals": [
     {
       "id": 1,
       "name": "contrast-failure-gets-a-ratio",
+      "class": "regression",
       "prompt": "Review this page for design quality. Here is the full source.\n\n<style>\n:root{--bg:#1a1a1a;--fg:#4a4a4a;--accent:#2b6cb0}\nbody{background:var(--bg);color:var(--fg);font:16px/1.5 system-ui;padding:40px}\nh1{font-size:28px;margin:0 0 12px}\np{max-width:60ch}\na{color:var(--accent)}\n</style>\n<h1>Release notes</h1>\n<p>Version 2.4 adds CSV export and fixes the timezone bug in scheduled reports. <a href=\"#\">Full changelog</a>.</p>",
       "expected_output": "Body text #4a4a4a on #1a1a1a is about 2.0:1, far below WCAG AA 4.5:1. The review must report the actual ratio computed by scripts/contrast.py, rank it as the top finding, and give a numeric fix (a foreground hex that reaches 4.5:1 or better on that background).",
       "expectations": [
@@ -12,46 +13,60 @@
         "The finding is ranked as the most severe on the page",
         "The fix names a specific replacement color and the ratio it achieves, not 'increase contrast'",
         "The transcript shows scripts/contrast.py or scripts/preflight.py was run before the judgment was written"
+      ],
+      "availability_expectations": [
+        3
       ]
     },
     {
       "id": 2,
       "name": "theme-only-color-is-caught",
+      "class": "regression",
       "prompt": "Does this artifact page look right? Check it before I publish.\n\n<style>\n:root{--paper:#fff;--ink:#111}\n@media (prefers-color-scheme:dark){:root{--paper:#111;--ink:#eee;--muted:#9aa}}\nbody{color:var(--ink);font:16px system-ui;padding:32px}\n.note{color:var(--muted);font-size:13px}\n</style>\n<h2>Deploy checklist</h2>\n<p>Run the migration, then flip the flag.</p>\n<p class=\"note\">Last verified by the platform team.</p>",
       "expected_output": "Two defects a reader would not see in one theme: --muted is defined only inside the dark media query, so .note has no color in light mode and inherits; and body sets no background, so the page borrows the host's. Both are exactly what scripts/preflight.py detects (theme-only-color, no-body-bg). The review must name both.",
       "expectations": [
         "The review reports that --muted is defined only inside a theme block",
         "The review reports that body has no background of its own",
-        "Both are framed as blocking, not as polish",
+        "Both are framed as must-fix-before-publish rather than as optional polish",
         "The transcript shows scripts/preflight.py was run"
+      ],
+      "availability_expectations": [
+        3
       ]
     },
     {
       "id": 3,
       "name": "clean-page-is-called-clean",
+      "class": "differentiating",
       "prompt": "Critique this.\n\n<style>\n:root{--bg:#f7f7f5;--fg:#1c1c1c;--muted:#5f5f5a;--rule:#dcdcd6}\n@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#141414;--fg:#ececea;--muted:#a3a39c;--rule:#2c2c2c}}\n:root[data-theme=dark]{--bg:#141414;--fg:#ececea;--muted:#a3a39c;--rule:#2c2c2c}\nbody{background:var(--bg);color:var(--fg);font:16px/1.55 system-ui;margin:0;padding:48px 24px}\n.wrap{max-width:64ch;margin:0 auto}\nh1{font-size:24px;margin:0 0 16px}\np{margin:0 0 16px}\n.meta{color:var(--muted);font-size:14px;border-top:1px solid var(--rule);padding-top:16px;margin-top:32px}\n</style>\n<div class=\"wrap\"><h1>On-call handoff</h1><p>Nothing open. Two alerts fired overnight and both self-resolved; the runbook entry for each is linked in the channel.</p><p class=\"meta\">Updated this morning.</p></div>",
       "expected_output": "The page is well-built but not flawless: a reviewer who looks will find a few real observed and computed issues (the 64ch measure runs ~87 characters; no lang, no color-scheme; a 48/64px frame). What is being tested is restraint in HOW findings are reported: severity chips and deductions attach only to computed or observed evidence, taste goes under an unranked Judgment calls section with no chip, and nothing is invented to fill the report.",
       "expectations": [
-        "Every severity-chipped finding carries [computed] or [observed] evidence; no chip sits on a [judged] item",
-        "Each chipped finding names its evidence class",
-        "Any subjective remark is labeled as a judgment call rather than a defect",
-        "Taste and preference remarks appear under a Judgment calls section with no severity chip"
+        "No finding the review itself marks as a judgment or a matter of taste carries a severity rank",
+        "Every severity-ranked finding header carries a bracketed evidence tag, [computed] or [observed]",
+        "Any subjective remark is presented as a matter of taste rather than as a defect on the page",
+        "Taste and preference remarks are grouped in a section of their own \u2014 headed judgment calls, taste, preferences, optional, nice-to-have, subjective or the like \u2014 and nothing inside it carries a severity rank"
+      ],
+      "availability_expectations": [
+        1
       ]
     },
     {
       "id": 4,
       "name": "asymmetry-gets-a-pixel-delta",
+      "class": "regression",
       "prompt": "Something about this card looks off. What is it?\n\n<style>\nbody{background:#fff;color:#222;font:15px system-ui;padding:40px}\n.card{width:320px;border:1px solid #ddd;border-radius:8px;padding:24px 24px 24px 18px;background:#fff}\n.card h3{margin:0 0 8px;font-size:17px}\n.card p{margin:0;color:#555}\n</style>\n<div class=\"card\"><h3>Weekly summary</h3><p>Twelve deploys, zero rollbacks, one incident under ten minutes.</p></div>",
       "expected_output": "The card's left padding is 18px against 24px on the other three sides. The review should measure it (scripts/symmetry.py on the rendered page, or read it from the CSS) and report the 6px delta with the fix, rather than describing it as 'feels unbalanced'.",
       "expectations": [
         "The review names the left padding as 18px against 24px, or reports a 6px inset delta",
         "The fix is numeric: set left padding to 24px, or equivalent",
         "The review does not describe the problem only in sensory terms without the measurement"
-      ]
+      ],
+      "availability_expectations": []
     },
     {
       "id": 5,
       "name": "unmeasurable-is-said-so",
+      "class": "differentiating",
       "prompt": "Review this for craft. I can't share the source, only this description: a dashboard with a left nav, six KPI tiles in a 3x2 grid, a line chart below, and a table. Colors are a navy sidebar, white content area, blue accent.",
       "expected_output": "There is nothing to measure. The skill's rule is to read exact values and compute before judging; with no values, it must say what it cannot assess and ask for the source, screenshot, or Figma link, rather than producing confident findings about spacing and contrast it has not seen.",
       "expectations": [
@@ -59,12 +74,14 @@
         "It asks for source, a screenshot, or a design file",
         "It does not report any numeric finding",
         "Any guidance offered is explicitly framed as general rather than as findings about this page"
-      ]
+      ],
+      "availability_expectations": []
     },
     {
       "id": 6,
       "round": 3,
       "name": "buried-contrast-in-a-long-stylesheet",
+      "class": "regression",
       "prompt": "Review this page for design quality. The full source is at evals/files/round3/buried-contrast.html.",
       "files": [
         "evals/files/round3/buried-contrast.html"
@@ -72,16 +89,20 @@
       "expected_output": "A 442-line settlements dashboard with a three-tier token system (primitive ramp, semantic role, component-scoped chip token). Exactly one text/background pair fails WCAG AA, and only in dark mode: the 'In review' status chip, `.ledger .pill--review`, resolves through --pill-warn-fg -> --amber-500 (#a8802f) on --pill-warn-bg -> --amber-950 (#3a2c10) = 3.74:1 against the 4.5:1 body minimum. It passes in light mode (#7a4a06 on #fbf1de = 6.67:1), so reading the base stylesheet alone will not find it, and the values are three var() hops from the hex. Every other pair on the page clears AA in both themes. scripts/preflight.py resolves tokens per theme and reports this one line.",
       "expectations": [
         "The review reports a contrast failure on the .ledger .pill--review status chip in the dark theme, with a ratio between 3.0:1 and 4.3:1",
-        "No other TEXT contrast failure is reported: the other two chips, the buttons, the table header and body text are not flagged for text-on-background contrast (a finding about a control BORDER under WCAG 1.4.11 is correct and does not count)",
+        "No other TEXT contrast failure is reported: the other two chips, the buttons, the table header and body text are not flagged for text-on-background contrast (a finding about a control BORDER under WCAG 1.4.11 is correct and does not count); naming any of those pairs to say it clears AA is fine, since what counts is what the response calls a failure, not what it looks at",
         "The failure is scoped to dark mode rather than stated as failing everywhere",
         "The transcript shows scripts/preflight.py or scripts/contrast.py was run against the file",
         "The fix names a specific replacement hex and the ratio it reaches on #3a2c10"
+      ],
+      "availability_expectations": [
+        3
       ]
     },
     {
       "id": 7,
       "round": 3,
       "name": "theme-only-token-buried-in-a-theme-layer",
+      "class": "regression",
       "prompt": "Review this page for design quality. The full source is at evals/files/round3/buried-theme-only.html.",
       "files": [
         "evals/files/round3/buried-theme-only.html"
@@ -90,15 +111,19 @@
       "expectations": [
         "The review reports that --accent-edge is defined only inside a dark theme block and never applies in the default light state",
         "It names the component that reads the token (the .notice retention callout's left border) and what happens there in light mode",
-        "It is ranked blocking or critical, not polish",
-        "The token defect is ranked first among all findings, and any other finding ranked blocking carries a computed value rather than an impression",
+        "It is ranked as a must-fix rather than as optional polish",
+        "The token defect is ranked first among all findings, and any other finding ranked as a must-fix carries a measured value rather than an impression",
         "The transcript shows scripts/preflight.py was run against the file"
+      ],
+      "availability_expectations": [
+        4
       ]
     },
     {
       "id": 8,
       "round": 3,
       "name": "one-off-scale-value-among-sixty",
+      "class": "regression",
       "prompt": "Review this page for design quality. The full source is at evals/files/round3/off-scale-once.html.",
       "files": [
         "evals/files/round3/off-scale-once.html"
@@ -106,15 +131,20 @@
       "expected_output": "A 467-line support triage screen with 62 spacing declarations. Sixty-one are on the 4/8px scale. One is not: `.composer` (the reply box in the detail panel, line 247) uses `padding: 13px 17px`. Nothing else is wrong \u2014 contrast clears AA in both themes, body paints its own ground, no theme-only token. Finding it by eye means checking every padding, margin and gap on the page against the scale, which is exactly what scripts/preflight.py's off-scale check does in one pass.",
       "expectations": [
         "The review reports 13px and 17px padding on .composer as off the 4/8px spacing scale",
-        "No other spacing value on the page is reported as off-scale",
+        "No other spacing value on the page is reported as off-scale; listing other values to say they sit on the scale is fine",
         "The fix is numeric: an on-scale replacement such as 12px 16px",
         "The transcript shows scripts/preflight.py was run against the file"
-      ]
+      ],
+      "availability_expectations": [
+        3
+      ],
+      "scored_from_iteration": 11
     },
     {
       "id": 9,
       "round": 3,
       "name": "asymmetry-only-visible-after-layout",
+      "class": "regression",
       "prompt": "Review this page for design quality. The full source is at evals/files/round3/rendered-asymmetry.html.",
       "files": [
         "evals/files/round3/rendered-asymmetry.html"
@@ -123,14 +153,18 @@
       "expectations": [
         "The review reports that the breached KPI card's content starts 32px from its left edge against 24px on the two sibling cards, or names the 8px delta",
         "It attributes the delta to the 8px border-left status stripe on the [data-state=\"breached\"] card interacting with border-box sizing",
-        "The transcript shows scripts/symmetry.py was run on the HTML file, and the measurement is presented as computed rather than as an impression",
+        "The transcript shows scripts/symmetry.py was run on the HTML file, and the measurement is presented as a measured value rather than as an impression",
         "The fix is numeric and preserves the stripe: reduce that card's left padding to 16px, or move the stripe to an inset box-shadow or pseudo-element so it costs no layout space"
+      ],
+      "availability_expectations": [
+        2
       ]
     },
     {
       "id": 10,
       "round": 4,
       "name": "alpha-only-contrast-failure",
+      "class": "mechanism",
       "prompt": "Review this page for design quality. The full source is at evals/files/round4/alpha-contrast.html.",
       "files": [
         "evals/files/round4/alpha-contrast.html"
@@ -139,15 +173,20 @@
       "expectations": [
         "The review reports a contrast failure on the .stamp timestamp, with a ratio between 3.4:1 and 3.9:1",
         "The finding attributes the failure to the 0.65 alpha being composited over #eef1f6, not to the declared color value on its own",
-        "No other text contrast pair on the page is reported as failing (the chips, buttons, table header, card notes and footer all clear AA)",
+        "No other text contrast pair on the page is reported as failing (the chips, buttons, table header, card notes and footer all clear AA); naming any of them to say it clears is fine, since what counts is what the response calls a failure, not what it mentions",
         "The transcript shows scripts/preflight.py or scripts/contrast.py was run against the file",
         "The fix is numeric: a specific replacement alpha or hex, with the ratio it reaches on #eef1f6 (for example rgba(52,64,84,0.8) = 5.33:1, or #525c70 = 5.94:1)"
-      ]
+      ],
+      "availability_expectations": [
+        3
+      ],
+      "scored_from_iteration": 11
     },
     {
       "id": 11,
       "round": 4,
       "name": "dark-only-token-is-not-a-defect",
+      "class": "regression",
       "prompt": "Review this page for design quality. The full source is at evals/files/round4/legit-theme-token.html.",
       "files": [
         "evals/files/round4/legit-theme-token.html"
@@ -158,7 +197,188 @@
         "No finding claims a custom property on this page fails to resolve in the default light state",
         "The transcript shows scripts/preflight.py was run against the file, and the review reflects that it returned no blocking findings",
         "If the dark-only tokens are discussed at all, they are described as correct because they are read only by rules inside the same dark block",
-        "Any finding that is reported carries a computed or observed value rather than an impression"
+        "Any finding that is reported carries a measured or directly observed value rather than an impression"
+      ],
+      "availability_expectations": [
+        2
+      ]
+    },
+    {
+      "id": 12,
+      "round": 7,
+      "name": "deliberate-choices-are-not-defects",
+      "class": "regression",
+      "prompt": "Review this page for design quality. The full source is at evals/files/round7/considered-choices.html.",
+      "files": [
+        "evals/files/round7/considered-choices.html"
+      ],
+      "expected_output": "A 389-line editorial page whose stylesheet opens with a house sheet recording four decisions: a 13/15/17/21/30 type scale whose steps measure 1.15, 1.13, 1.24 and 1.43, with 13px as the one small size; a decorative sand hairline (--sand) that draws the masthead underline and the section rule, carries no text and bounds no control, so WCAG 1.4.11 does not reach it; hanging punctuation on the pull quote, whose box is pulled 24px into the article's padding on both sides so its own 24px padding puts the quote's text edge back on the body column, leaving the opening mark hanging outside the text; and a 268px rail sized to its content, the one element width on the page that is not a multiple of 8. Each has the shape of a defect and none is one, and every claim the house sheet makes about the page is true of the page. One thing is wrong: .pullquote sets color var(--ink-faint), which resolves to #777d85 on #e2decd = 3.08:1 in light and #5a6068 on #0a0b0c = 3.10:1 in dark, against the 4.5:1 body bar its 21px size takes. preflight.py returns those two lines and nothing else, symmetry.py reports no paired-mismatch, grid or centering finding at 1440 or 390, and slop-scan.py finds no mechanical tell.",
+      "expectations": [
+        "The review reports the pull quote's text as failing WCAG AA, with a stated ratio between 2.9:1 and 3.3:1",
+        "No spacing, width or type size on the page is reported as off the spacing scale, off the type scale, or off the grid",
+        "The decorative sand hairline \u2014 the masthead underline and the section rule \u2014 is not reported as a contrast or accessibility failure; calling it decorative, or naming its ratio to say a divider does not owe 4.5:1, is fine",
+        "Every one of the stylesheet's four documented decisions that the review raises at all is described as a decision with the reason it is not a defect, rather than reported as a defect",
+        "The fix for the pull quote names a specific replacement color and the ratio it reaches, not 'increase contrast'",
+        "The transcript shows scripts/preflight.py or scripts/contrast.py was run against the file"
+      ],
+      "availability_expectations": [
+        5
+      ],
+      "note": "Relabeled from differentiating after iteration 9 tied 3+3 on every signal. The house sheet at the top of the stylesheet explains all four decisions, so the page hands the reviewer the restraint the skill was supposed to supply: all six answers organized their restraint section around 'note 1' through 'note 4' and quoted the sheet's own reasoning back. What this eval proves is that neither arm chips a choice the artifact documents. What it does not and cannot prove is any delta, because the discipline is in the fixture rather than in the reviewer. undocumented-choices-are-not-defects is the same four choices with the house sheet removed; that is where a delta can appear."
+    },
+    {
+      "id": 13,
+      "round": 7,
+      "name": "block-outranks-the-eye-catcher",
+      "class": "differentiating",
+      "prompt": "Review this page for design quality. The full source is at evals/files/round7/boring-blocker.html.",
+      "files": [
+        "evals/files/round7/boring-blocker.html"
+      ],
+      "expected_output": "A 316-line analytics overview. preflight.py returns one BLOCK and it is a dull one: body sets no background of its own, so the page borrows the host's ground while its own text color flips with the OS theme. The token for the page ground, --canvas, is declared in both themes and applied nowhere. Nothing else on the page fails a measurement: every text pair clears AA in both themes, every spacing value is on the 4/8 scale, and symmetry.py reports no finding. What the page does have is a loud cosmetic surface \u2014 a purple-to-blue gradient hero and two gradient-clipped section titles set in color: transparent, which slop-scan.py reports as two gradient-text instances, plus card and panel radii that disagree at 8px against 12px. SKILL.md section 6 says a preflight BLOCK is Critical and ranks first, above other Critical findings. The wrong answer leads with the gradient, which is the eye-catching, arguable, Group E finding, and files the missing background under it or reports it as polish. A round-3 run made exactly this mistake with a different BLOCK, which is how that rule got written.",
+      "expectations": [
+        "The review reports that body sets no background of its own, or that the page ground token is declared and never applied",
+        "That finding is ranked first, above the gradient and every other finding on the page",
+        "It is presented as a must-fix rather than as optional polish",
+        "No text contrast failure is reported on this page; naming pairs to say they clear is fine, since what counts is what the response calls a failure",
+        "The transcript shows scripts/preflight.py was run against the file"
+      ],
+      "availability_expectations": [
+        4
+      ]
+    },
+    {
+      "id": 14,
+      "round": 7,
+      "name": "judgment-call-stays-unranked",
+      "class": "regression",
+      "prompt": "Review this page for design quality. The full source is at evals/files/round7/two-readings.html.",
+      "files": [
+        "evals/files/round7/two-readings.html"
+      ],
+      "expected_output": "A 266-line workspace settings screen that is measurably clean: preflight.py returns 'clean: no showstoppers', symmetry.py reports no paired-mismatch, grid or centering finding, slop-scan.py finds no mechanical tell, and every text pair and control border clears its bar in both themes (the field border is 4.09:1 light and 3.78:1 dark against the 3:1 WCAG 1.4.11 asks of a control boundary). One thing on the page is genuinely arguable: the entry point to deleting a workspace is a quiet underlined text button in the danger color rather than a filled red button, and behind it sits a type-the-workspace-name confirm dialog. Both readings are defensible \u2014 a quiet control lowers the odds of an accidental click and the confirm step catches what is left, or a destructive action should look destructive \u2014 and nothing on the page decides between them. Under SKILL.md section 6 a judged item gets no chip and no deduction and goes under Judgment calls. The wrong answer chips it Critical or Major, or manufactures a measured finding to justify the chip.",
+      "expectations": [
+        "No finding the review itself marks as a judgment or a matter of taste carries a severity rank",
+        "The quiet styling of the Delete workspace control is not given a severity rank",
+        "The review takes account of the type-the-name confirm dialog and presents the styling as a call with two defensible readings rather than as a defect on the page",
+        "No contrast failure is reported on this page; naming pairs to say they clear is fine, since what counts is what the response calls a failure",
+        "Taste and preference remarks are grouped in a section of their own \u2014 headed judgment calls, taste, preferences, optional, nice-to-have, subjective or the like \u2014 and nothing inside it carries a severity rank",
+        "The transcript shows scripts/preflight.py was run against the file"
+      ],
+      "availability_expectations": [
+        5
+      ]
+    },
+    {
+      "id": 15,
+      "round": 7,
+      "name": "undocumented-choices-are-not-defects",
+      "class": "regression",
+      "prompt": "Review this page for design quality. The full source is at evals/files/round7/unstated-choices.html.",
+      "files": [
+        "evals/files/round7/unstated-choices.html"
+      ],
+      "expected_output": "A 359-line editorial page carrying the same four deliberate choices as deliberate-choices-are-not-defects, with the house sheet removed: the stylesheet has no comments at all, so nothing in the file says which oddities are considered. The four are a 13/15/17/21/30 type scale, closer-stepped at the bottom than a modular default and closed (every font-size on the page is one of the five); a decorative sand rule (--sand, #d8c3a5 at 1.27:1 on --paper) used on exactly two borders, the masthead underline and the section rule, carrying no text and bounding no control; hanging punctuation on the pull quote, whose box is pulled 24px into the article's padding on both sides so its own 24px padding puts the quote's text edge back exactly on the body column, leaving the opening mark hanging 24px outside the text; and a 268px rail, the one element width on the page that is not a multiple of 8. The evidence for each is in the artifact rather than in a note: every font-size on the page is one of the five steps, --sand appears on two border declarations and nowhere else, the quote's rendered text edge sits on the body column to the pixel at 1440, 901 and 390, and 268px is measure-driven at 236px of note text once the 16px padding comes off. One thing is wrong: .pullquote sets color var(--ink-faint), which resolves to #777d85 on #e2decd = 3.08:1 in light and #5a6068 on #0a0b0c = 3.10:1 in dark, against the 4.5:1 body bar its 21px size takes. preflight.py returns those two lines and nothing else, symmetry.py reports no paired-mismatch, grid or centering finding at 1440 or 390, and slop-scan.py finds no mechanical tell. The wrong answer this eval exists to catch is in evals/wrong-answers/undocumented-choices-are-not-defects.md: it ranks the sand rule's 1.27:1 above the one real failure, chips the hanging mark as a misalignment, and calls the rail width and the type scale off the grid and off the scale.",
+      "expectations": [
+        "The review reports the pull quote's text as failing WCAG AA, with a stated ratio between 2.9:1 and 3.3:1",
+        "That finding is ranked first, above every other finding on the page",
+        "The decorative sand rule \u2014 the masthead underline and the section rule \u2014 is not reported as a contrast or accessibility failure; calling it decorative, or naming its ratio to say a divider does not owe 4.5:1, is fine",
+        "No spacing, width or type size on the page is reported as off the spacing scale, off the type scale, or off the grid",
+        "No severity-chipped finding names the type scale, the sand rule, the hanging quote mark, or the 268px rail width",
+        "Any of those four choices the review does raise is argued from the artifact itself \u2014 the closed set of font sizes, where the sand is and is not used, the measured alignment of the quote's text edge \u2014 since the file carries no note that explains them",
+        "The fix for the pull quote names a specific replacement color and the ratio it reaches, not 'increase contrast'",
+        "The transcript shows scripts/preflight.py or scripts/contrast.py was run against the file"
+      ],
+      "availability_expectations": [
+        7
+      ]
+    },
+    {
+      "id": 16,
+      "name": "human-required-is-not-a-pass",
+      "class": "differentiating",
+      "prompt": "I need the accessibility score for this screen so I can drop it in the release checklist \u2014 just the number out of 100 is fine. It is the Active delivery screen of our Android courier app, the one a rider looks at one-handed while walking. The design handoff is at evals/files/round7/courier-handoff.geometry.json: get_metadata plus the variables the file defines. There is no build yet and no screenshot.",
+      "files": [
+        "evals/files/round7/courier-handoff.geometry.json"
+      ],
+      "expected_output": "Figma geometry and tokens: exact bounds for every frame, plus a spacing/type variable set. No colors, no semantics, no running app. Two things are measurable from it and several are not. Measurable: IconButton / Dismiss note is 32x32dp, below the 48dp minimum a touch surface takes (thresholds.md: touch is 48x48dp whatever the platform; resolving Android to 44 is the error the modality axis exists to stop), and it is the only control on the screen under 48dp \u2014 IconButton / Sort stops is 56x56dp and Button / Confirm pickup is 328x56dp. Also measurable: scripts/symmetry.py on the file returns exactly one finding, a MAJOR paired-component mismatch between Card / Pickup and Card / Dropoff, left inset 24px against 16px, and no grid or centering finding anywhere. Not measurable: keyboard operability, focus order and screen-reader output cannot be tested from geometry, because the file carries no semantics, no traversal order and no live control; the file declares no color at all, so contrast is untested too. The correct answer refuses the bare number the prompt asks for. It states the accessibility score with its coverage \u2014 how many criteria computed, how many judged, how many human-required \u2014 and lists the human-required ones; it ranks the 32dp target above the card mismatch, since one blocks a one-handed rider and the other is a visible 8px inconsistency; and it does not report the 24dp Icon / sort glyph as an undersized target, because the tappable frame around it is 56dp. The wrong answer is a confident number with keyboard, focus order and screen-reader support silently counted as passing, and the 24dp glyph reported as a second target failure.",
+      "expectations": [
+        "The review reports the Dismiss note icon button as 32x32dp and below the touch target minimum, and states 48dp as the size it has to reach",
+        "That target finding is ranked above the paired-card padding mismatch",
+        "The accessibility score is reported with its coverage \u2014 how many criteria were computed, how many judged, and how many are human-required \u2014 rather than as a bare number out of 100",
+        "Keyboard operability, focus order and screen-reader output are each named as untestable from this input, and none of them is counted as a pass",
+        "The 24dp sort glyph is not reported as an undersized target; naming it to say its tappable frame is 56dp is fine",
+        "The paired-card mismatch is reported as a measured left inset of 24px against 16px rather than as an impression",
+        "The transcript shows scripts/symmetry.py was run against the geometry file"
+      ],
+      "availability_expectations": [
+        6
+      ]
+    },
+    {
+      "id": 17,
+      "name": "wrong-feeling-for-the-brief",
+      "class": "differentiating",
+      "prompt": "Last look before this ships. It is step 3 of our rent relief application. The people filling it in are usually a fortnight from an eviction filing, often on an old phone, often standing in a hallway outside the housing office, and what we need them to feel is that this is plain, calm and safe to finish. We ran contrast over it and it came back clean. Anything wrong here? Source is at evals/files/round7/relief-application.html.",
+      "files": [
+        "evals/files/round7/relief-application.html"
+      ],
+      "expected_output": "A 282-line application step on a dark ground with a lime accent, built as a gamified consumer product. The measurable layer is nearly clean: scripts/preflight.py returns no blocking finding and one warning, the progress panel's padding of 10px 14px off the 4/8 scale, which is also the only thing scripts/symmetry.py reports (the same two insets, at 1440 and at 390); scripts/slop-scan.py finds no mechanical tell; and every text pair clears WCAG AA with room, the lime #ccf24a on #14140f at 14.4:1 and the quiet text #b6b3a4 on #1e1e16 at 7.96:1. What is wrong is the register, and it is carried by specific readable elements rather than by a mood: a countdown reading Offer window closes in 03:47:12, which puts a shot clock on a hardship application; a progress panel that shouts You're 60% there! and Keep your streak going; a form step titled Level 3: Proof of income; a submit button labeled Unlock your funds for uploading pay stubs; and Nice work. You're crushing it. under it. Measured against the brief the prompt states \u2014 plain, calm, safe, someone a fortnight from eviction \u2014 those are the finding, and together they outrank everything else on the screen. The two craft notes are real and small: the off-scale progress padding, and radii that run 8px on the card, progress panel and button against 12px on the timer, chips and drop zones. The wrong answer leads with the off-scale padding, because it is the only thing a script printed, and treats the copy as a nice-to-have.",
+      "expectations": [
+        "The review reports that the screen's emotional register contradicts the brief stated in the prompt, and names the countdown and the streak or progress framing as what carries it",
+        "That finding is ranked first, above the off-scale padding and the radius inconsistency",
+        "At least two of the gamified strings are named exactly \u2014 the countdown, \"Unlock your funds\", \"Level 3: Proof of income\", \"Keep your streak going\", the 60% shout, or \"You're crushing it\" \u2014 and each one named is given a plainer replacement",
+        "The lime accent on the near-black ground is not reported as a severity-ranked contrast, glare or legibility defect; naming it to say it clears AA, or raising it as an unranked judgment call, is fine",
+        "The direction offered is grounded in who is using the screen and when \u2014 the person a fortnight from eviction, on a phone, part-way through an application \u2014 rather than a generic instruction to look more professional or more trustworthy",
+        "The transcript shows scripts/preflight.py was run against the file"
+      ],
+      "availability_expectations": [
+        5
+      ]
+    },
+    {
+      "id": 18,
+      "name": "three-scores-must-disagree",
+      "class": "differentiating",
+      "prompt": "Score this before it goes live \u2014 source at evals/files/round7/tasteful-default.html. It is the marketing site for Cadence, an AI meeting-notes tool. We have been over it twice for craft, so I am expecting a strong number.",
+      "files": [
+        "evals/files/round7/tasteful-default.html"
+      ],
+      "expected_output": "A 408-line marketing page. The measurable layer is genuinely clean, and that is the point: scripts/preflight.py returns clean with no showstoppers, scripts/symmetry.py reports no paired-mismatch, grid or centering finding at 1440, 1280 or 390, scripts/slop-scan.py finds no mechanical tell, every spacing value is on the 4/8 scale, every text pair clears WCAG AA (quiet text #5b564b on the cream #f7f3ea at 6.59:1, the accent #8a4b32 on the same ground at 6.05:1), focus-visible is styled, prefers-reduced-motion is honored, the metric figures are tabular, and the page declares its color-scheme. What the page is, top to bottom, is the current tasteful default catalogued in references/design-tropes.md, and not one instance of it is mechanically detectable: a cream ground, an italic serif display hero, an uppercase eyebrow chip over the hero and a tracked kicker over every section, an icon tile above every feature heading, three identical cards in a 3-up grid, digits numbering an unordered set (Security, Integrations, Support), a vanity metric strip of round figures, and a Get started / Learn more pair repeated twice. So the three scores of SKILL.md section 6 have to disagree with each other: Overall stays high because there are no computed or observed findings to deduct for, Accessibility stays high for the same reason, and Distinctiveness lands below the 70 that section calls reads as generated. The distinctiveness verdict is judged, so it carries no severity chip and takes no points off Overall. The wrong answer makes the numbers agree \u2014 one score, or three scores in the same band, or craft points deducted for genericness \u2014 or manufactures a measured defect so the low number has something to rest on.",
+      "expectations": [
+        "Three scores are reported separately: Overall out of 100, Accessibility out of 100, and Distinctiveness out of 100",
+        "The Distinctiveness score is below 70, and the review says the page reads as generated rather than designed",
+        "The Overall score is at least 80, and at least 15 points above the Distinctiveness score",
+        "At least three of the page's tells are named specifically, from: the cream ground, the italic serif hero, the eyebrow chip or the section kickers, the icon tiles above the feature headings, the three identical cards, the digits on an unordered set, the vanity metric strip, or the Get started / Learn more pair",
+        "The distinctiveness verdict is presented as a judgment, and no severity chip or point deduction is attached to the tropes it rests on",
+        "No contrast failure and no off-scale spacing value is reported on this page; naming values to say they clear or sit on the scale is fine",
+        "The transcript shows scripts/preflight.py and scripts/slop-scan.py were run against the file"
+      ],
+      "availability_expectations": [
+        6
+      ]
+    },
+    {
+      "id": 19,
+      "name": "systems-disagree-on-the-primary",
+      "class": "differentiating",
+      "prompt": "Checkout review screen, source at evals/files/round7/confirm-order.html. We ran contrast, the spacing scale and a token audit over it and all three came back clean \u2014 I checked them myself, they really are clean. Is there anything left worth fixing before we ship this?",
+      "files": [
+        "evals/files/round7/confirm-order.html"
+      ],
+      "expected_output": "A 257-line order review screen, the last step before payment. Every measurable check passes: scripts/preflight.py returns clean with no showstoppers, scripts/symmetry.py reports no paired-mismatch, grid or centering finding at 1440 or 390, scripts/slop-scan.py finds no mechanical tell, every spacing value is on the 4/8 scale, and every pair clears its bar \u2014 the muted text #5c635e on the panel #fdfdfb at 6.06:1, and the outline button's border #767c78 on the page ground #fbfaf7 at 4.09:1 against the 3:1 WCAG 1.4.11 asks of a control boundary. What is wrong is that the systems disagree with one another, which is the unison test in SKILL.md section 7 and the only pass that reaches it. Color, size and weight all mark Save this cart as the primary action: filled in the brand green, 17px at 600, 16px of vertical padding. Place order, the one action the screen exists to take and the only control carrying the total, is an outline button at 15px and 500 with 12px of padding, sitting underneath it. Spacing groups against the content the same way: the delivery estimate sits 8px under the totals block and 24px above the Delivery heading it belongs to, so proximity files the arrival date with the money. And color's semantic role is inverted: the only saturated color in the summary marks the promo saving, a good-news line, while the one line that needs attention before payment \u2014 the Visa ending 4417 that expires this month \u2014 is set in the same muted gray as the street address. Every value involved is on the scale and every pair clears AA, so none of the three is an off-scale or a contrast finding, and the fix for the first is to swap which button is filled rather than to darken the outline.",
+      "expectations": [
+        "The review reports that the filled brand-colored button is \"Save this cart\" while the screen's primary action, \"Place order\", is the outline button under it, so the visual hierarchy contradicts the task hierarchy",
+        "That finding is ranked first",
+        "The fix moves the emphasis onto Place order and demotes Save this cart, rather than only adjusting the outline button's border, contrast or size",
+        "The review reports that the delivery estimate sits 8px from the totals block and 24px from the Delivery section it belongs to, so proximity groups it with the totals rather than with delivery",
+        "The review reports that the only saturated color in the summary marks the promo saving while the card-expiry line is set in muted text",
+        "No spacing value on the page is reported as off the 4/8 spacing scale or off the grid",
+        "No text contrast failure is reported on this page; naming pairs to say they clear is fine",
+        "The transcript shows scripts/preflight.py or scripts/symmetry.py was run against the file"
+      ],
+      "availability_expectations": [
+        7
       ]
     }
   ],
@@ -202,6 +422,13 @@
       },
       "guard": "Eval 11 fails if the theme-only-color check is ever widened back to 'defined in a theme block and not in base'. Verified by re-running that earlier predicate against the fixture: it reports both tokens as BLOCK."
     },
-    "round-4 note on eval 11 (2026-08-21)": "dark-only-token-is-not-a-defect is a REGRESSION GUARD, not a discriminator, and its headline delta should not be read as a behavioral win. Neither arm reports the dark-only tokens as defects; the baseline's only failure is the check that preflight.py was run, which no arm without the skill can pass. Its job is to fail loudly if a future change re-breaks the theme check, which today's narrowing did in one form and this morning's did in another."
+    "round-4 note on eval 11 (2026-08-21)": "dark-only-token-is-not-a-defect is a REGRESSION GUARD, not a discriminator, and its headline delta should not be read as a behavioral win. Neither arm reports the dark-only tokens as defects; the baseline's only failure is the check that preflight.py was run, which no arm without the skill can pass. Its job is to fail loudly if a future change re-breaks the theme check, which today's narrowing did in one form and this morning's did in another.",
+    "contrast bar change (2026-08-22)": "preflight.py escalated a contrast finding to BLOCK only below 3.0:1, the WCAG floor for large text and UI, so a body-text pair anywhere in the 3.0-to-4.5 band failed AA and was still reported as a warning. The floor is now 4.5 unless the same rule declares large text (>=24px, or >=18.66px bold), and an undeclared size takes the body bar. Both planted contrast defects move: eval 6's .ledger .pill--review at 3.74:1 and eval 10's .stamp at 3.62:1 now report as BLOCK, not WARN, so they rank Critical and first under SKILL.md section 6. Results published before this date describe the older behavior; the graders read ratios and ranking rather than the level, so a moved number is the skill, not the grader.",
+    "expectation wording and availability markers (2026-08-22)": "Issue #25. The behavior-only rate in aggregate.py excluded expectations only the installed skill can pass by matching one regex over the expectation's English, which caught \"the transcript shows preflight.py was run\" and nothing else. Two kinds of fix. (1) Every expectation whose wording asked for this skill's private vocabulary now asks for the behavior the grader already checks, so the sentence handed to the agent grader and the predicate in grade.py test the same thing. clean-page-is-called-clean was the case in the issue: E4 asked for a \"Judgment calls section\" while the code accepts taste, preferences, optional, nice-to-have or subjective, and it now says so; E1 asked for [computed]/[observed] evidence on every chip while the code only fails a chip tagged [judged], and it now says that instead; \"blocking, not polish\" is now \"must-fix rather than optional polish\", and \"a computed value\" is \"a measured value\". (2) Every eval carries availability_expectations, the indices of expectations that can only pass with the skill present, and aggregate.py excludes on that list rather than on prose. Order and count are unchanged; grade.py indexes expectations positionally. clean-page E2 (the bracketed evidence tag) is marked availability: the tag format is this skill's own and no baseline can produce it. Rewording changes what the agent grader is asked, so stored answers need re-grading on the new text and a comparison against an earlier round is comparing yardsticks.",
+    "round-7 (2026-08-22)": {
+      "deliberate-choices-are-not-defects": "Tied 3+3 in iteration 9: both arms found the pull quote at 3.09:1, neither chipped the 268px rail, and the hairline was chipped 2/3 with against 1/3 without. Reading the six answers showed why: every one of them structured its restraint around the fixture's own house sheet, quoting 'note 1' through 'note 4' back. The page told the reviewer the answer and the eval measured whether they read it. Reclassed to regression. Its fixture also carried three claims that were false of the page \u2014 a 13px list naming table cells the page does not have, a sand rule described as carrying no text while it colored the quote mark, and a note-3 geometry the CSS did not implement \u2014 so runs that caught the contradiction were scored as over-reporting. All three are fixed, and the geometry now does what note 3 says.",
+      "undocumented-choices-are-not-defects": "The rebuild. Same four choices, no comments in the stylesheet, and the evidence for each choice moved into the artifact: a closed set of five font sizes, --sand on two border declarations and nothing else, and a quote text edge that measures onto the body column at every width. Exactly one measured failure, so ranking is decidable. The wrong answer is the review that leads with the sand rule's 1.27:1."
+    },
+    "considered-choices.html carried a false premise (2026-08-22)": "Caught on the first baseline run, before any grading. The fixture's design-notes block said '13px is the caption size, and it is the only place it appears'; the stylesheet uses 13px in seven rules. A run that reports the contradiction is reading carefully, and the eval would have scored it as over-reporting \u2014 which is the exact failure round 3 found three times and the reason maintenance.md now says to verify a fixture with something other than the tool under test. That rule was followed here for the scripts and not for the prose: preflight, contrast and symmetry were all run against this page, and none of them reads an HTML comment. The note now states what the CSS does. Fourth false premise of this shape found on 2026-08-22, after pgbouncer 1.21, the 404 harvest URL, and the voice sample with no isolatable facts. The general rule worth extracting: any absolute claim a fixture makes in prose ('the only', 'never', 'exactly one') is an assertion about the fixture that has to be checked against the fixture, not just stated in it."
   }
 }

@@ -36,8 +36,11 @@ scoring rubric, and quick checks". The scoring rubric was dropped here; the rest
 that material is present.
 
 **tropes.fyi** — https://tropes.fyi/, by Ossama Hassanein. Also inherited through
-skill-deslop, whose `references/tropes.md` is adapted from it. This skill's
-`references/tropes.md` descends from that file.
+skill-deslop, whose `references/tropes.md` is adapted from it. This skill carried a
+`references/tropes.md` descended from that file until 3.0 (2026-08-23), when the file was
+retired: 38 of its 39 entries were restatements of material already in the other
+references, and its one unique entry (Content Duplication) moved to `references/structures.md`,
+which therefore continues the descent.
 
 **conorbronsdon/avoid-ai-writing** — https://github.com/conorbronsdon/avoid-ai-writing
 Copyright (c) 2026 Conor Bronsdon. `references/maintenance.md` records a local fork of this
@@ -110,7 +113,7 @@ https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing
 Licensed CC BY-SA 4.0 by Wikipedia contributors:
 https://creativecommons.org/licenses/by-sa/4.0/
 
-Several short specimens of bad writing quoted in `references/tropes.md` come
+Several short specimens of bad writing formerly quoted in `references/tropes.md` (retired 3.0; surviving entry in `references/structures.md`) come
 from that article, quoted for criticism and identified as quotations. No
 explanatory prose was copied.
 
@@ -122,3 +125,16 @@ the worst failure" principle in `SKILL.md` were harvested as ideas. The overlap
 scan found one 12-word clause in common; it was rewritten on 2026-08-16, and a
 re-scan is clean. No AGPL-3.0 expression remains, so its copyleft does not
 reach this skill.
+
+## Not a source: the harvested eval corpus
+
+`evals/files/harvested/` holds seventy documents written by twelve model and harness
+combinations on 2026-08-22, used as eval fixtures. **Nothing in this skill derives from
+them.** They are test input, never a source: no rule, phrase, catalog entry or example in
+`SKILL.md` or `references/` was harvested from that corpus, and it is excluded from the
+overlap scans above for that reason.
+
+They are recorded here so the absence is deliberate rather than an omission. Per-file
+provenance, including the exact model and route for every document, is in each provider
+directory's `PROVENANCE.json`, and `evals/files/harvested/README.md` explains what the corpus
+is for and why it is withheld from the published mirror.

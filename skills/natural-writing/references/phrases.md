@@ -34,7 +34,7 @@ Openers that announce a list before delivering one, or announce generality befor
 
 ## Emphasis Crutches
 
-These add no meaning. Delete them.
+These add no meaning. Delete them — unless the author's own supplied sample uses the device, in which case it is their voice and stays. The list below is what a draft reaches for when it has no emphasis of its own.
 
 - "Full stop." / "Period."
 - "Let that sink in."

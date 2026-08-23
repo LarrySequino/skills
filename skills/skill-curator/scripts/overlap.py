@@ -48,6 +48,13 @@ def text_files(root):
             if p.is_file() and p.suffix.lower() in {".md", ".txt", ".mdx", ".rst"}
             and ".git" not in p.parts and "node_modules" not in p.parts]
 
+# --help before anything else: the reason 83% of runs read a script is that nothing
+# else answers the question of how to call it. Exits 0, because a help request is not
+# an error.
+if "--help" in sys.argv or "-h" in sys.argv:
+    print(__doc__ or "")
+    sys.exit(0)
+
 skill_root = pathlib.Path(sys.argv[1]) if len(sys.argv) > 1 else None
 if "--demo" in sys.argv or skill_root is None:
     # Self-check: a known-copied passage must be found, unrelated prose must not.

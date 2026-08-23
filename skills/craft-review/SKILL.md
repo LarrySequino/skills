@@ -152,15 +152,20 @@ The lens craft rigor misses. The prose anti-slop doctrine applied to pixels; ful
 
 ## 5. Bundled scripts (run these; don't do the math in your head)
 
+Run these; do not read them. Every one answers `--help` with its usage, flags, exit codes and an example, which is the whole interface. Reading the source instead costs about 12,000 tokens across the four and tells you nothing `--help` does not — measured across 18 runs, 83% read all four having been asked to run them.
+
+
 - `scripts/contrast.py` — WCAG contrast ratio for two hex colors + AA/AAA pass for normal/large/non-text.
   `python3 scripts/contrast.py "#f4eefb" "#161020"`
 - `scripts/symmetry.py` — reads a JSON of frame + child geometry (as returned by `get_metadata`) and
   reports padding asymmetry, paired-component mismatches, and off-grid values.
-  `python3 scripts/symmetry.py geometry.json`  (run `--demo` to see the Sleep-screen example)
+  `python3 scripts/symmetry.py geometry.json`  (run `--demo` for the Sleep-screen example and a
+  self-check). Exits 1 on findings, 0 when clean.
 - `scripts/slop-scan.py` — static detector for the mechanically checkable design tells (pure `#000`/`#fff`,
-  gradient-text, layout-property transitions, uniform shadow, purple→blue gradient, glass-by-default,
+  gradient-text, layout-property transitions, uniform shadow, glass-by-default,
   side-stripe borders, one-duration motion). `python3 scripts/slop-scan.py file.html [...]` · `--demo` ·
-  `--json`. Heuristic: each hit is a prompt to check intent (Group E), not an automatic failure.
+  `--json`. Exits 1 on findings, 0 when clean. Heuristic: each hit is a prompt to check intent
+  (Group E), not an automatic failure.
 
 All pure stdlib Python 3 — no installs.
 
@@ -202,7 +207,8 @@ tag names the evidence class, the chip makes it a defect, and a taste remark is 
 
 **A `[BLOCK]` from `preflight.py` is Critical and ranks first.** The script blocks on defects that
 make the artifact wrong in a state the reviewer may not be looking at: a token defined only inside a
-theme layer, a body with no background of its own. Those do not compete with findings the same pass
+theme layer, a body with no background of its own, text under the AA bar for its size (4.5:1, or
+3:1 where the rule itself declares large text). Those do not compete with findings the same pass
 computed elsewhere on the page. Never demote a BLOCK below Critical, and place it above other
 Critical findings in the priority table. A round-3 eval run demoted a blocked token defect to Major
 and ranked two of its own contrast findings above it, which is how this rule got written.

@@ -146,6 +146,9 @@ def _demo():
 
 
 if __name__ == "__main__":
+    if "--help" in sys.argv or "-h" in sys.argv:
+        print(__doc__ or "")
+        sys.exit(0)
     if "--demo" in sys.argv:
         _demo()
     # A bad color used to print an error and exit 0, so a CI wrapper read it as a pass.

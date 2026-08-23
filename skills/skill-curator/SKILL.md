@@ -39,7 +39,7 @@ Pick by what the user asked for. When unclear, ask which one.
 
 ### 1. Audit — "clean up my skills"
 
-**Run `scripts/audit.py <skills-dir>` first.** It does the arithmetic in steps 1, 2, 4, 4b and 5:
+**Run `scripts/audit.py <skills-dir>` first, and run it rather than reading it — `--help` is the interface for this and for `overlap.py`.** It does the arithmetic in steps 1, 2, 4, 4b and 5:
 the inventory with line counts, description lengths and any version marker, the pairwise
 description comparison ranked
 by how rare the shared terms are, the bloat threshold, the per-scope count, and which skills

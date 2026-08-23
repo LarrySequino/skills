@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Shelf list — the catalog that outlived three systems</title>
+<style>
+:root {
+  --paper:      #e2decd;
+  --surface:    #fcfcfa;
+  --ink:        #1b1d21;
+  --ink-2:      #4b5159;
+  --ink-faint:  #777d85;
+  --sand:       #d8c3a5;
+  --link:       #1f5fbf;
+  --hairline:   #bdb69f;
+  --chip-bg:    #dfe8dd;
+  --chip-fg:    #2f5133;
+  --plot-bg:    #e5e0cf;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper:     #0a0b0c;
+    --surface:   #202329;
+    --ink:       #eceef1;
+    --ink-2:     #b4bac2;
+    --ink-faint: #5a6068;
+    --sand:      #8a7a5f;
+    --link:      #8fb4f2;
+    --hairline:  #474c55;
+    --chip-bg:   #24322a;
+    --chip-fg:   #b7d9c0;
+    --plot-bg:   #30353e;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font: 17px/1.6 ui-serif, Georgia, "Times New Roman", serif;
+  margin: 0;
+  padding: 0;
+}
+
+a:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
+}
+
+.shell {
+  display: flex;
+  gap: 48px;
+  margin: 0 auto;
+  max-width: 1024px;
+  padding: 56px 32px 96px;
+}
+
+/* --- masthead ---------------------------------------------------- */
+
+.masthead {
+  border-bottom: 2px solid var(--sand);
+  margin: 0 0 40px;
+  padding: 0 0 16px;
+}
+
+.masthead .wordmark {
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.masthead .issue {
+  color: var(--ink-2);
+  font-size: 13px;
+  margin: 4px 0 0;
+}
+
+/* --- article ----------------------------------------------------- */
+
+.article {
+  background: var(--surface);
+  border-radius: 4px;
+  color: var(--ink);
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 40px;
+}
+
+.article h1 {
+  font-size: 30px;
+  line-height: 1.2;
+  margin: 0 0 12px;
+}
+
+.byline {
+  color: var(--ink-2);
+  font-size: 15px;
+  margin: 0 0 32px;
+}
+
+.lede {
+  font-size: 21px;
+  line-height: 1.45;
+  margin: 0 0 28px;
+}
+
+.article p {
+  margin: 0 0 20px;
+}
+
+.article h2 {
+  font-size: 21px;
+  margin: 40px 0 12px;
+}
+
+.article a {
+  color: var(--link);
+}
+
+/* --- pull quote -------------------------------------------------- */
+
+.pullquote {
+  background: var(--paper);
+  border-radius: 4px;
+  color: var(--ink-faint);
+  font-size: 21px;
+  line-height: 1.4;
+  margin: 32px -24px;
+  padding: 24px;
+  position: relative;
+}
+
+.pullquote::before {
+  color: var(--ink-2);
+  content: "\201C";
+  font-size: 30px;
+  left: 0;
+  line-height: 1;
+  position: absolute;
+  top: 20px;
+}
+
+.pullquote p {
+  margin: 0;
+}
+
+.pullquote cite {
+  color: var(--ink-2);
+  display: block;
+  font-size: 13px;
+  font-style: normal;
+  margin: 12px 0 0;
+}
+
+/* --- figure ------------------------------------------------------ */
+
+figure {
+  margin: 32px 0;
+}
+
+figure .plot {
+  background: var(--plot-bg);
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  height: 160px;
+}
+
+figcaption {
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 8px 0 0;
+  max-width: 480px;
+}
+
+/* --- section rule ------------------------------------------------ */
+
+.rule {
+  border: 0;
+  border-top: 2px solid var(--sand);
+  margin: 40px 0;
+}
+
+/* --- rail -------------------------------------------------------- */
+
+.rail {
+  flex: 0 0 auto;
+  width: 268px;
+}
+
+.rail h3 {
+  color: var(--ink-2);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  margin: 0 0 12px;
+  text-transform: uppercase;
+}
+
+.rail .note + h3 {
+  margin: 32px 0 12px;
+}
+
+.rail .note {
+  background: var(--surface);
+  border-radius: 4px;
+  color: var(--ink);
+  margin: 0 0 16px;
+  padding: 16px;
+}
+
+.rail .note h4 {
+  font-size: 15px;
+  margin: 0 0 4px;
+}
+
+.rail .note h4 a {
+  color: var(--link);
+}
+
+.rail .note p {
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.tag {
+  background: var(--chip-bg);
+  border-radius: 4px;
+  color: var(--chip-fg);
+  display: inline-block;
+  font-size: 13px;
+  padding: 4px 8px;
+}
+
+/* --- footer ------------------------------------------------------ */
+
+.foot {
+  border-top: 1px solid var(--hairline);
+  color: var(--ink-2);
+  font-size: 13px;
+  margin: 48px 0 0;
+  padding: 16px 0 0;
+}
+
+@media (max-width: 900px) {
+  .shell {
+    display: block;
+    padding: 32px 24px 64px;
+  }
+  .article {
+    margin: 0 auto;
+    max-width: 640px;
+    padding: 24px;
+  }
+  .rail {
+    margin: 40px auto 0;
+    max-width: 640px;
+    width: auto;
+  }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <main class="article">
+    <header class="masthead">
+      <p class="wordmark">Shelf list</p>
+      <p class="issue">Number 12 · Collections and access</p>
+    </header>
+
+    <h1>The catalog that outlived three systems</h1>
+    <p class="byline">Written up by the cataloguing desk · nine minute read</p>
+
+    <p class="lede">Three times in twenty years the library replaced the software that held
+    its catalog, and three times the thing that survived the move was not the database. It
+    was a drawer of index cards nobody had been asked to maintain.</p>
+
+    <p>The 1998 migration was the first one with a written plan. Every record came out of
+    the old system as a fixed-width export, went through a script somebody wrote in a
+    fortnight, and went into the new one. The plan had a line for the cards, and the line
+    said they were a duplicate of the database and could be recycled once the load was
+    verified. They were not recycled, because the person who ran the load could not bring
+    herself to do it, and that is the only reason the next two migrations worked.</p>
+
+    <h2>What the cards had that the export did not</h2>
+
+    <p>A fixed-width export carries the fields the schema knows about. The cards carried
+    the fields plus everything a cataloguer had ever written in the margin: the note that
+    two accession numbers were transposed in 1974, the pencil cross-reference to a
+    donor's name that appears nowhere in the record, the small "see also" that is the only
+    surviving trace of a series the library split in half.</p>
+
+    <blockquote class="pullquote">
+      <p>The database was a copy of the cards, and every migration copied the copy. What we
+      kept re-importing was the shape of the 1998 script, not the shape of the collection.</p>
+      <cite>From the 2019 collections audit</cite>
+    </blockquote>
+
+    <p>By 2011 the marginalia had become a reconciliation job rather than a curiosity. A
+    reader asking for the split series would be told it did not exist, and a cataloguer who
+    knew about the drawer would walk down the corridor and find it in about four minutes.
+    That walk was the actual finding aid for eleven years, and it was never written into
+    any procedure.</p>
+
+    <figure>
+      <div class="plot" role="img" aria-label="Records reconciled per year from 1998 to 2022,
+      flat near zero until 2011, rising through 2016 to about nine hundred a year, then
+      falling to under a hundred after the 2019 audit."></div>
+      <figcaption>Records reconciled against the card drawer, 1998 to 2022. The rise begins
+      when reconciliation became a standing job, not when the discrepancy appeared.</figcaption>
+    </figure>
+
+    <hr class="rule">
+
+    <h2>What we did about it</h2>
+
+    <p>The 2019 audit photographed all 41,000 cards and attached the images to their
+    records, which took two people eight months and cost less than the migration that
+    created the problem. The marginalia is not searchable and probably never will be, but
+    it is now attached to the thing it describes rather than to a drawer in a corridor.</p>
+
+    <p>The procedure now says that any export is a lossy view of the catalog until someone
+    has named what it drops. Not because exports are untrustworthy, but because the 1998
+    plan was written by people who were right about everything except the one line they
+    treated as obvious. Read more in the <a href="#">2019 audit summary</a>.</p>
+
+    <footer class="foot">
+      Filed by the cataloguing desk. Corrections to the desk, not to this page.
+    </footer>
+  </main>
+
+  <aside class="rail">
+    <h3>Related</h3>
+    <div class="note">
+      <h4><a href="#">The 1998 migration plan</a></h4>
+      <p>Eleven pages, one line about the cards, and the line is wrong.</p>
+    </div>
+    <div class="note">
+      <h4><a href="#">Photographing 41,000 cards</a></h4>
+      <p>The rig, the lighting, and why the first three thousand were redone.</p>
+    </div>
+    <div class="note">
+      <h4><a href="#">The split series, reassembled</a></h4>
+      <p>What the pencil cross-references turned out to be pointing at.</p>
+    </div>
+    <h3>Filed under</h3>
+    <p><span class="tag">Collections</span></p>
+  </aside>
+</div>
+</body>
+</html>

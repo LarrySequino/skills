@@ -1,6 +1,6 @@
 # Artifacts, Whole-Text Tests, and Additional Patterns
 
-Patterns not covered in phrases.md, structures.md, or tropes.md. Three groups: artifacts (fingerprints of pasted AI output, always P0), whole-text tests (rhythm and content diagnostics), and additional patterns worth flagging in full audits.
+Patterns not covered in phrases.md or structures.md. Three groups: artifacts (fingerprints of pasted AI output, always P0), whole-text tests (rhythm and content diagnostics), and additional patterns worth flagging in full audits.
 
 ## Contents
 
