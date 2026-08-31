@@ -187,6 +187,20 @@ A checklist inside a skill tells the model what to verify. It does not tell the 
 
 If the user wants confidence in a merged skill, recommend building a small eval: a handful of representative inputs, an expected-behavior description for each, and runs with the skill on and off. Agents are non-deterministic, so a single run proves little; a few runs per case is the minimum useful signal. Anthropic's skill-creator supports an eval format — prefer it over inventing one.
 
+Five things that only show up once you run one. Each cost us a round to learn.
+
+**A rule earns its place by stopping something.** Every eval where a skill beat its own baseline tested a restraint. Don't invent a figure, don't score what you did not measure, don't rank your own finding above the one the script blocked on. Every eval that came out level tested a capability. Compute a contrast ratio, read a twelve-skill library, spot a copied code block. Models do the capability work unaided. A rule that teaches one is ballast, and it costs context on every trigger.
+
+**You cannot identify that ballast by reading.** Five of six evals written to cover new rules turned out to measure nothing, and none of it was visible on inspection. Any claim that a rule changes behavior is a hypothesis until both arms have run.
+
+**Separate the two ways an eval can pass.** An expectation of the form "the transcript shows the skill's script was run" can only pass with the skill installed. It measures availability. Report a behavior-only rate beside the headline or the headline flatters itself. One of our skills showed +0.20 headline and +0.00 behavior-only, entirely on checks of that shape.
+
+**The grader fails before the skill does.** In a single day, five heuristics marked correct answers wrong, three expectations encoded false premises about the fixture, and two prompts tested something other than what they claimed. Every one of them biased the result. If a check is about phrasing or judgment, a script must not decide it. Compute what is arithmetic and give the rest to a reader, with a quoted line of evidence per verdict.
+
+**Difficulty is temptation, not obscurity.** Hiding a defect behind three layers of indirection did not separate the arms; the model found it anyway. What separated them was an input that invited the failure. Vague copy that begs to be made specific is where fabrication shows up. Build fixtures that tempt rather than fixtures that hide.
+
+A fixture is not verified because the skill's own scripts pass it. Three of our expectations were wrong because the fixture was checked only with the tool under test, and correct answers were marked as errors for reporting real defects nobody had planted.
+
 ## Output
 
 For every job, report:
