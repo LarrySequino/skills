@@ -228,9 +228,8 @@ Running the skills themselves on another family is a smaller claim. GPT with `sk
 scored 1.00 on the twelve-skill audit against 0.90 unaided, and with `craft-review` 1.00
 against 0.80, but behavior-only both deltas are **+0.00**: GPT found the buried 3.74:1 chip by
 writing its own luminance function in a heredoc, and read the twelve-skill library closely
-enough to catch every planted defect. The skills are usable by a non-Anthropic agent, which
-usable by a non-Anthropic agent. On these fixtures they do not measurably change what it
-produces.
+enough to catch every planted defect. The skills are usable by a non-Anthropic agent. On
+these fixtures they do not measurably change what it produces.
 
 ## This repo is generated
 
