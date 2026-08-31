@@ -187,7 +187,7 @@ A checklist inside a skill tells the model what to verify. It does not tell the 
 
 If the user wants confidence in a merged skill, recommend building a small eval: a handful of representative inputs, an expected-behavior description for each, and runs with the skill on and off. Agents are non-deterministic, so a single run proves little; a few runs per case is the minimum useful signal. Anthropic's skill-creator supports an eval format — prefer it over inventing one.
 
-Five things that only show up once you run one. Each cost us a round to learn.
+Six things that only show up once you run one. Each cost us a round to learn.
 
 **A rule earns its place by stopping something.** Every eval where a skill beat its own baseline tested a restraint. Don't invent a figure, don't score what you did not measure, don't rank your own finding above the one the script blocked on. Every eval that came out level tested a capability. Compute a contrast ratio, read a twelve-skill library, spot a copied code block. Models do the capability work unaided. A rule that teaches one is ballast, and it costs context on every trigger.
 
@@ -195,11 +195,15 @@ Five things that only show up once you run one. Each cost us a round to learn.
 
 **Separate the two ways an eval can pass.** An expectation of the form "the transcript shows the skill's script was run" can only pass with the skill installed. It measures availability. Report a behavior-only rate beside the headline or the headline flatters itself. One of our skills showed +0.20 headline and +0.00 behavior-only, entirely on checks of that shape.
 
-**The grader fails before the skill does.** In a single day, five heuristics marked correct answers wrong, three expectations encoded false premises about the fixture, and two prompts tested something other than what they claimed. Every one of them biased the result. If a check is about phrasing or judgment, a script must not decide it. Compute what is arithmetic and give the rest to a reader, with a quoted line of evidence per verdict.
+**The grader fails before the skill does.** Twenty-three defects found across two audits of our own, and every one failed a correct answer rather than passing a wrong one. Fifteen came in a single night, eleven of those against the arm that had the skill, because a richer report format gives a heuristic more places to misread. A grader audited only when the headline looks wrong will systematically under-measure the treated arm. If a check is about phrasing or judgment, a script must not decide it. Compute what is arithmetic and give the rest to a reader, with a quoted line of evidence per verdict.
+
+**A tie is only worth keeping if you can prove the eval can fail.** An audit across every round and arm found 14 of 34 evals had never recorded a single behavior failure, and nine published a delta that was entirely availability. Ship a wrong-answer control beside every eval that ties: an input whose correct handling the skill should get wrong if it is not working. Without one, a tie at 1.00 and a broken check look identical.
 
 **Difficulty is temptation, not obscurity.** Hiding a defect behind three layers of indirection did not separate the arms; the model found it anyway. What separated them was an input that invited the failure. Vague copy that begs to be made specific is where fabrication shows up. Build fixtures that tempt rather than fixtures that hide.
 
 A fixture is not verified because the skill's own scripts pass it. Three of our expectations were wrong because the fixture was checked only with the tool under test, and correct answers were marked as errors for reporting real defects nobody had planted.
+
+One last thing, learned the expensive way: **runs inherit the environment that launched them.** Ours inherited a persona, an instruction file, and the full installed skill roster from the session that spawned them, asymmetrically between arms, which makes the numbers unusable however carefully they are graded. Re-grading fixes the checks. It does not fix the answers. Launch both arms in the same bare context, and write down what that context contains before the first run.
 
 ## Output
 
