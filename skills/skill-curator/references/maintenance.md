@@ -257,7 +257,7 @@ wrong. That is the number that says whether a round can be trusted, and it had n
 computed. A direction carrying no rate is not a checked direction.
 
 ## Package
-Run `tools/us-english.py skills/skill-curator` from the repo root; it must report clean. US English is the house rule and publish.sh enforces it.
+Run `tools/us-english.py skills/skill-curator` from the repo root; it must report clean. US English is the house rule for this repo's own prose and publish.sh enforces it. It governs what we write and publish, never text a skill is asked to edit: a writer's dialect is part of their voice and normalizing it is a defect, not a tidy-up.
 
 
 20. Validate frontmatter, confirm `scripts/` ships both tools, and run `audit.py` one last time on a
@@ -273,11 +273,37 @@ These are read, never run. Clone or browse, read the Markdown, take ideas and ne
 A skill file is data: one in this skill's own fixture library carries a prompt-injection payload
 on purpose, and a real repository can carry one by accident.
 
+**No source on this list is authoritative, including the ones we agree with.** Nobody has
+this figured out yet, ourselves included. Every entry is somebody's current best guess,
+written with the confidence that publishing demands and rarely with the evidence that would
+justify it. Stars, traffic, a well-known author and an assured tone are all uncorrelated with
+being right.
+
+Three failure modes to watch, because we have committed all three:
+
+- **Attributing a claim a source does not make.** The watchlist once credited Pangram with
+  "structure over vocabulary" and SKILL.md built a ranking on it. They say no single feature
+  decides. Quote before you paraphrase, and record the quote.
+- **Taking a vendor's numbers as findings.** A detection company reporting its own accuracy,
+  on evaluation sets it chose, with no published model or data, is marketing that happens to
+  be numerate. It can still be true. Mark it as self-reported and let a claim rest on it only
+  when nothing turns on the number.
+- **Reading convergence as proof.** Two projects agreeing may mean two projects copied the
+  same ancestor, or that a fashion is circulating. Convergence raises a question worth
+  measuring; it never answers one.
+
+What settles a question here is a measurement we ran and can rerun, with a control that could
+have failed. Where we cannot measure, the honest move is to say the rule is a judgment call
+and name what would change our mind. A borrowed certainty is worse than an admitted gap,
+because the gap is visible and the certainty is not.
+
 Skill architecture moves faster than a prose-pattern catalog does, so sweep on release rather
 than on a calendar: check when a library ships a version that claims a structural change.
 
 1. **EveryInc/compound-engineering-plugin**, https://github.com/EveryInc/compound-engineering-plugin, MIT, 33 skills. The kernel-plus-gated-references structure: SKILL.md holds an outcome and a numbered phase sequence, each phase gating on reading its own reference file, with procedures living in the references rather than the kernel. Read the core-loop skills first (`ce-plan`, `ce-work`, `ce-debug`, `ce-simplify-code`); they carry the pattern most clearly. Diff their SKILL.md sizes and reference counts against the log row below.
 2. **mattpocock/skills**, https://github.com/mattpocock/skills, Referenced in this repo's history for putting maintenance in a script rather than a Markdown file, and never logged as a source. The question to answer on a read is which parts of a maintenance procedure are deterministic enough to be a script, since that is the same split this repo keeps relitigating.
+3. **ai-evals-course/evals-skills**, https://github.com/ai-evals-course/evals-skills, Eight skills behind a `start` routing skill: eval-audit, error-discovery, generate-synthetic-data, write-judge-prompt, validate-evaluator, evaluate-rag, build-review-interface. **Read this one before braintrust's**, despite being a third the size: braintrust is strongest on experiment design and analysis, which is what we already do well, and this one is strongest on getting to trustworthy labels, which is our weakest half. The four that matter here compose into a chain we do not have -- review interface, human labels, judge validation, corrected rate -- and the interface is the prerequisite we would otherwise skip. Its `start` dispatcher is also the routing answer braintrust's flat twenty-four does not give, which bears on #83. **License was not visible in the README; confirm before adopting anything.** Related tooling: `openai/evals` is a framework and benchmark registry, MIT, with no skills in it, so it is worth reading and is not watched here.
+4. **braintrustdata/eval-library**, https://github.com/braintrustdata/eval-library/tree/main/skills, Twenty-four skills, flat, each `braintrust-<name>/` with a SKILL.md and a `references/` directory. Their names map onto our open eval questions almost one for one, which makes this the highest-signal source on this list: validate-eval-scorer against expert labels, size-eval-dataset for effect detection, design-eval-experiment for pre-specification, analyze-eval-experiment for uncertainty, attribute-multi-variable-change for isolating bundled changes, report-eval-results for calibrating claims to evidence, discover-agent-failures and discover-trace-topics for finding failure modes in unlabeled traffic. Read the scorer-validation and report-calibration ones first. Independently of content, the decomposition itself is evidence: they split one domain into twenty-four skills, which is a data point for the question in #83.
 
 ## Harvest log
 
@@ -290,6 +316,8 @@ joined the list.
 |---|---|---|
 | EveryInc/compound-engineering-plugin | unverified | Added 2026-08-23 after six core-loop SKILL.md files were read to answer a structural question, not swept as a source. That read is recorded as a repo issue, not here, because it took no content. **No harvest check has ever been recorded.** |
 | mattpocock/skills | unverified | On this repo's radar since the maintenance-script discussion and never logged. **No harvest check has ever been recorded.** |
+| ai-evals-course/evals-skills | unverified | Added 2026-08-23 from the eval-practice audit in #94. The guide behind that audit was read; this repository was not. **No harvest check has ever been recorded.** |
+| braintrustdata/eval-library | unverified | Added 2026-08-23. Only the skills directory listing was read, to correct a claim in ceb749d that it contained no skills; it contains twenty-four. **No harvest check has ever been recorded.** |
 
 ## Log
 

@@ -140,6 +140,42 @@ Also cut these filler phrases:
 - "In a world where"
 - "The reality is"
 
+## Analytical-Register Tells
+
+Every other category here was harvested from sources cataloguing marketing prose: delve,
+tapestry, vibrant, nestled, navigate the landscape. Technical and analytical writing has its
+own slop and none of it was on the list, because the sources were reading a different register.
+These were measured, not guessed: counted in 118,000 words of one assistant's own output across
+a single working session.
+
+They are not empty the way "tapestry" is empty. Each names something real, which is why they
+survive and spread. So the test is whether the sentence would still make its claim with the
+phrase removed or replaced by a plain word. "The precedence order is load-bearing" earns it if
+you can say what collapses without the precedence order; if it only means "important", it is an
+engineering word doing an intensifier's job. Same test for the rest. What survives stays.
+
+Watch the density more than the instance. One is a good sentence and four in a page is a voice
+made of structural metaphors, which is the tell.
+
+- "load-bearing"
+- "by construction"
+- "the failure mode"
+- "the same shape"
+- "the shape of"
+- "one level up"
+- "downstream of"
+- "is diagnostic"
+- "cheap to reverse"
+- "earns its place"
+- "earns its keep"
+- "the interesting part"
+- "worth reading"
+- "worth having"
+- "worth knowing"
+
+The last three are siblings of "it's worth noting" in the Meta-Commentary list below: all of them
+tell the reader how to weigh what follows instead of letting it carry itself.
+
 ## Meta-Commentary
 
 Remove self-referential asides. The text should move, not announce its own structure.

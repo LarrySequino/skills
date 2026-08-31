@@ -1,6 +1,8 @@
 # Preflight: Pass/Fail Checks Before Delivery
 
-Why none of this is a verdict: commercial AI detectors, built on the same signals this checklist uses, have shown false-positive rates above 60% on non-native English writers (Liang et al., Stanford, 2023). Report patterns; never assert authorship.
+Why none of this is a verdict: a checklist is single-feature reasoning, and the detectors that work do not reason that way. Pangram's own position is that no single aspect of a text decides where it lands, which is exactly why a hit on this list is evidence of nothing about authorship. Report patterns; never assert authorship.
+
+This page used to argue the point differently, citing false-positive rates above 60% on non-native English writers (Liang et al., Stanford, 2023). Treat that number as contested rather than as current: it measured 2023-era detectors, and Pangram's 2026 technical report claims 0.0041% across 24,586 non-native samples, including zero on Liang's own TOEFL set. Both sides are weak evidence for what any given detector does today. Liang is peer-reviewed but dated and about systems that have since been replaced; Pangram's figures are current but self-reported by the vendor on evaluation sets they chose, with no published model or data for anyone to audit. Cite neither as settled. The conclusion above was rewritten so it rests on neither.
 
 Run after every rewrite or edit, before returning the draft. Answer each check pass or fail. Any fail means fix the draft first. For detect requests, verify the response names each pattern with a quoted line and a short fix, without rewriting, scoring, or claiming AI authorship.
 

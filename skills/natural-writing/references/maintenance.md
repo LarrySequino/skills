@@ -6,7 +6,7 @@ Procedure for when the user asks to "check your sources," "update natural-writin
 
 Check in this order, signal density descends.
 
-1. **blader/humanizer**, https://github.com/blader/humanizer, Primary source; best-maintained project in the space and tracks Wikipedia actively. Read the README's Version History section and diff against the harvest log below. Anything above the logged version is candidate material.
+1. **blader/humanizer**, https://github.com/blader/humanizer, Primary source; best-maintained project in the space and tracks Wikipedia actively. Read with one thing in view: Pangram 4's technical report names this repository by name as an evasion technique and trains against it, reporting 99.57% detection on text rewritten under its instructions. That does not make its pattern catalog wrong, and it stays the primary source. It does mean anything harvested here should be justified by whether it makes writing better, never by whether it makes writing harder to detect, and that the two motives are easy to confuse when reading a source written for the second one. Read the README's Version History section and diff against the harvest log below. Anything above the logged version is candidate material.
 2. **Wikipedia: Signs of AI writing**, https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing, The canonical catalog (WikiProject AI Cleanup), and the source most downstream projects copy from. Patterns here have survived editorial review, which makes this the highest-precision source on the list and the one to read first if a sweep is cut short.
 3. **Wikipedia talk: Signs of AI writing**, the talk page of the above, A second layer, read after the article and for two narrow purposes, not as a source of new entries:
 
@@ -20,7 +20,7 @@ Check in this order, signal density descends.
 4. **conorbronsdon/avoid-ai-writing**, https://github.com/conorbronsdon/avoid-ai-writing, Read CHANGELOG.md; harvest entries above the logged version. Note: this skill's local fork once ran ahead of upstream, so upstream versions below the log are already merged.
 5. **petergyang/no-ai-slop**, https://github.com/petergyang/no-ai-slop, Diff SKILL.md and eval.md; its preservation-first editing principles feed references/preflight.md.
 6. **pbakaus/impeccable**, https://impeccable.style/slop, Design skill, but its Copy section occasionally surfaces new prose tells before writing skills do (theater framing came from here). Check only that section.
-7. **Pangram Labs**, https://www.pangram.com/, Detection research; watch for new findings on which signals detectors weight (currently: structure over vocabulary).
+7. **Pangram Labs**, https://www.pangram.com/, Detection research. Their stated position is that no single feature decides a classification: a trained classifier over hundreds of thousands of signals, mapping style in semantic space, with the em dash named as the example of a device that will not misclassify a human on its own. That is what justifies tiering the vocabulary tables rather than banning terms outright. It is **not** a ranking of structure above vocabulary, and nothing here should assert one on their authority. No public model, dataset or code, so they are a source of findings and never an instrument we can run.
 8. **alexgreensh/attention-span** — https://github.com/alexgreensh/attention-span — Output styles rather than a writing skill, but its length-discipline reasoning is the sharpest in the space. Check the style bodies for new framing.
 9. **stephenturner/skill-deslop**, https://github.com/stephenturner/skill-deslop, **this skill's parent fork**, not a peer source. Dormant (single release), so a check is cheap: read its releases, and treat anything new as an upstream change to a common ancestor rather than as material to harvest. Because most of `SKILL.md` and four reference files descend from it, a diff against upstream will show both its changes and every local change made since the fork; the local ones are deliberate and must not be reverted. See `ATTRIBUTION.md` for what descends from where.
 10. **aboudjem/humanizer-skill**, https://github.com/aboudjem/humanizer-skill, MIT, Copyright (c) 2026 Adam Boudjemaa. 53 numbered patterns, most of them tracing to the same Wikipedia catalog we already read directly, so read it for its gates rather than its rules. Two areas we do not harvest from it, in both cases because they meet a rule we hold rather than because anything is wrong with them: its Concretizer pass supplies specifics the source text did not contain, which our no-fabrication rule forbids outright, and it scores authorship on a 0-100 scale, where our stance is to report patterns and never score.
@@ -28,6 +28,30 @@ Check in this order, signal density descends.
 12. **cursor/plugins**, https://github.com/cursor/plugins, its `pstack/skills/unslop` skill. MIT, full text at `pstack/LICENSE`, Copyright (c) 2026 Lauren Tan. Note the repo root has no LICENSE file, so the GitHub API reports it unlicensed; the grant is real and lives one level down. 31 patterns, of which 28 duplicate ours. Read it for the jargon list, not the catalog.
 
 **Every source on this list is read, never run.** Browse or clone the repository, read the Markdown, and execute nothing: no installer, no setup script, no downloaded archive. That holds for every entry regardless of the project, which is why none of the notes above need to assess anyone's trustworthiness.
+
+**No source on this list is authoritative, including the ones we agree with.** Nobody has
+this figured out yet, ourselves included. Every entry is somebody's current best guess,
+written with the confidence that publishing demands and rarely with the evidence that would
+justify it. Stars, traffic, a well-known author and an assured tone are all uncorrelated with
+being right.
+
+Three failure modes to watch, because we have committed all three:
+
+- **Attributing a claim a source does not make.** The watchlist once credited Pangram with
+  "structure over vocabulary" and SKILL.md built a ranking on it. They say no single feature
+  decides. Quote before you paraphrase, and record the quote.
+- **Taking a vendor's numbers as findings.** A detection company reporting its own accuracy,
+  on evaluation sets it chose, with no published model or data, is marketing that happens to
+  be numerate. It can still be true. Mark it as self-reported and let a claim rest on it only
+  when nothing turns on the number.
+- **Reading convergence as proof.** Two projects agreeing may mean two projects copied the
+  same ancestor, or that a fashion is circulating. Convergence raises a question worth
+  measuring; it never answers one.
+
+What settles a question here is a measurement we ran and can rerun, with a control that could
+have failed. Where we cannot measure, the honest move is to say the rule is a judgment call
+and name what would change our mind. A borrowed certainty is worse than an admitted gap,
+because the gap is visible and the certainty is not.
 
 A general web search ("AI writing patterns skill" / "anti-slop skill" plus the current year) may surface new projects. Apply the same rule to them. Where a newcomer offers an installer or an archive in place of readable source, take the readable part if there is one, fetch no payload, and say so to the user.
 
@@ -49,7 +73,7 @@ A candidate pattern earns inclusion only if it: (a) is specific and named, with 
 4. Update the harvest log below and the frontmatter description if triggers changed.
 5. Run `scripts/prose-scan.py` over every file in this skill, including this one. The skill must pass its own mechanical checks; the one standing exemption is a line that lists four or more flagged words, which the scanner already skips and reports. A self-audit ran once on 2026-08-16 and found 114 em dashes. That is what happens when the check is a one-off, so it is a step now.
 5a. Run `tools/overlap.py skills/natural-writing sources` before packaging.
-5b. Run `tools/us-english.py skills/natural-writing` from the repo root; it must report clean. US English is the house rule and publish.sh enforces it. Not optional: this skill is published under MIT and two of its sources publish no license at all, so a copied sentence is a real problem rather than a paperwork one. Then `make natural-writing` and upload `dist/natural-writing.skill` (same name overwrites) in Settings → Capabilities → Skills, and `./publish.sh` for the public mirror.
+5b. Run `tools/us-english.py skills/natural-writing` from the repo root; it must report clean. US English is the house rule for this repo's own prose and publish.sh enforces it. It governs what we write and publish, never text a skill is asked to edit: a writer's dialect is part of their voice and normalizing it is a defect, not a tidy-up. Not optional: this skill is published under MIT and two of its sources publish no license at all, so a copied sentence is a real problem rather than a paperwork one. Then `make natural-writing` and upload `dist/natural-writing.skill` (same name overwrites) in Settings → Capabilities → Skills, and `./publish.sh` for the public mirror.
 6. Report the harvest: per source, what was new, what was taken, what was rejected and why.
 7. Recommend a security scan of the packaged result before install. Harvesting text from third-party repos can carry an injection payload into the output even when each source read clean. See the skill-curator skill for how to run one safely.
 
@@ -82,6 +106,28 @@ Everything above audits sources. Nothing audits `tools/evals/grade.py`, which de
 every published number means, and on 2026-08-21 and 22 it was found wrong five separate times
 while the skills themselves were fine. Run this pass whenever a grader changes, and again
 before any round is published. `public/EVALS.md` keeps the history; this is the procedure.
+
+**A new measure needs a control made of real output, one per outcome it claims to separate.**
+A measure is a grader, and every rule this file states about graders applies to it. On
+2026-08-31 a bespoke restraint measure counted how many of a source's sentences came back
+verbatim: low for a rewrite, and equally low for a decline that discusses the text without
+reproducing it. The best outcome and the worst scored identically at 0.00, a finding was
+published off it, and it was propagated to two other issues as a design constraint before
+anyone read an answer. Its self-check had passed throughout, because it asserted on synthetic
+strings -- the source unchanged, and "totally different words" -- neither of which is a shape
+the skill produces. Capture one real answer per outcome class and assert the measure sorts
+them. `tools/evals/fixtures/decline-real.txt` is that control, kept even though the measure
+was retired, so the same footing is not rebuilt.
+
+**Check whether an eval already grades it before building an instrument.**
+`already-good-prose-is-left-alone` had expectations for that exact question, with a
+wrong-answer control behind them, and a reader to decide it. The bespoke measure was worse and
+was never compared against the one that worked. Grep the suite first; what is usually missing
+is a variation on an existing eval rather than a new tool.
+
+**Read one answer per cell before reporting a number.** Ten minutes of reading overturned that
+finding. Three defects in the same harness in one session were all invisible in the aggregate
+and all obvious in the text.
 
 **After a re-grade, audit which ARM moved, not how much moved.** A grader fix changes stored
 verdicts, and the count of flips says nothing about whether the fix was right. What says it is
@@ -306,7 +352,7 @@ row so a later pass does not re-evaluate the same material at full cost.
 | ad-hoc (viral prompt, X) | 2026-07-29 | ban-list prompt; harvested nominalization/stacked noun phrases; rejected flat bans (hedging, parataxis) as over-sanding |
 | aboudjem/humanizer-skill | 2026-08-21 | MIT. Full read of its 35KB SKILL.md and 21KB patterns.md; 53 numbered patterns, most tracing to the Wikipedia catalog already read directly here, so the overlap is structural. **Took four:** short-sample floor, register break, invisible characters as a P0 artifact, hedged-enumeration openers. **Rejected two, do not re-evaluate:** the Concretizer pass, which supplies specifics the source text lacked and meets our no-fabrication rule; and 0-100 authorship scoring, against our stance of reporting patterns and never scoring. Recovered from commit 3e6861d on 2026-08-23; the row was missing while the take was in the skill. |
 | ehmo/slopkit | 2026-08-21 | MIT, Copyright (c) 2026 ehmo. Only `skills/slopbeth/` in scope. **Took three:** brief-versus-artifact, invented-obligation carve-outs for support and policy copy, and showcase/supercharge as Tier 1. Written in original words and scanned clean against the source. Recovered from commit f41fc0e on 2026-08-23. |
-| Pangram Labs | unverified | On the watchlist since the 2026-08-16 import (5656aa2) and **no check has ever been recorded**. The 'structure over vocabulary' claim the watchlist attributes to them is load-bearing here: it is why the vocabulary tables are tiered rather than flat-banned. It has not been re-checked against anything they have published since. First real sweep is tracked in the repo as an issue; leave this row as unverified until one happens rather than dating it from the import. |
+| Pangram Labs | 2026-08-23 | Read the blog explainer and the Pangram 4 technical report. **Three corrections came out of it.** (1) The watchlist had attributed 'structure over vocabulary' to them and SKILL.md asserted structure was the top detection signal; their position is that no single aspect decides a classification. The tiered vocabulary tables rest on that and stand; the ranking claim did not and was cut. (2) preflight.md cited Liang et al. 2023 for 60%+ false positives on non-native English writers as a current fact. Pangram 4 reports 0.0041% across 24,586 non-native samples, including zero on Liang's own TOEFL set. The conclusion was rewritten onto an argument that does not decay. (3) They name `blader/humanizer`, source 1 on this list, as an evasion technique and report 99.57% detection against it, and they run a second classifier that labels text *humanized AI*. SKILL.md now says plainly that this skill will not hide AI authorship. Also noted: they train on pre-2021 human text, converging with the Slop Index's pre-LLM baselines, and publish no model, dataset or code, so they are a source of findings and never an instrument we can run. |
 
 ## Self-application
 

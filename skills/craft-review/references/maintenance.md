@@ -72,6 +72,30 @@ the Markdown, and execute nothing: no installer, no setup script, no downloaded 
 That holds for every entry regardless of the project, which is why none of the notes above
 need to assess anyone's trustworthiness.
 
+**No source on this list is authoritative, including the ones we agree with.** Nobody has
+this figured out yet, ourselves included. Every entry is somebody's current best guess,
+written with the confidence that publishing demands and rarely with the evidence that would
+justify it. Stars, traffic, a well-known author and an assured tone are all uncorrelated with
+being right.
+
+Three failure modes to watch, because we have committed all three:
+
+- **Attributing a claim a source does not make.** The watchlist once credited Pangram with
+  "structure over vocabulary" and SKILL.md built a ranking on it. They say no single feature
+  decides. Quote before you paraphrase, and record the quote.
+- **Taking a vendor's numbers as findings.** A detection company reporting its own accuracy,
+  on evaluation sets it chose, with no published model or data, is marketing that happens to
+  be numerate. It can still be true. Mark it as self-reported and let a claim rest on it only
+  when nothing turns on the number.
+- **Reading convergence as proof.** Two projects agreeing may mean two projects copied the
+  same ancestor, or that a fashion is circulating. Convergence raises a question worth
+  measuring; it never answers one.
+
+What settles a question here is a measurement we ran and can rerun, with a control that could
+have failed. Where we cannot measure, the honest move is to say the rule is a judgment call
+and name what would change our mind. A borrowed certainty is worse than an admitted gap,
+because the gap is visible and the certainty is not.
+
 Discovering newcomers: search for design-review, design-audit and AI-slop skills on
 GitHub sorted by recent activity, and check what `impeccable` cites. Screen anything new
 with the security pass in `skill-curator` before fetching it, and apply the same read-only
@@ -407,7 +431,7 @@ a rubric. Cut before adding.
 
 ## Locale
 
-Run `tools/us-english.py skills/craft-review` from the repo root; it must report clean. US English is the house rule and publish.sh enforces it.
+Run `tools/us-english.py skills/craft-review` from the repo root; it must report clean. US English is the house rule for this repo's own prose and publish.sh enforces it. It governs what we write and publish, never text a skill is asked to edit: a writer's dialect is part of their voice and normalizing it is a defect, not a tidy-up.
 
 ## Adversarial review, 2026-08-21 (GPT-5.x via codex)
 

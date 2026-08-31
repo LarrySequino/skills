@@ -128,72 +128,79 @@ fork. All three are now in `ATTRIBUTION.md`, and the scanner is at
 
 ## Evals
 
-Each skill ships `evals/evals.json` in Anthropic's `skill-creator` format: prompts with
-checkable expectations, run with the skill and without. Scripts decide every expectation a
-script can decide; a reader decides the rest, with a quoted line of evidence per verdict.
-Opus 5 throughout.
+**natural-writing 3.0 scores 0.95 with the skill against 0.83 without, across 28 evals and 233
+runs, pre-registered and graded blind.**
 
-| Skill | With | Without | Delta | Basis |
-|---|---|---|---|---|
-| natural-writing 3.0 | 0.95 | 0.83 | **+0.12** | 233 clean runs, pre-registered, 2026-08-23 |
-| craft-review | 1.000 | 0.867 | +0.13 | 2026-08-22, still under review |
-| skill-curator | 1.000 | 0.906 | +0.09 | 2026-08-22, still under review |
+What separates is judgment, not vocabulary. The four evals that move at the pre-registered alpha
+are all cases where two reasonable rules disagree and the skill has to pick:
 
-**Only the first row is safe to quote.** natural-writing was re-run from scratch on
-2026-08-23 under rules written down before the first run: 28 evals (27 ship here; one runs
-on another lab's model output, which this repo evaluates rather than redistributes), both
-arms, a floor of three runs per arm with escalation to five or eight where the difference
-warranted it, exact permutation tests, and a reader batch graded blind to which arm produced
-each answer. Four evals separate at the pre-registered alpha:
-voice-survives-a-house-style-pass +0.38 (p=0.0025, n=8), trust-the-reader +0.23, wh-opener
-+0.20, voice-sample-at-length +0.20 (each p=0.0079, n=5). Eight more sit at 1.00 in both
-arms; each carries a wrong-answer control proving it can fail, so a tie there is a floor the
-unaided model already clears, not a blind spot. One eval scores 0.08 lower with the skill,
-on report fidelity, and is filed rather than hidden.
+| Eval | Delta | What it tests |
+|---|---|---|
+| `voice-survives-a-house-style-pass` | +0.38 | Keeping a writer's voice while imposing house style |
+| `trust-the-reader` | +0.23 | Explaining enough for a new audience without scaffolding |
+| `wh-opener-run-not-the-word` | +0.20 | Fixing a run of repeated openers without banning the word |
+| `voice-sample-at-length` | +0.20 | Matching a long voice sample without importing its facts |
 
-That +0.12 is not comparable to the +0.06 this table published before it. Three things
-changed at once: the skill went from 2.x to 3.0, the runs stopped being contaminated, and
-fifteen grader defects were fixed, eleven of which had been penalizing the with-skill arm
-because the skill's richer report format gave the checks more places to misread. Which of the
-three moved the number, and by how much, is not recoverable from the data, so no causal claim
-is made here.
+Eight more evals tie at 1.00 in both arms. Each ships a wrong-answer control that the graders
+must fail, so a tie is a floor the unaided model already clears rather than a check that cannot
+fail. One eval, on the accuracy of the skill's own what-changed report, scores 0.08 **lower**
+with the skill. It is filed, not hidden.
 
-**The other two rows are the old, contaminated numbers**, kept visible rather than deleted so
-the record stays honest. Every run behind them inherited a persona hook, a `CLAUDE.md`, and
-the full skill roster from the session that launched them, and the contamination is not
-symmetric between arms. They also predate the grader fixes. Both skills need the same clean
-re-run natural-writing has now had. [EVALS.md](EVALS.md) carries the detail.
+### Check it yourself
 
-Availability expectations, of the form "the transcript shows the skill's script was run,"
-can only pass with the skill present, so they measure availability rather than behavior.
-`aggregate.py` prints a behavior-only delta on every per-eval line and says so in words when
-a whole delta is availability. The 2026-08-23 natural-writing figures above are unaffected:
-that suite's separating evals turn on judgment, not on script availability.
+Every eval ships: `evals/evals.json` has the prompts and the expectations, and
+`evals/wrong-answers/` has a plausible wrong answer per differentiating eval with the exact
+expectations it must fail. An eval that cannot fail is worth nothing, and the control is how you
+confirm ours can. Per-run records stay private; the definitions, the controls and the full
+correction history are here.
 
-Four things these numbers have taught us, all of them uncomfortable:
+### What this number is, and is not
 
+- **It is one model family.** Opus 5 throughout. We have not shown the result holds elsewhere.
+- **The aggregate is stronger than any single eval.** The four deltas above clear the alpha we
+  pre-registered for sequential looks, which does not correct for testing 28 evals at once. Under
+  a correction across the whole suite none of the four clears on its own. Weight the +0.12.
+- **It is not comparable to the +0.06 this table published before.** Three things changed
+  together: the skill went 2.x to 3.0, the runs stopped being contaminated, and fifteen grader
+  defects were fixed. Which one moved the number is not recoverable, so we claim nothing about it.
+- **Availability is separated from behavior.** An expectation like "the transcript shows the
+  script ran" can only pass with the skill present, so it measures availability. `aggregate.py`
+  prints a behavior-only delta on every line. The figures above turn on judgment, not
+  availability.
+
+### craft-review and skill-curator have not had this treatment
+
+| Skill | With | Without | Delta |
+|---|---|---|---|
+| craft-review | 1.000 | 0.867 | +0.13 |
+| skill-curator | 1.000 | 0.906 | +0.09 |
+
+**Do not quote these.** Every run behind them inherited a persona hook, a `CLAUDE.md` and the
+full skill roster from its launching session, asymmetrically between arms, and they predate the
+grader fixes. Re-grading fixes the checks; it does not fix the answers. They are kept visible
+rather than deleted because deleting them would hide that we published them. Both need the clean
+re-run natural-writing has had.
+
+### What we found wrong in our own instrument
+
+This is the part we would most like to be able to skip, and the part most worth reading.
+
+- **The instrument was wrong more often than the skills were.** Twenty-three grader defects
+  across two audits. Every one failed a correct answer rather than passing a wrong one, and
+  eleven of fifteen found in a single night were against the with-skill arm, because a richer
+  report format gives a pattern more places to misread. A grader audited only when the headline
+  looks wrong will systematically under-measure the treated arm.
+- **More evals were floors than we thought.** An audit counted every expectation verdict across
+  every round and arm: 14 of 34 evals had never recorded a single behavior failure, and nine
+  published a delta that was entirely availability. That is why every tie now ships a control.
 - **A skill can lose.** craft-review scored below its own baseline in round 1, on the two evals
-  that test restraint, and the fix came from that. The number that made the case for this repo
-  is the negative one.
-- **More evals are floors than we thought.** An audit on 2026-08-22 counted every expectation
-  verdict across every round and arm: **14 of 34 evals had never recorded a single behavior
-  failure**, and **nine published a delta that was entirely availability**, flat at 0.00 on
-  behavior. A tie is worth keeping only when a wrong-answer control proves the eval can fail;
-  the 2026-08-23 suite ships one for every eval that ties.
-- **The instrument is wrong more often than the skills are.** Twenty-three grader defects
-  found to date across two audits, and every single one failed a correct answer rather than
-  passing a wrong one. Fifteen came in one night, eleven of those against the with-skill arm,
-  because a richer report format gives a pattern more places to misread. A grader audited only
-  when the headline looks wrong will systematically under-measure the treated arm.
-- **Contaminated runs cannot be un-contaminated by grading them again.** Every eval run before
-  2026-08-23 inherited a persona hook, a `CLAUDE.md`, and the full skill roster from its
-  launching session, asymmetrically between arms. Re-grading fixes the checks; it does not fix
-  the answers. Two of the three skills above are still waiting on a clean re-run.
+  testing restraint. The fix came from that. The number that made the case for this repo is the
+  negative one.
+- **Contaminated runs cannot be un-contaminated by grading them again.** Everything before
+  2026-08-23 is withdrawn rather than re-scored.
 
-Each skill ships its eval definitions in `evals/`: the prompts, the checkable expectations,
-and a wrong-answer control per differentiating eval so you can see what each one is able to
-catch. The per-run records stay in the private repo. The round-by-round history, including
-every correction and what it moved, is in **[EVALS.md](EVALS.md)**.
+Round-by-round history, including every correction and what it moved, is in
+**[EVALS.md](EVALS.md)**.
 
 ## Across model families
 

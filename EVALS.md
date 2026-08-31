@@ -229,6 +229,14 @@ arm produced the answer.
 |---|---|---|---|
 | natural-writing 3.0, 28 evals | **0.95** | **0.83** | **+0.12** |
 
+**The absolute rates carry a measured upward bias of about 2.5 points. The delta does not.**
+Part of the grading is a low-confidence heuristic whose FAILs escalate to a reader and whose
+PASSes never did, so 160 of them were never reviewed by anything. A blinded reader, graded against
+known-verdict controls it had to clear first, overturned 11 percent of a sample of those, CI 3 to
+33. Both arms are similarly exposed: 0.95 and 0.83 are each overstated by roughly one and a half
+points, and the +0.12 becomes +0.117. Stated rather than
+restated, because the correction is smaller than the run-to-run variation already reported here.
+
 **Twenty-seven of the twenty-eight ship here.** `harvested-appeal-keeps-its-genre` runs
 against a fundraising appeal written by another lab's model, and this repo evaluates that
 output rather than redistributing it, so the fixture and its eval are withheld. The 0.95 and

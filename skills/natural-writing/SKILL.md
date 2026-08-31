@@ -2,15 +2,16 @@
 name: natural-writing
 description: >-
   Remove AI writing patterns from any prose a person will read, and keep them out of prose you
-  write. EDIT AND AUDIT TRIGGERS: "deslop", "de-AI", "humanize", "make it sound human", "clean
-  up this writing", "find the AI tells". WRITE TRIGGERS: "write", "draft", "write up", "put
-  together", or naming where it goes -- to send, to post, to publish, to share with someone.
-  ARTIFACTS: any email, any letter, blog post, newsletter, social post, announcement, press
-  release, any report, meeting notes, any proposal, README, docs, release notes, website or
-  marketing copy, slide text, UI microcopy. NOT TRIGGERED BY: "explain", "what is", "how do I",
-  or any answer that stays in the conversation rather than going to a reader. NOT FOR: code,
-  comments, commit messages, or interface typesetting such as quotes, dashes and ellipses as
-  rendered.
+  write. EDIT AND AUDIT TRIGGERS: "deslop", "de-AI", "humanize", "make it sound human", "clean up
+  this writing", "find the AI tells", "sounds robotic", "reads like a chatbot", "sounds like AI
+  wrote it", "full of buzzwords". WRITE TRIGGERS: "write", "draft", "write up", "put together",
+  "turn these notes into", or naming where it goes -- to send, to post, to publish, to share with
+  someone. ARTIFACTS: any email, any letter, blog post, newsletter, social post, announcement,
+  press release, any report, meeting notes, any proposal, README, docs, release notes, website or
+  marketing copy, slide text, UI microcopy, artifact or published page. NOT TRIGGERED BY:
+  "explain", "what is", "how do I", or any answer that stays in the conversation rather than going
+  to a reader. NOT FOR: code, comments, commit messages, or interface typesetting such as quotes,
+  dashes and ellipses as rendered.
 ---
 
 # Natural Writing: Prose Without AI Patterns
@@ -33,7 +34,9 @@ A lower item never overrides a higher one. Where a rule below says it defers, th
 
 ## What a pattern match is worth
 
-The patterns here are statistically more common in LLM output, but humans on autopilot produce the same shapes, whether under deadline, in an unfamiliar genre, or in a second language. Detectors built on these same signals misfire on non-native writers at rates that should end the argument (the figure and the citation are in `references/preflight.md`). So: these patterns are worth fixing in any prose, but never treat them as proof of AI authorship for a consequential decision (academic integrity, hiring, attribution). When auditing someone else's text, report patterns, not verdicts.
+The patterns here are statistically more common in LLM output, but humans on autopilot produce the same shapes, whether under deadline, in an unfamiliar genre, or in a second language. A checklist is single-feature reasoning and the detectors that work are not, which is the durable reason a hit here proves nothing about who wrote it (`references/preflight.md`). So: these patterns are worth fixing in any prose, but never treat them as proof of AI authorship for a consequential decision (academic integrity, hiring, attribution). When auditing someone else's text, report patterns, not verdicts.
+
+**This will not hide AI authorship, and it is not for that.** The point is worth stating because the mechanism overlaps with what evasion tools do, and because someone will try. The reason does not rest on any detector's accuracy, which is fortunate, because the numbers available are vendor self-reports. Pangram claims it still identifies text as AI-generated 99.57% of the time across 10,223 documents rewritten under the instructions of `blader/humanizer`, the first source on this skill's own watchlist, and runs a second classifier labeling text as *humanized AI*. Discount that figure as a vendor reporting on its own product against a tool it is positioned against, and the direction still holds: the people building detectors are training specifically on the transformation this skill performs. Editing for quality is the job here. Passing off AI text as your own is a different act, this will not accomplish it, and the attempt leaves a mark.
 
 A short sample carries no signal. Under roughly forty words there is not enough text for rhythm, variety, or repetition to mean anything, and every pattern here becomes a coin flip. Say the sample is too short rather than returning a verdict on it. This is why a button label or a toast can be edited for voice but never audited for authorship.
 
@@ -91,9 +94,9 @@ Not all flagged words are equal. Tier 1 words (delve, tapestry, leverage, seamle
 
 Avoid binary contrasts ("Not X. Y."), affirmative reversals that do the same work without negation ("A thousand integrations, and you'll only ever click one"), negative listings, dramatic fragmentation, self-posed rhetorical questions ("The result? Devastating."), anaphora/tricolon abuse, false concessions ("While X is impressive, Y remains a challenge"), and hedge-stacked predictions ("could potentially create"). See [references/structures.md](references/structures.md).
 
-### 4. Eliminate AI tropes and artifacts
+### 4. Eliminate AI tropes and chatbot residue
 
-Watch for "quietly" and other magic adverbs, the "serves as" dodge, false ranges, superficial participle analyses, invented concept labels, grandiose stakes inflation, and false vulnerability ([references/structures.md](references/structures.md)). Separately, hunt **artifacts**: chatbot residue that is near-proof of pasted AI output: "Great question!", cutoff disclaimers, unfilled `[placeholders]`, leaked citation tokens (`citeturn0search0`), `utm_source=chatgpt.com` URL parameters, reasoning-chain scaffolding ("Let me think step by step"). Artifacts are always P0. See [references/patterns.md](references/patterns.md).
+Watch for "quietly" and other magic adverbs, the "serves as" dodge, false ranges, superficial participle analyses, invented concept labels, grandiose stakes inflation, and false vulnerability ([references/structures.md](references/structures.md)). Separately, hunt **chatbot residue**: text that is near-proof of pasted AI output: "Great question!", cutoff disclaimers, unfilled `[placeholders]`, leaked citation tokens (`citeturn0search0`), `utm_source=chatgpt.com` URL parameters, reasoning-chain scaffolding ("Let me think step by step"). Residue is always P0. It is catalogued in [references/patterns.md](references/patterns.md) under the heading Artifacts, which is that file's name for it and not the published-page sense used below.
 
 ### 5. Prefer active voice with human subjects
 
@@ -117,7 +120,9 @@ Prose and docs should describe what something *is*, not narrate the edit that pr
 
 Blog posts: put the reader in the room; "you" beats "people." Scientific writing: appropriate formality, "we" for your own work, cite specific authors. Docs: clarity over voice, imperative mood for instructions. Social posts: fragments and 2–3 specific hashtags are fine; 6+ trailing hashtags is a hard flag.
 
-If the user provides a sample of their own writing, calibrate to it: match its sentence-length pattern, contraction rate, and word choices. Don't "upgrade" their vocabulary. If they write "stuff," keep "stuff." If text already has a voice, don't impose one. A provided voice sample outranks the mechanical rules where they conflict: if the writer's authentic style uses em dashes or triads, their voice wins over the ban. That holds for every rule below, not only the ones that name the exemption.
+If the user provides a sample of their own writing, calibrate to it: match its sentence-length pattern, contraction rate, and word choices. Don't "upgrade" their vocabulary. If they write "stuff," keep "stuff." If text already has a voice, don't impose one.
+
+**Dialect is voice, and the draft is its own sample.** British, Australian, Indian, Irish, Canadian, Nigerian, Singaporean and every other variety of English belongs to the writer. If a draft says `organised`, `centre`, `whilst`, `maths` or `10/06/2026`, those are the author's and they stay, along with the punctuation and quotation conventions that travel with them. This rule needs no supplied sample, because the text in front of you is the sample: normalizing a dialect is the same flattening this skill exists to prevent, and it is worse than most, because it edits who the writer is rather than how carefully they wrote. Convert only when the user asks or a named destination requires it, and say so when you do. A mixed draft is a consistency question to raise, never one to silently resolve toward the variety you saw most in training. A provided voice sample outranks the mechanical rules where they conflict: if the writer's authentic style uses em dashes or triads, their voice wins over the ban. That holds for every rule below, not only the ones that name the exemption.
 
 **Then check it with `scripts/prose-scan.py --voice <sample> <rewrite>`.** It counts the devices the sample demonstrates and reports each one the rewrite dropped or thinned to under half the sample's rate. Reading the sample and naming its habits is not the same as carrying them: on 2026-08-22 a benchmark run catalogued "exclamation for emphasis (\"Twelve!\")" in its own notes and then shipped a rewrite with no exclamation mark in it, five runs out of five. A rule stated more clearly does not fix that. A count does. Traits the sample uses only once are skipped, because one instance is not a habit, and it reports `IMPOSED` when the rewrite runs a device at more than twice the sample's rate: a voice matched by overshooting is not matched.
 
@@ -125,7 +130,7 @@ It protects voice and never habit. Nothing in `references/phrases.md` is covered
 
 ### 9. Vary rhythm
 
-Structure is the #1 detection signal, and detectors weight rhythm uniformity above vocabulary. Mix short sentences (3–8 words) with long ones (20+). Vary paragraph lengths deliberately; some should be one sentence. Don't stack punchy fragments for manufactured emphasis. A fragment that carries the author's voice is item 3 and this rule is item 6, so the fragment stays; what goes is the stacking that came from the draft's habit. Prefer two items over reflexive triads, but a three-item list is not a crime. The flag is *compulsive* rule of three, not any tricolon.
+Uniform rhythm survives every word-level fix, so a vocabulary pass will never catch it. Mix short sentences (3–8 words) with long ones (20+). Vary paragraph lengths deliberately; some should be one sentence. Don't stack punchy fragments for manufactured emphasis. A fragment that carries the author's voice is item 3 and this rule is item 6, so the fragment stays; what goes is the stacking that came from the draft's habit. Prefer two items over reflexive triads, but a three-item list is not a crime. The flag is *compulsive* rule of three, not any tricolon.
 
 ### 10. Trust readers
 
@@ -152,6 +157,8 @@ Strip what makes writing hard to read: tangled clauses, abstract nouns, jargon t
 An **answer** explains, decides, advises, or reports. It states its point and stops; length is a cost. A **deliverable** is the artifact you were asked to produce, such as a doc, spec, plan, post, or report. There, length is the substance, and cutting it is cutting the work. When you can't tell which you're writing, treat it as an answer.
 
 Applying answer discipline to a deliverable produces a thin artifact. Applying deliverable discipline to an answer produces a wall of text nobody reads. Most length complaints are this mismatch rather than bad writing.
+
+**This rule governs what you write, not what you are asked to shorten.** Wordiness is this skill's business only where it has a pattern behind it: one point restated ten ways, the treadmill effect, synonym cycling, sentences that could swap places without loss. Those are catalogued and have a shape. "Make this shorter" over prose that is already saying distinct things is ordinary editing, and ordinary editing is not this skill. Say so and leave it rather than cutting good sentences to satisfy a request you were not built for.
 
 **Expansion is earned by cost, not relevance.** Expand a point where a mistake would cost the reader: a risky step, a real trade-off, a gotcha they would otherwise hit. Merely relevant is not enough. Lead each expansion with why it matters, and if nothing would be lost by cutting it, cut it.
 
@@ -186,6 +193,35 @@ Quick pass = P0 + P1. Full audit = all three.
 ## Self-reference escape hatch
 
 When writing *about* AI patterns, quoted examples are exempt. Only flag patterns in the author's own prose, never in cited examples of bad writing, quoted material, or code blocks.
+
+## Prose inside a page
+
+A published page, artifact, slide deck or component file is prose wrapped in machinery. Edit the
+prose. Leave the machinery: tags, attributes, class names, IDs, `style` and `script` blocks, data
+attributes, template placeholders, and anything a build step reads. Rule 2 already forbids
+touching code; this says where the boundary runs when the two share a file.
+
+The prose is the part a person reads: headings, body copy, list items, button and link text, form
+labels, empty states, error messages, alt text, captions, and the page title. Every rule above
+applies to it, voice and the no-fabrication constraint included.
+
+Three things behave differently at this size.
+
+- **A string can appear twice, or be matched by code.** Rewriting it fixes one place and breaks
+  another. Flag those rather than editing them, the same way quoted material is flagged.
+- **Rate-based checks stop meaning anything.** The dash cap is per 1,000 words, and a page may hold
+  eighty. One dash in a hero heading reads as 12 per 1,000 and says nothing. Count instances and
+  judge them; do not report a rate off a sample this small.
+**Prove it afterward.** Copy the file before editing, then run
+`scripts/markup-diff.py <before> <after>`. It compares tags, attributes, and the exact
+contents of `script`, `style`, `pre` and `code`, and fails on any change to them, so
+"I only touched the copy" becomes a checked claim rather than an intention. It also
+catches the partial edit above: a string that appeared twice and now appears once.
+Attributes a person reads (`alt`, `title`, `placeholder`, `aria-label`) count as copy and
+may change, provided their visible twin changes with them.
+
+- **Brevity is the format, not a tell.** A button without a subject is not a fragment problem, and
+  a two-word empty state is not throat-clearing. The length rules in item 13 assume paragraphs.
 
 ## Output formats
 
