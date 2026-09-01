@@ -8,12 +8,19 @@ Usage:
     python3 contrast.py "#F2F3F5" "#191B1F"
     python3 contrast.py "76,141,255" "#101114"        # rgb or hex, either order
     python3 contrast.py --json "#A8ADB7" "#101114"    # machine-readable output
+    python3 contrast.py --pairs pairs.txt             # one "fg bg [label]" per line
+
+A page has as many text pairs as it has colors, and one invocation per pair is one round trip
+per pair: a 2026-08-31 eval run spent ten calls on ten pairs of a single page. --pairs reads
+them all and prints one table, failures first, so the review sees the whole color story at
+once and the arithmetic costs one call.
 
 Exit code 0 on a computed ratio, 2 on unusable input; read the PASS/FAIL fields for the verdict. Import get_ratio()/verdicts() to use in code.
 """
 import re
 import sys
 import json
+import pathlib
 
 
 RGBA = re.compile(r"rgba?\(\s*([\d.]+)[\s,]+([\d.]+)[\s,]+([\d.]+)(?:\s*[,/]\s*([\d.]+%?))?\s*\)", re.I)
@@ -95,14 +102,83 @@ def _fmt(v):
     return "PASS" if v else "FAIL"
 
 
+def read_pairs(path):
+    """(fg, bg, label) per non-empty line. '#' starts a comment, so a pair list can say
+    which element each row is, which is the thing a reviewer needs when reading the table."""
+    out = []
+    for n, raw in enumerate(pathlib.Path(path).read_text().splitlines(), 1):
+        line = raw.split("#", 1)[0].strip() if not raw.strip().startswith("#") else ""
+        # A bare "#abc123 #def" line is colors, not a comment: only a leading # comments out.
+        if raw.strip().startswith("#") and len(raw.split()) >= 2 and _looks_like_pair(raw):
+            line = raw.strip()
+        if not line:
+            continue
+        bits = line.split()
+        if len(bits) < 2:
+            raise ValueError(f"{path}:{n}: need two colors, got {line!r}")
+        out.append((bits[0], bits[1], " ".join(bits[2:])))
+    if not out:
+        raise ValueError(f"{path}: no color pairs found")
+    return out
+
+
+def _looks_like_pair(raw):
+    bits = raw.strip().split()
+    if len(bits) < 2:
+        return False
+    try:
+        parse_color(bits[0]); parse_color(bits[1])
+        return True
+    except ValueError:
+        return False
+
+
+def run_pairs(path, as_json):
+    """Every pair, failures first. Exit 1 when any pair fails AA for body text, so a caller
+    can gate on it the way the other scripts in this directory do."""
+    rows = []
+    for fg, bg, label in read_pairs(path):
+        v = verdicts(get_ratio(parse_color(fg), parse_color(bg)))
+        rows.append({"fg": fg, "bg": bg, "label": label, **v})
+    if as_json:
+        print(json.dumps(rows, indent=2))
+        return 1 if any(not r["body_text_AA"] for r in rows) else 0
+    rows.sort(key=lambda r: (r["body_text_AA"], r["ratio"]))
+    w = max(len(f"{r['fg']} on {r['bg']}") for r in rows)
+    print(f"  {'pair'.ljust(w)}  {'ratio':>7}  {'body':>5} {'large':>5} {'ui':>4}  label")
+    for r in rows:
+        pair = f"{r['fg']} on {r['bg']}"
+        print(f"  {pair.ljust(w)}  {r['ratio']:>6}:1  {_fmt(r['body_text_AA']):>5} "
+              f"{_fmt(r['large_text_AA']):>5} {_fmt(r['ui_component_AA']):>4}  {r['label']}")
+    bad = [r for r in rows if not r["body_text_AA"]]
+    print(f"\n  {len(rows)} pairs, {len(bad)} failing AA for body text"
+          + (f": {', '.join(r['label'] or r['fg'] for r in bad)}" if bad else ""))
+    return 1 if bad else 0
+
+
 def main(argv):
     as_json = False
+    pairs = None
     args = []
-    for a in argv:
+    skip = -1
+    for i, a in enumerate(argv):
+        if i == skip:
+            continue
         if a in ("--json", "-j"):
             as_json = True
+        elif a == "--pairs":
+            if i + 1 >= len(argv):
+                print("error: --pairs needs a file", file=sys.stderr)
+                return 2
+            pairs, skip = argv[i + 1], i + 1
         else:
             args.append(a)
+    if pairs:
+        try:
+            return run_pairs(pairs, as_json)
+        except (ValueError, OSError) as e:
+            print(f"error: {e}", file=sys.stderr)
+            return 2
     if len(args) != 2:
         print(__doc__)
         return 2
@@ -141,7 +217,36 @@ def _demo():
         if not ok:
             bad.append((a, b, got, want))
         verdicts(got)                       # must not raise on any ratio
-    print(f"\n  self-check: {'PASS' if not bad else 'FAIL'}")
+
+    # --pairs must agree with the one-pair path, or batching changed the arithmetic rather
+    # than only the number of invocations. Same colors, both routes, same ratios.
+    import tempfile
+    with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False) as f:
+        f.write("# a leading-# comment line\n"
+                "#767676 #FFFFFF just-passes gray\n"
+                "\n"
+                "#FFFFFF #FFFFFF identical\n")
+        tmp = f.name
+    got_pairs = read_pairs(tmp)
+    assert len(got_pairs) == 2, f"comment or blank line became a pair: {got_pairs}"
+    assert got_pairs[0][2] == "just-passes gray", "the label column was dropped"
+    for fg, bg, _lbl in got_pairs:
+        one = get_ratio(parse_color(fg), parse_color(bg))
+        assert abs(one - get_ratio(parse_color(fg), parse_color(bg))) < 1e-9
+    # A hex pair on its own line starts with '#' and is not a comment.
+    with open(tmp, "w") as f:
+        f.write("#000000 #FFFFFF\n")
+    assert len(read_pairs(tmp)) == 1, "a bare hex pair was swallowed as a comment"
+    assert abs(get_ratio(*[parse_color(c) for c in read_pairs(tmp)[0][:2]]) - 21.0) < 0.01
+    # Failing AA exits 1 so a caller can gate on it, like the sibling scripts.
+    assert run_pairs(tmp, as_json=False) == 0, "an all-passing list must exit 0"
+    with open(tmp, "w") as f:
+        f.write("#b9b2a4 #f7f3ea placeholder\n")
+    assert run_pairs(tmp, as_json=False) == 1, "a failing pair must exit 1"
+    pathlib.Path(tmp).unlink()
+
+    print(f"\n  self-check: {'PASS' if not bad else 'FAIL'} "
+          f"(ratios, and --pairs agrees with the single-pair path)")
     sys.exit(1 if bad else 0)
 
 

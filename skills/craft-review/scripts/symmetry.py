@@ -202,7 +202,50 @@ def analyze(data):
                 f"paired components have different padding — {detail}. "
                 f"Unify to one value and make them a shared component instance."))
 
+    findings += target_sizes(data.get("controls") or [])
     return findings, pads
+
+
+# thresholds.md: touch is 48x48dp, pointer 44x44px, and an artifact that ships to more than
+# one platform binds to the stricter of the two. 48 satisfies both; 44 satisfies only one.
+TOUCH, POINTER = 48, 44
+
+
+def target_sizes(controls):
+    """Operable controls smaller than the touch minimum.
+
+    Every one of 36 review runs on 2026-08-31 measured hit areas by hand, against a number
+    written down in thresholds.md, from boxes this collector was already returning. Thirty-six
+    independent implementations of one comparison is a correctness risk before it is a cost
+    one: eval 16 records resolving Android to 44 instead of 48 as exactly the error the
+    modality axis exists to stop, and every run was free to make it.
+
+    Two bands, because the difference is the finding rather than a detail. Under 44 fails
+    every platform and is Major. Between 44 and 48 passes pointer and fails touch, which is a
+    real decision about what the artifact ships to, so it is reported as Minor and named as
+    the cross-platform rule rather than as a defect on its face.
+    """
+    out = []
+    for c in controls:
+        b = c.get("bounds") or {}
+        w, h = b.get("w"), b.get("h")
+        if not w or not h:
+            continue
+        small = min(w, h)
+        if small >= TOUCH:
+            continue
+        axis = "width" if w <= h else "height"
+        if small < POINTER:
+            out.append(("MAJOR", "Target size", c.get("name", c.get("tag", "?")),
+                        f"{w}x{h}px, {axis} {small}px is under the {POINTER}px pointer minimum "
+                        f"and the {TOUCH}dp touch minimum. Grow the control, or grow its hit "
+                        f"area with padding — a larger box on the same visual."))
+        else:
+            out.append(("MINOR", "Target size", c.get("name", c.get("tag", "?")),
+                        f"{w}x{h}px clears the {POINTER}px pointer minimum and misses the "
+                        f"{TOUCH}dp touch one. Fine for a pointer-only artifact; if this ships "
+                        f"to touch as well, thresholds.md binds it to the stricter {TOUCH}."))
+    return out
 
 
 def report(findings, pads):
@@ -288,8 +331,24 @@ PLANTED = {
 }
 
 
+def _target_selfcheck():
+    """The two bands, the exempt cases, and the shape that must stay silent."""
+    def one(w, h):
+        return target_sizes([{"name": "b", "tag": "button", "bounds": {"w": w, "h": h}}])
+    assert one(24, 24)[0][0] == "MAJOR", "under the pointer minimum is not Major"
+    assert one(46, 46)[0][0] == "MINOR", "between pointer and touch is not Minor"
+    assert one(48, 48) == [], "a control at the touch minimum was flagged"
+    assert one(200, 56) == [], "a large control was flagged"
+    # Only the smaller side decides: a 200x24 bar is 24px to hit vertically.
+    assert one(200, 24)[0][0] == "MAJOR" and "height 24px" in one(200, 24)[0][3]
+    assert one(0, 0) == [], "a control with no rendered box is not a target-size finding"
+    # Geometry input carries no controls key, and must not become a wall of findings.
+    assert analyze({"frames": [], "grid_base": 8})[0] == []
+
+
 def _selfcheck():
     """Every plant in DEMO is found, and CLEAN geometry reports nothing. Exits 1 on any miss."""
+    _target_selfcheck()
     found = {(sev, cat, where) for sev, cat, where, _ in analyze(DEMO)[0]}
     missing = sorted(PLANTED - found)
     clean, _ = analyze(CLEAN)

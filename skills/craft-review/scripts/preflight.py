@@ -314,6 +314,36 @@ def check(html, baseline=None):
                         f"behavior the old page had",
                     )
                 )
+    # 6. motion that never asks, and focus that cannot be seen. Both are conditions a
+    #    reviewer looking at a static screenshot never enters, which is this file's whole
+    #    remit. WARN rather than BLOCK: a page with no animation needs no media query and a
+    #    page with no custom outline keeps the browser's, so absence is only a defect when
+    #    the page took the thing away. Added 2026-08-31; 22 of 36 review runs checked the
+    #    first by hand and 15 checked the second, none of them from a bundled check.
+    css_all = " ".join(blocks(html))
+    animated = re.search(r"@keyframes|animation\s*:|transition\s*:", css_all, re.I)
+    if animated and not re.search(r"prefers-reduced-motion", css_all, re.I):
+        out.append(dict(level="WARN", check="reduced-motion",
+                        detail="the page animates and never honors prefers-reduced-motion — "
+                               "vestibular users get the full motion (WCAG 2.2 SC 2.3.3)"))
+    # outline:none is the removal. :focus-visible, or a :focus rule that paints something
+    # back, is the replacement; a page that replaces it is fine and one that only removes is
+    # not. The declaration that removes must not count as one that restores: the first
+    # version of this matched `button:focus{outline:none}` as a restore, because the block
+    # contains the word "outline", and reported the page clean. Caught by the negative
+    # control, which is the only reason the check works.
+    kills = re.search(r"outline\s*:\s*(none|0)\b", css_all, re.I)
+    restores = re.search(r":focus-visible", css_all, re.I)
+    if not restores:
+        for m in re.finditer(r":focus\b[^{]*\{([^}]*)\}", css_all, re.I):
+            body = re.sub(r"outline\s*:\s*(none|0)\b[^;]*;?", "", m.group(1), flags=re.I)
+            if re.search(r"outline|box-shadow|border|background|ring", body, re.I):
+                restores = m
+                break
+    if kills and not restores:
+        out.append(dict(level="WARN", check="focus-invisible",
+                        detail="outline is removed and nothing replaces it — keyboard users "
+                               "lose the focus indicator (WCAG 2.2 SC 2.4.7 / 2.4.11)"))
     return out
 
 
@@ -372,8 +402,34 @@ def demo():
     levels = {f["detail"].split()[0]: f["level"] for f in check(band) if f["check"] == "contrast"}
     assert levels.get(".small") == "BLOCK", levels    # 3.4:1 body text fails AA
     assert levels.get(".big") == "WARN", levels       # same pair at 32px passes AA large
-    print("  self-check: PASS — all 5 checks fire on a deliberately broken page, "
-          "and the body/large-text contrast bars split correctly")
+    # A page that animates and never asks. The mirror case matters more: a page with no
+    # animation at all must not be told to add a media query it has no use for.
+    moves = "<style>body{background:#fff;color:#111}.c{animation:p 2s}</style><div class=c>x</div>"
+    assert any(x["check"] == "reduced-motion" for x in check(moves))
+    still = "<style>body{background:#fff;color:#111}.c{color:#222}</style><div class=c>x</div>"
+    assert not any(x["check"] == "reduced-motion" for x in check(still)), \
+        "a page with no motion was asked to honor prefers-reduced-motion"
+    asks = ("<style>body{background:#fff;color:#111}.c{animation:p 2s}"
+            "@media(prefers-reduced-motion:reduce){.c{animation:none}}</style><div class=c>x</div>")
+    assert not any(x["check"] == "reduced-motion" for x in check(asks))
+
+    # The removal must not read as its own replacement. The first version of this check
+    # matched `button:focus{outline:none}` as a restore, because the block contains the word
+    # "outline", and called the page clean.
+    kill = "<style>body{background:#fff;color:#111}button:focus{outline:none}</style><button>g</button>"
+    assert any(x["check"] == "focus-invisible" for x in check(kill)), \
+        "outline:none with nothing replacing it was not caught"
+    for ok in ("button:focus{outline:none}button:focus-visible{outline:2px solid #06c}",
+               "a:focus{outline:none;box-shadow:0 0 0 3px #06c}"):
+        page = f"<style>body{{background:#fff;color:#111}}{ok}</style><button>g</button>"
+        assert not any(x["check"] == "focus-invisible" for x in check(page)), ok
+    plain = "<style>body{background:#fff;color:#111}</style><button>g</button>"
+    assert not any(x["check"] == "focus-invisible" for x in check(plain)), \
+        "a page that never touches outline keeps the browser's and is not a defect"
+
+    print("  self-check: PASS — all 7 checks fire on a deliberately broken page, the "
+          "body/large-text contrast bars split correctly, and neither motion nor focus "
+          "fires on a page that never took the thing away")
 
 
 if __name__ == "__main__":

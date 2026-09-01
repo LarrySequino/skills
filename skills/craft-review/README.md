@@ -20,6 +20,7 @@ Reference files, read on demand rather than loaded up front:
 Bundled scripts, which the skill calls rather than reimplementing:
 
 - [`scripts/contrast.py`](scripts/contrast.py) — 
+- [`scripts/measure.py`](scripts/measure.py) — measure.py — run every deterministic check on one artifact, in one invocation.
 - [`scripts/preflight.py`](scripts/preflight.py) — 
 - [`scripts/slop-scan.py`](scripts/slop-scan.py) — 
 - [`scripts/symmetry.py`](scripts/symmetry.py) — 

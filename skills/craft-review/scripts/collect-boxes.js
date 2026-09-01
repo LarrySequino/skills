@@ -95,6 +95,41 @@ function collectBoxes(opts) {
     for (var i = 1; i < group.length; i++) pairs.push([group[0], group[i]]);
   });
 
+  // Interactive elements, collected separately and deliberately outside the frame walk.
+  // A frame needs element children and a minimum area; a 24x24 icon button has neither, and
+  // it is exactly the control a target-size check exists to catch. Every review run on
+  // 2026-08-31 measured hit areas by hand because this was not here.
+  //
+  // Only what the platform itself treats as operable, plus explicit ARIA and tabindex. A
+  // div with a click handler is invisible to the DOM and is not guessed at, the same
+  // false-positive discipline the frame walk keeps.
+  var INTERACTIVE = 'a[href], button, input, select, textarea, summary, ' +
+                    '[role=button], [role=link], [role=checkbox], [role=radio], ' +
+                    '[role=switch], [role=tab], [role=menuitem], [tabindex]';
+  var controls = [];
+  var seen = [];
+  var nodes = (opts.root || document).querySelectorAll(INTERACTIVE);
+  for (var c = 0; c < nodes.length && controls.length < maxFrames; c++) {
+    var el = nodes[c];
+    var cs = getComputedStyle(el);
+    if (cs.display === 'none' || cs.visibility === 'hidden') continue;
+    // A disabled control is exempt from the target-size rule, per thresholds.md.
+    if (el.disabled || el.getAttribute('aria-disabled') === 'true') continue;
+    if (el.getAttribute('tabindex') === '-1') continue;   // not in the tab order, not operable
+    // WCAG 2.5.8's own inline exception: a target whose size is constrained by the
+    // line-height of the text around it is exempt. display:inline IS that constraint --
+    // width and height do not apply to it, so its box is the line box and nothing else.
+    // Without this, every text link on a page is a Major finding: six of them on
+    // tasteful-default.html, which the suite documents as measurably clean.
+    if (cs.display === 'inline') continue;
+    var b = box(el);
+    if (!b.w || !b.h) continue;                            // zero-box: not rendered
+    if (seen.indexOf(el) !== -1) continue;
+    seen.push(el);
+    controls.push({ name: nameFor(el), tag: el.tagName.toLowerCase(),
+                    display: cs.display, bounds: b });
+  }
+
   return {
     // In HTML, width and height are computed by the layout engine from the
     // container and the content; they are not authored the way a Figma frame's
@@ -104,7 +139,8 @@ function collectBoxes(opts) {
     grid_base: opts.gridBase || 8,
     tolerance: opts.tolerance == null ? 1 : opts.tolerance,
     frames: frames,
-    pairs: pairs
+    pairs: pairs,
+    controls: controls
   };
 }
 

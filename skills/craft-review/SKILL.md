@@ -154,9 +154,25 @@ The lens craft rigor misses. The prose anti-slop doctrine applied to pixels; ful
 
 Run these; do not read them. Every one answers `--help` with its usage, flags, exit codes and an example, which is the whole interface. Reading the source instead costs about 12,000 tokens across the four and tells you nothing `--help` does not — measured across 18 runs, 83% read all four having been asked to run them.
 
+**Start with `scripts/measure.py`.** One call runs preflight, slop-scan, and symmetry at all
+three widths, and prints the answers together:
+
+```
+python3 scripts/measure.py page.html                    # the standard pass
+python3 scripts/measure.py page.html --pairs pairs.txt  # and the contrast table
+python3 scripts/measure.py geometry.json                # Figma: symmetry only
+```
+
+It is not new analysis; it is the scripts below, driven once. Reach for them individually only
+when following something up. Six separate invocations was the going rate, and across 29 runs on
+2026-08-31 a review cost about 2,700 tokens per tool call against a 55,000 fixed floor — half
+of what a review spent was re-entering to run the next script.
 
 - `scripts/contrast.py` — WCAG contrast ratio for two hex colors + AA/AAA pass for normal/large/non-text.
   `python3 scripts/contrast.py "#f4eefb" "#161020"`
+  A page has as many pairs as it has colors, and one call per pair is one round trip per pair:
+  `python3 scripts/contrast.py --pairs pairs.txt` takes a `fg bg label` per line and prints one
+  table, failures first. Exits 1 if any pair fails AA for body text.
 - `scripts/symmetry.py` — reads a JSON of frame + child geometry (as returned by `get_metadata`) and
   reports padding asymmetry, paired-component mismatches, and off-grid values.
   `python3 scripts/symmetry.py geometry.json`  (run `--demo` for the Sleep-screen example and a
@@ -248,6 +264,8 @@ important finding — fix the disagreement, not the symptom.
 - `references/thresholds.md` — exact WCAG, platform, type, grid, and motion numbers.
 - `references/design-tropes.md` — the catalog of AI design tells for the Group E distinctiveness pass.
 - `references/example-review.md` — a full worked review (the few-shot gold standard).
+- `scripts/measure.py` — runs every deterministic check on one artifact in one invocation, and
+  is the normal way into the four below.
 - `scripts/preflight.py` — showstopper gate for HTML artifacts. Deterministic only; run it
   before anything ships, and pass `--baseline` when rewriting an existing page.
 - `scripts/symmetry.py` takes **either source**: `symmetry.py mock.html` renders it headless and
