@@ -26,6 +26,7 @@ Reference files, read on demand rather than loaded up front:
 - [`references/phrases.md`](references/phrases.md) — Phrases to Remove or Replace
 - [`references/preflight.md`](references/preflight.md) — Preflight: Pass/Fail Checks Before Delivery
 - [`references/structures.md`](references/structures.md) — Structures to Avoid
+- [`references/ui-copy.md`](references/ui-copy.md) — UI copy
 - [`references/vocabulary.md`](references/vocabulary.md) — Tiered AI Vocabulary
 
 Bundled scripts, which the skill calls rather than reimplementing:

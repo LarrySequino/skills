@@ -269,6 +269,16 @@ Making a single argument and restating it in ten different ways. The model pads 
 
 **Fix:** State the point once, support it, move on. If the piece circles back to the same claim more than twice, cut the repetitions.
 
+## The Clipped Tally
+
+A count with a subset hung off it as a fragment: "Six calls, three of them yours." "Four
+sessions, two abandoned." It performs precision and lands like a verdict, and it reads as
+written for effect because it is. A person reporting the same fact writes the sentence: "Three
+of the six calls were yours." The owner flagged the first example on 2026-08-18 after the scan
+missed it.
+
+**Fix:** Make it a sentence with a verb, or cut the subset if it carries nothing.
+
 ## The Dead Metaphor
 
 Latching onto a single metaphor and using it in every paragraph. A human writer introduces a metaphor, uses it, and moves on. AI repeats the same metaphor 5-10 times.

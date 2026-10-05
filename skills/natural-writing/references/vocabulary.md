@@ -2,7 +2,7 @@
 
 Words organized by how reliably they signal AI-generated text. The tiering prevents false positives: a word that's suspicious in a cluster may be perfectly fine alone.
 
-- **Tier 1, always replace.** These appear 5–20x more often in AI text than human text.
+- **Tier 1, always replace.** These appear far more often in AI text than human text (a 5–20x ratio is reported, but its method and data are unpublished).
 - **Tier 2, flag in clusters.** Individually fine; two or more in the same paragraph is a strong signal.
 - **Tier 3, flag by density or company.** Normal words AI overuses. Flag when the text is saturated with them (roughly 3%+ of total words), or when several land in a paragraph that also carries a Tier 1 or Tier 2 hit. A lone Tier 3 word is never evidence; a short document can stay under the density threshold and still have one badly clustered paragraph.
 

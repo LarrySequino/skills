@@ -138,3 +138,17 @@ They are recorded here so the absence is deliberate rather than an omission. Per
 provenance, including the exact model and route for every document, is in each provider
 directory's `PROVENANCE.json`, and `evals/files/harvested/README.md` explains what the corpus
 is for and why it is withheld from the published mirror.
+
+## Harvested 2026-09-02, into `references/ui-copy.md`
+
+- **jakubkrehel/skills** (`better-writing`), MIT, Copyright (c) 2026 Jakub Krehel. Five UX-writing rules, reimplemented in fresh words; no text reproduced.
+- **cursor/plugins pstack** (`technical-writing`), MIT, Copyright (c) 2026 Lauren Tan (`pstack/LICENSE`). Four procedure-wording rules, reimplemented; no text reproduced.
+- **Josh Pigford** (`clarity-audit`, `polish`, `error-message-audit`), Initial Commit. Ideas and rewrites only, nothing quoted or copied, by the owner's call of 2026-09-02; license status and what was taken are in `references/maintenance.md`.
+
+## Harvested 2026-09-29
+
+- **blader/humanizer** @ c6f7cc2, MIT, Copyright (c) 2025 Siqi Chen. Three emphasis-crutch shapes in `references/phrases.md`: the "read that again" instruction, a period after each word, and one word in capitals.
+- **conorbronsdon/avoid-ai-writing** @ 9b8d030 (family added in 3.28.0), MIT, Copyright (c) 2026 Conor Bronsdon; upstream adapted the category from Simon Willison's LLM cliché highlighter. The staged-discovery family, as the Performed Insight section of `references/phrases.md`.
+- **aashaexo/soundshuman** @ a45cfbb, MIT, Copyright (c) 2026 aasha. `git diff --word-diff` as the review view in edit mode.
+- **jalaalrd/anti-ai-slop-writing** @ 63255f9, no license file: idea only, no text. Markdown sent to a plain-text destination, in rule 12.
+- **hgaddipati1118/slop-index** @ 80b1b0d, MIT, Copyright (c) 2026 Slashy. Two measurements cited in `SKILL.md`: the human and model em dash rates beside the cap in rule 12, and the Enron email length medians in rule 15.

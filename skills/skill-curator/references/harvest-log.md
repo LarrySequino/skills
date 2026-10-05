@@ -34,6 +34,7 @@ The version column is what makes the next pass a diff instead of a re-read. Reco
 ## Rules
 
 - Update the log in the same pass that harvests, never afterward from memory.
+- Record the license status per source as confirmed, asserted, terms, none, or pending, and take text or code only from confirmed; terms means ideas and rewrites ones; ideas written fresh transfer under any of the four, with the overlap scan as the proof.
 - If a source can't be verified, write "unverified" rather than a guess.
 - Keep dormant sources in the table with a note to skip; removing them means rediscovering them later.
 - When a skill is renamed, keep the former name in the log so older references resolve.

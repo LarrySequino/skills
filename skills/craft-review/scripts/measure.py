@@ -35,7 +35,7 @@ def run(script, args):
     p = HERE / script
     if not p.exists():
         return script, 2, f"  !! {script} is not in {HERE}"
-    r = subprocess.run([sys.executable, str(p), *args], capture_output=True, text=True)
+    r = subprocess.run([sys.executable, "-I", "-B", str(p), *args], capture_output=True, text=True)
     out = (r.stdout or "") + (r.stderr or "")
     return script, r.returncode, out.rstrip() or "  (no output)"
 

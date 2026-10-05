@@ -18,6 +18,8 @@ Bundled scripts, which the skill calls rather than reimplementing:
 
 - [`scripts/audit.py`](scripts/audit.py) — Mechanical half of a skill-library audit. Findings, never scores.
 - [`scripts/overlap.py`](scripts/overlap.py) — Find verbatim phrasing shared between a skill and its sources.
+- [`scripts/redundancy.py`](scripts/redundancy.py) — Redundancy check for a skill edit: which added units restate one already there.
+- [`scripts/test_redundancy.py`](scripts/test_redundancy.py) — The redundancy gate's verdicts of 2026-09-28/29 (~/.claude/gate-log.csv) as staged fixtures.
 
 ## Evidence
 

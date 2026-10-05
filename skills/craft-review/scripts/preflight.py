@@ -32,8 +32,13 @@ import re
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from contrast import get_ratio, parse_color  # noqa: E402
+# contrast.py beside this file, by path: a directory put first on sys.path would let a file beside
+# it stand in for the stdlib.
+import importlib.util  # noqa: E402
+_spec = importlib.util.spec_from_file_location("contrast", Path(__file__).resolve().parent / "contrast.py")
+_contrast = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_contrast)
+get_ratio, parse_color = _contrast.get_ratio, _contrast.parse_color
 
 SCALE = {0, 1, 2, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 56, 64, 72, 80, 96, 128}
 COLORISH = re.compile(r"(#[0-9a-fA-F]{3,8}|rgba?\([^)]*\)|hsla?\([^)]*\))")
@@ -123,6 +128,7 @@ def collect(html):
     tokens = {"base": {}, "dark-media": {}, "dark-attr": {}, "light-attr": {}}
     uses = {}          # token name -> themes whose rules read it
     pairs, spacing, findings = [], [], []
+    grounds, placeholders = {}, []   # (theme, selector) -> bg; placeholder rules with no bg
     for css in blocks(html):
         for sel, body, at in rules(css):
             t = theme_of(sel, at)
@@ -142,6 +148,19 @@ def collect(html):
             bg = d.get("background-color") or d.get("background")
             if fg and bg and COLORISH.search(bg + fg + "x") or (fg and bg and VAR.search(fg + bg)):
                 pairs.append((sel, t, fg, bg) + text_bar(d))
+            if bg:
+                for s in sel.split(","):
+                    grounds[(t, s.strip())] = bg
+            elif fg and "::placeholder" in sel:
+                placeholders.append((sel, t, fg, d))
+    # A ::placeholder rule sets color only; the ground it sits on is the host input's
+    # rule (the selector minus the pseudo-element), so a pale placeholder never formed a pair.
+    for sel, t, fg, d in placeholders:
+        for s in sel.split(","):
+            host = s.replace("::placeholder", "").strip()
+            bg = grounds.get((t, host)) or grounds.get(("base", host))
+            if "::placeholder" in s and bg:
+                pairs.append((s.strip(), t, fg, bg) + text_bar(d))
     return tokens, pairs, spacing, findings, uses
 
 
@@ -402,6 +421,13 @@ def demo():
     levels = {f["detail"].split()[0]: f["level"] for f in check(band) if f["check"] == "contrast"}
     assert levels.get(".small") == "BLOCK", levels    # 3.4:1 body text fails AA
     assert levels.get(".big") == "WARN", levels       # same pair at 32px passes AA large
+
+    # A placeholder rule sets color only; its ground is the host input's rule. Pale
+    # #d0d0d0 on white is about 1.5:1 and must block; #595959 on white (about 7:1) must not.
+    ph = "<style>body{{background:#fff;color:#111}}input{{background:#fff}}input::placeholder{{color:{}}}</style>"
+    pale = [x for x in check(ph.format("#d0d0d0")) if x["check"] == "contrast"]
+    assert any(x["level"] == "BLOCK" and "placeholder" in x["detail"] for x in pale), pale
+    assert not any(x["check"] == "contrast" for x in check(ph.format("#595959"))), "7:1 placeholder flagged"
     # A page that animates and never asks. The mirror case matters more: a page with no
     # animation at all must not be told to add a media query it has no use for.
     moves = "<style>body{background:#fff;color:#111}.c{animation:p 2s}</style><div class=c>x</div>"

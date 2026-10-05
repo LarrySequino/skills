@@ -3,7 +3,11 @@
 The visual counterpart to `deslop`'s `tropes.md`. A catalog of the patterns that make an interface
 look *generated* rather than *designed* — the defaults a model reaches for when it isn't grounded in
 a specific product, audience, and mood. Use it two ways: as a checklist when auditing a design, and
-as context when generating one, so the first draft isn't already slop.
+as context when generating one, so the first draft isn't already slop. The second use is
+unmeasured, and one practitioner's report (Anshu Chimala, 2026-09) is that a catalog fed in before
+generation makes the model overthink and reach for stranger patterns. Until a fixture settles it,
+give a generating model only the tells the brief's named risk touches, and run the whole catalog
+as the audit afterward.
 
 Each entry is: **the tell → why a model reaches for it → what it looks like → what to do instead.**
 A single instance is rarely fatal; the tell is the *reflex* — reaching for it by default, everywhere,
@@ -88,8 +92,10 @@ palette and the product's scene, not the reflex warm off-white.
 
 ### Dark mode with glowing accents
 Colored box-shadow glows on dark backgrounds; cyberpunk-by-default, plus the saturated radial halo
-behind hero content. **Instead:** subtle purposeful lighting tied to real elevation, or skip the dark
-theme entirely.
+behind hero content. Gate on density: one saturated accent on a dark ground is an accent, not this
+trope; the tell is glow repeated across cards, buttons and headings (density gate after
+pbakaus/impeccable 9f42da8, Apache-2.0, reimplemented; no text reproduced). **Instead:** subtle purposeful
+lighting tied to real elevation, or skip the dark theme entirely.
 
 ## Typography
 
@@ -98,6 +104,8 @@ The default UI font at a single weight, hierarchy faked with size alone. Not wro
 it *without a reason* is the tell. **Instead:** choose type with intent; build hierarchy from
 weight+size+leading as a set (aim for ≥1.25× scale steps), and cap body line length at 65–75ch.
 
+
+A second tier of faces now reads as a reflex, past Inter and Geist: the display serifs and grotesks that every 2026 template reaches for (Playfair, Fraunces, Cormorant, Newsreader, Lora, Space Grotesk, Syne, IBM Plex, DM Sans and Serif, Outfit, Plus Jakarta, the Instrument pair). Gate: a brand face on its own domain is exempt, and choosing one of these needs a reason no other face satisfies. The list is dated; retire names as they fall out of fashion. (Harvested 2026-09-02, candidate.)
 ### Gradient text across the whole headline
 A gradient fill carrying an entire heading, or every heading on the page. One gradient word used as
 an accent is a live and deliberate move (Apple, Dub, Vanta, 2026), so the single instance is not the
@@ -176,7 +184,7 @@ Every section rising 20px and fading in as it enters the viewport. Ubiquitous, a
 
 ### 200ms-for-everything, with a bounce
 One duration and an elastic overshoot applied uniformly. **Instead:** duration tracks distance and
-importance; use exponential ease-out (quart/quint/expo); reserve overshoot for gestures that carried
+importance; use exponential ease-out (quart/quint/expo; Material exit curves excepted, see `thresholds.md`); reserve overshoot for gestures that carried
 momentum. Never animate layout properties (width/height/top/left) — animate transform/opacity.
 
 ### Decorative liveliness
@@ -288,3 +296,35 @@ nine rewritten where the pattern held but the reasoning had rotted. Two classes 
 settled this way and rest on reasoning instead: the motion entries, since Mobbin is still frames
 rather than film, and the entries about what generators emit (shape-assembled illustration, empty
 states as afterthoughts), since a library of shipped work has no unshipped slop in it to measure.*
+
+## Harvested 2026-09-02, candidates until measured
+
+Each was taken as an idea and written fresh; sources and licenses are in `ATTRIBUTION.md`. None has a fixture yet.
+
+### The decorative overlay that swallows the click
+
+A decorative layer drawn over a control, a glow or a scrim, catches every pointer event inside its box. The button under it appears active and never receives the click, and making the target larger changes nothing. Fix: `pointer-events: none` and `aria-hidden="true"` on the decorative layer. Gate: a layer the user is meant to hit keeps its events; a backdrop that closes a dialog when clicked is itself a target. Statically detectable: absolutely positioned, `inset: 0`, no `pointer-events: none`, inside a container that holds a button or link.
+
+### The gray midpoint
+
+A two-stop gradient across a wide hue gap interpolated in sRGB darkens and mutes at its middle. Fix: `in oklab` or `in oklch`, or a third stop; keep text off gradients where possible and measure the worst region. Gate: one such gradient is a candidate, the reflex is several.
+
+### Emoji standing in for an icon system
+
+Unicode glyphs or emoji in control labels, navigation, or list markers where an icon set belongs. Icons are drawn, from one library or authored SVG, at one stroke and weight, and that stroke matches the text beside it: about 1.5px next to 400-weight text, 2px next to 600. Gate: a single emoji in body copy is not a tell; three or more in control labels is.
+
+### Browser surfaces left at defaults
+
+The parts of a page the browser draws on its own, the selection highlight, the caret, scrollbars, focus rings, link underlines, and the figures in a table, all arrive in browser defaults that no design system chose. On a page that already carries a custom palette, leaving them untouched is the cheapest sign the page was assembled rather than built; theme them from the palette. Gate: a system-font page with default everything is consistent, not slop.
+
+### Custom-built platform primitives
+
+**The tell:** a hand-drawn button, toggle, or text field on a platform whose native control is
+mature, styled worse than the default it replaced. **Why a model reaches for it:** a component
+library renders anywhere, and the model does not know the platform ships a better one. **What to
+do instead:** use the platform control unless the brief names the reason for departing; the gate
+is a departure with no reason given, never the departure itself, because many consumer apps leave
+platform chrome on purpose and correctly. Candidate until a shipped-good and a shipped-bad example
+exist. Source: Chimala's "custom buttons and text fields that look worse than built-in iOS
+components."
+

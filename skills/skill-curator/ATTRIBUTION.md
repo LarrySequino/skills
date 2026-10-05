@@ -3,9 +3,9 @@
 Original work. `SKILL.md` and both reference files were written here and carry no
 third-party expression. Two records say so independently: the library handoff of
 2026-08-16 lists it as "Original. No upstream markers," and the private repo's
-README as "Mine. No third-party content." No overlap scan against outside sources
-has been run, because there are no outside sources to scan against; if that ever
-changes, the procedure in `references/maintenance.md` says what to do.
+README as "Mine. No third-party content." Since 2026-09-29 it takes ideas from outside
+sources (credited below, logged in `references/maintenance.md`); an overlap scan
+against them is owed and not yet run.
 
 Two things in it are adapted, and both are named so the next audit need not guess.
 
@@ -18,6 +18,12 @@ than inventing one, and say so there.
 on 2026-08-16 and is bundled here unchanged, so that an installed copy can run the
 scan this skill tells you to run. The two files should stay identical; the private
 repo's `publish.sh` copies from the tool, not from here.
+
+**Ideas taken 2026-09-29, none of the wording:** fencing fetched text before a model reads
+it (`references/security-screen.md`), from mvanhorn/last30days-skill @084662b (MIT),
+`rerank.py`; the model-independent harvest criterion, from addyosmani/agent-skills @2686b62
+(MIT); one search per source with two retries, from enesgules/dotfiles `find-docs` (no
+license, idea only).
 
 **`scripts/audit.py`** was written here on 2026-08-21. Its collision check owes an
 idea, not a line, to the observation in the `skill-creator` skill that routing sees

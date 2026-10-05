@@ -54,8 +54,8 @@ name gap is 6px; your scale is 4/8/12/16 and the nearest value is 8; it's hardco
    against a scale the artifact never claimed are manufactured defects. State which source you used.
 3. **Gather ground truth** (§3). State the input and your confidence.
 4. **Group A pass — compute** (§4). Read exact geometry (`get_metadata` / `get_design_context`); run
-   `scripts/symmetry.py` for padding/symmetry/grid deltas and `scripts/contrast.py` for every color
-   pair. If source (HTML/CSS) is available, run `scripts/slop-scan.py` for the mechanical design
+   `python3 scripts/symmetry.py` for padding/symmetry/grid deltas and `python3 scripts/contrast.py` for every color
+   pair. If source (HTML/CSS) is available, run `python3 scripts/slop-scan.py` for the mechanical design
    tells. These findings are high-confidence.
 5. **Group B pass — judge.** Hierarchy, type, color composition, motion. Second opinion.
 6. **Group C + D pass.** Heuristics, accessibility, states, content, brand feel.
@@ -75,7 +75,11 @@ each lens is sharper alone. Optionally add a skeptic pass that tries to refute f
 2. **The running app via the Mobile MCP.** Real rendering, real tap targets, real spacing on device.
 3. **Source code.** Read the component to flag off-scale values and hardcoded tokens directly.
 4. **A static screenshot (fallback).** Vision-only; assess hierarchy, balance, approximate contrast,
-   composition. Say when a finding needs exact values to confirm.
+   composition. Say when a finding needs exact values to confirm. Before judging a detail, crop and
+   enlarge that region (the browser tool's zoom, or an image crop); a dense area read from the whole
+   screen misses what a crop shows, and the vendor's own guidance for this model says the same.
+   When you capture, take viewport-sized frames down the page, never one tall full-page image the
+   model will downscale until the detail is gone.
 5. **A verbal description alone is not an input.** With no Figma node, no running app, no source and no
    screenshot, there is nothing to measure and nothing to observe, and a review does not happen. Do not
    score. Do not issue findings, chipped or not. Say what a description cannot support, ask for one of
@@ -90,12 +94,12 @@ Full thresholds (exact numbers) live in `references/thresholds.md`. Run Group A 
 1. **Spacing, grid & rhythm** — on-scale is necessary, not sufficient: spacing must also *encode
    nesting depth*, each level out roughly 1.4x its child, or grouping collapses even with every
    value on-grid. Compute the ratio between adjacent depths. Every gap/pad on the scale (8pt grid, 4pt fine); consistent vertical
-   rhythm; proximity groups related content. Run `scripts/symmetry.py`.
+   rhythm; proximity groups related content. Run `python3 scripts/symmetry.py`.
 2. **Symmetry, balance & alignment — WEIGHTED (highest signal).** Internal padding symmetry (L=R,
    T=B); paired/repeated components share identical padding; axial balance; edge & baseline alignment;
    optical over mathematical when they conflict; mirrored insets.
-3. **Color & contrast (measurable)** — WCAG AA: 4.5:1 body, 3:1 large/non-text. Run `scripts/contrast.py`
-   on every pair; report ratio + color-blindness risk. Tokens not hardcoded; consistent across states.
+3. **Color & contrast (measurable)** — WCAG AA: 4.5:1 body, 3:1 large/non-text. Measure every pair with contrast.py
+   (usage under Bundled resources); report ratio + color-blindness risk. Tokens not hardcoded; consistent across states.
    Color-system rigor: work in OKLCH; never pure `#000`/`#fff` (reduce chroma near the extremes); pick
    a color *strategy* first — Restrained / Committed / Full-palette / Drenched — and check the design
    executes one, not a random mix.
@@ -113,9 +117,10 @@ Full thresholds (exact numbers) live in `references/thresholds.md`. Run Group A 
 7. **Color as composition** — ~60/30/10; intentional warm/cool grays; consistent semantic roles; dark
    mode is a systematic re-map, never a straight invert.
 8. **Motion** — purposeful; ~150–300ms typical; easing matches intent; signature moments choreographed;
-   honor `prefers-reduced-motion`. For deeper motion critique defer to the `motion-design` /
-   `review-animations` skills; their laws (no layout-property animation; exponential ease-out; no
-   bounce unless momentum-driven) apply here too.
+   honor `prefers-reduced-motion`. In a running page, replay it at 10% speed in the browser's
+   Animations panel and step through every state; at full speed the flaws pass unseen. For deeper motion critique defer to the `motion-design` /
+   `review-animations` skills; their laws (no layout-property animation; exponential ease-out, with Material exit curves
+   excepted per `references/thresholds.md`; no bounce unless momentum-driven) apply here too.
 
 ### Group C — Usability & inclusion
 9. **Heuristics & cognitive load** — Nielsen's 10; Fitts / Hick / Miller; Gestalt.
@@ -149,10 +154,13 @@ The lens craft rigor misses. The prose anti-slop doctrine applied to pixels; ful
     reason — is the finding.
 16. **The two-briefs test.** Would this design system, run on a *different* brief, produce a visibly
     different result — or just a color-swap of the same template? If the latter, it isn't distinctive.
+17. **The subtraction test.** Remove the single most conspicuous effect; if nothing recognizable is
+    left, that effect was the whole design.
 
 ## 5. Bundled scripts (run these; don't do the math in your head)
 
-Run these; do not read them. Every one answers `--help` with its usage, flags, exit codes and an example, which is the whole interface. Reading the source instead costs about 12,000 tokens across the four and tells you nothing `--help` does not — measured across 18 runs, 83% read all four having been asked to run them.
+Run these; do not read them. Call each through `python3` (or `bash`), never as a bare path:
+installers and packagers strip the executable bit. Every one answers `--help` with its usage, flags, exit codes and an example, which is the whole interface. Reading the source instead costs about 12,000 tokens across the four and tells you nothing `--help` does not — measured across 18 runs, 83% read all four having been asked to run them.
 
 **Start with `scripts/measure.py`.** One call runs preflight, slop-scan, and symmetry at all
 three widths, and prints the answers together:
@@ -211,9 +219,14 @@ Report three scores so no single number hides a weakness:
   Fix:   the concrete change (value, token, action). Numeric where possible.
 ```
 
+Write every fix in the project's existing styling system (its tokens, utility classes or style
+objects); never introduce a second one.
+
 `[evidence]` is **computed** (a script produced the number), **observed** (read from Figma or
 source), or **judged** (visual assessment). Never present judged as computed — "most taste
 critique is arithmetic" only holds when the arithmetic ran.
+A judged pass looks at the rendered screenshot in a fresh context, without the code, the tokens,
+or the rationale that produced it: a reviewer that has read why a choice was made argues for it.
 
 **Severity chips and deductions attach to computed and observed findings only.** A judged item gets
 no chip and deducts nothing. It goes in its own section after the ranked findings, **Judgment
@@ -232,9 +245,11 @@ and ranked two of its own contrast findings above it, which is how this rule got
 **Accessibility must state coverage:** `NN/100 (N computed, N judged, N human-required)`, listing
 the human-required ones. A screenshot cannot test keyboard operability, focus order, or
 assistive-tech output; scoring those silently turns an untested criterion into a pass.
+The same holds for every dimension: the report carries a coverage table, one row per §4 dimension,
+each marked Clear, N findings, or Not reviewed with the reason. Silence on a dimension reads as a pass.
 
 **Report structure:** Summary (screen, job, user, input used) · Scores (Overall · Accessibility ·
-Distinctiveness) · Overall impression (2–3 sentences) · Findings by category (severity-ranked,
+Distinctiveness) · Overall impression (2–3 sentences) · Coverage table · Findings by category (severity-ranked,
 computed and observed only) · Judgment calls (unranked, no chips) ·
 Priority table · Top 3 quick wins · Strengths to preserve · Annotated screenshot when possible
 (measurement pills + colored overlays, Morgan-Knutson style). See `references/example-review.md`.
@@ -268,8 +283,8 @@ important finding — fix the disagreement, not the symptom.
   is the normal way into the four below.
 - `scripts/preflight.py` — showstopper gate for HTML artifacts. Deterministic only; run it
   before anything ships, and pass `--baseline` when rewriting an existing page.
-- `scripts/symmetry.py` takes **either source**: `symmetry.py mock.html` renders it headless and
-  measures real layout; `symmetry.py geometry.json` reads Figma. Add `--viewport 390,844` to check
+- `scripts/symmetry.py` takes **either source**: `python3 scripts/symmetry.py mock.html` renders it headless and
+  measures real layout; `python3 scripts/symmetry.py geometry.json` reads Figma. Add `--viewport 390,844` to check
   the same mock at another width. `scripts/collect-boxes.js` is the HTML collector it drives.
 - `scripts/contrast.py`, `scripts/symmetry.py`, `scripts/slop-scan.py` — deterministic checks.
 - `references/maintenance.md` — watchlist, harvest criteria and update procedure. Read only

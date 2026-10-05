@@ -29,8 +29,11 @@ and 44; 44 satisfies only one. A single artifact binds to the union of maxima.
 | UI components & graphical objects (icons, borders, states) | 3:1 | — |
 | Disabled elements | exempt | exempt |
 
-Compute with `scripts/contrast.py`. Also sanity-check color-blind safety: never rely on hue alone to
+Compute with `python3 scripts/contrast.py`. Also sanity-check color-blind safety: never rely on hue alone to
 distinguish states (add icon/shape/text).
+
+**[P]** Material 3 state-layer opacity (material-web tokens): hover 8%, focus 10%, pressed 10%,
+dragged 16%; disabled content 38%.
 
 ## Target size
 
@@ -47,14 +50,29 @@ and most reviews miss.
 | **[P]** | Android / Material convention | 48 × 48 dp |
 
 Material states 48dp for touch and 44dp for pointer, and notes iOS recommends
-44. Apple's current guidance gives no single figure — it defers to a per-platform
-minimum across iOS, iPadOS, macOS, watchOS, tvOS and visionOS.
+44. **[P]** Apple sets a default and a minimum control size per platform (HIG, last
+changed 2025-06-09), in pt: iOS/iPadOS 44 / 28, macOS 28 / 20, tvOS 66 / 56,
+visionOS 60 / 28, watchOS 44 / 28. Review against the default; the minimum is
+for dense layouts that give up comfort knowingly.
 
 So **do not resolve "mobile" to 44**. Resolve the modality first: a touch surface
 takes 48 whatever platform it runs on, and a cross-platform artifact takes 48
 because that satisfies both.
 
 Adjacent targets need spacing so they are not mis-tapped, regardless of size.
+
+**[U] WCAG 2.2 AA, beyond size:**
+- 2.4.11 Focus not obscured: a focused control is never fully hidden under a sticky
+  header, footer, cookie bar or chat bubble. Tab through with those present.
+- 2.5.7 Dragging movements: anything done by dragging (reorder, slider, swipe to
+  dismiss) also works with single taps or clicks, unless dragging is essential (freehand
+  drawing, a signature) or the behavior is the user agent's. Gestures and their single-pointer
+  alternatives cannot be tested from a screenshot or Figma node: human-required.
+- 2.2.2 Pause, stop, hide: motion that starts on its own and runs over 5 s, next to
+  other content, gets a control to pause, stop, or hide it. Content that updates on its own
+  (a live score, a feed) next to other content gets the same, or a control over how often it
+  updates, whatever its duration. Neither applies where the motion or update is essential to
+  the activity.
 
 ## Spacing & grid
 
@@ -71,6 +89,8 @@ Adjacent targets need spacing so they are not mis-tapped, regardless of size.
   1.0 means the levels are indistinguishable, and inverted means the hierarchy reads
   backward. Cap the outermost value (48-64pt) on structures deeper than four levels and
   compress inward, keeping the progression monotonic.
+- A heading sits closer to the content it introduces than to the section above it:
+  more space above than below, or it groups with the wrong block.
 - Paired/repeated components: identical internal padding, unless the pair carries a
   state marker that consumes layout (a status stripe under `border-box`), in which case
   the CONTENT inset must match and the declaration may differ.
@@ -97,11 +117,15 @@ that nobody swept the type:
 - Modular scale ratio ~**1.2–1.25**; no arbitrary one-off sizes.
 - ≤ **2** type families. Weight for hierarchy, not decoration.
 - Tracking: tighten on large display type; slightly open on small caps / uppercase labels.
+- **[P]** Apple minimum text size (HIG typography): 11pt on iPhone and iPad, 10pt on Mac, 23pt on Apple TV, 12pt on Vision Pro and Apple Watch.
 
 ## Motion
 
 - Typical UI transition **150–300ms**; micro-interactions **≤150ms**; large/overlay **≤400ms**.
-- Easing: **ease-out** for entrances, **ease-in** for exits, spring for physical/gestural moments.
+- Easing: **ease-out** for entrances and exits, exits shorter than entrances; never `ease-in` on web or general UI, which reads slower at the same duration; spring only for physical or gestural moments. (Corrected 2026-09-02: an earlier version said ease-in for exits; three independent motion sources disagree and `design-tropes.md` already prescribed exponential ease-out.)
+- **[P]** Exception: Material 3 exits use accelerate curves, both ease-in (material-web motion tokens): standard-accelerate, `cubic-bezier(0.3, 0, 1, 1)`, for standard transitions, and emphasized-accelerate, `cubic-bezier(0.3, 0, 0.8, 0.15)`, for emphasized ones. On a declared Material surface either is the convention, not a finding.
+- No state change may depend on motion alone: whatever an animation communicates must also survive as a resting difference, a color, an icon, or a label, for the user who does not see it run.
+- Timed dismissal: a notification that carries an action, an error, or something the user may need to read waits for the user; if it must close by itself, no sooner than five seconds, and pointer or focus on it holds it open.
 - Always honor **`prefers-reduced-motion`** (provide a reduced/none variant).
 
 ## Composition heuristics

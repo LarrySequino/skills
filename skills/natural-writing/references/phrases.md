@@ -41,6 +41,10 @@ These add no meaning. Delete them — unless the author's own supplied sample us
 - "This matters because"
 - "Make no mistake"
 - "Here's why that matters"
+- "Read that again."
+- "every. single. [X]"
+
+One word in capitals for stress ("this is NOT optional") is the same crutch in type.
 
 ## Pedagogical Hand-Holding
 
@@ -155,7 +159,12 @@ you can say what collapses without the precedence order; if it only means "impor
 engineering word doing an intensifier's job. Same test for the rest. What survives stays.
 
 Watch the density more than the instance. One is a good sentence and four in a page is a voice
-made of structural metaphors, which is the tell.
+made of structural metaphors, which is the tell. The general form is the mannered sentence: a
+metaphor or flourish standing where a direct statement would do ("a dial worth turning" for "a
+parameter worth varying"). It displays the writer rather than the idea, and it drags in
+connotations the writer did not choose. When a literal phrase is available, use it. Anthropic's
+own prompting guide for Fable 5.1 (2026-09) names this as the pattern that model's prose leans
+toward, so expect it in fresh drafts.
 
 - "load-bearing"
 - "by construction"
@@ -228,6 +237,14 @@ Asserting clarity instead of demonstrating it:
 - "History is unambiguous on this point"
 - "History is clear, the metrics are clear, the examples are clear"
 - "but none of them is the real story. The real story is..."
+
+## Performed Insight
+
+The draft stages its own realization: a pause for the reader to feel the weight, an understatement that asks to be upgraded, or the point labeled as the point. Cut the staging and state the finding.
+
+- "sit with that."
+- "that's not nothing"
+- "is the whole point"
 
 ## Vague Declaratives
 

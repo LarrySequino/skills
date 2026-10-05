@@ -32,10 +32,11 @@ Check in this order, signal density descends.
 3. **nutlope/hallmark**, https://github.com/nutlope/hallmark (MIT). Contributed the
    slop-test gates and the two-briefs framing already in Group E. Check for new gates.
 4. **garrytan/gstack**, https://github.com/garrytan/gstack (MIT), its `design-review`
-   skill. Same domain, entirely independent lineage. A 2026-08-17 scan found zero
-   shared phrasing. That independence is exactly what makes it worth diffing: where it
-   reaches a conclusion we also reached, the conclusion is probably real; where it
-   differs, one of us is wrong. Read the review dimensions, not the orchestration
+   skill. Same domain, and an independent lineage on 2026-08-17 (a scan found zero
+   shared phrasing), but **since c8f0c4e (v1.84) it runs impeccable's detector and
+   catalog, so agreement between the two is not independent confirmation.** Where it
+   agrees with impeccable, count one source; where it differs, one of us is wrong.
+   Read the review dimensions, not the orchestration
    scaffolding, which is specific to its own tool suite.
 5. **emilkowalski/skills**, https://github.com/emilkowalski/skills (MIT). Motion craft.
    Feeds the motion dimension and the motion section of `design-tropes.md`. Already
@@ -449,3 +450,35 @@ re-testing whenever the scripts change:
 | `preflight.py` swallowed unparseable colors and passed them | reported as `uncheckable-color` |
 | A page with no custom properties got no contrast pass at all | base is always a scope |
 | `1.4x` nesting was marked Universal, so every miss was automatically Critical | demoted to a preference |
+
+## Harvest, 2026-09-02
+
+From the development-workflow review (`bench/dev-workflow-review/sources/design-libs.md`, `initial-commit-part2.md`, `awesome-candidates.md`). Candidates until an eval separates the arms.
+
+| Source | Checked | State | Took | Rejected or deferred |
+|---|---|---|---|---|
+| jakubkrehel/skills (`better-*`, `interface-review`, `break`, `variant`) | 2026-09-02 | MIT; upstream 267330e; the k11 copies are a generation stale | motion is never the only feedback channel; the decorative-overlay pointer-events rule; the timed-toast floor; the gray-midpoint gradient; the `Block`/`Approve` two-verdict shape | the 2x between-groups spacing rule, which conflicts with our sourced 1.4x nesting ratio and needs a measurement to settle; `better-interface` as a running skill, which collides with this one on "review this UI" |
+| pbakaus/impeccable 4.1.3 (`craft-floor.md`) | 2026-09-02 | Apache 2.0; upstream c0f4952; k11 has 4.0.3 | emoji as icons; the second-order default faces; browser surfaces at defaults, all written fresh per the statement of changes | the persona, scoring, and dual-agent mandate; the session-boot update check |
+| Emil Kowalski, Krehel, impeccable, three sources together | 2026-09-02 | | the easing correction at `thresholds.md:104` | |
+| Josh Pigford `design-audit` (`SKILL.md`, `probe.js`, `eye.md`) | 2026-09-02 | licensed by the site terms of 2026-05-19 (internal use while membership is active; no public full text), recorded 2026-09-02 | **Proceeds as a reimplementation, nothing copied:** a live-DOM collector modeled on `probe.js` (surface-invisible three-device threshold, nested-radius with the fix formula, shadow-muddy, double-border, ground-strip, token drift, text-clipped, page overflow, a behavioral focus check), `oklch` parsing in `contrast.py`, the true-2x capture rule, the states re-measure list, the `Dropped` list with positive-evidence dismissal, screenshot-first as a stop on tool use | its keep-by-default disposition, which contradicts this skill's evals on undocumented choices and needs its own fixture |
+| uxKero/anydesign | 2026-09-02 | MIT; through June 2026 | report an absence only when confident and diagnostic; abstain or justify with a confidence per inference and a linter that fails a section with neither content nor an abstain phrase, for the design brief | the 539-line template |
+| wholiver/swiftui-design-skill | 2026-09-02 | MIT; dormant | five SwiftUI-native tells, for Swift projects only: Inter or Roboto on Apple platforms, `GeometryReader` for sizing, icon sizes ignoring Dynamic Type, `Font.custom("New York")`, raw `UIColor` | its 1-to-10 five-dimension review, which is judged, not measured; its 8pt-grid dogma, which its own example fix breaks |
+| Anshu Chimala, "How to turn your AI into a world-class designer" (Lenny's Newsletter, 2026-09-01; read in full from the saved PDF) | 2026-09-02 | an article, not code; nothing copied; report in `bench/dev-workflow-review/sources/` and the session scratchpad | the fresh-context judge (screenshot only, no code or rationale) into SKILL.md §6; the caution on feeding the trope catalog in before generation, into `design-tropes.md`; custom-built platform primitives as a candidate trope; a rule for later: if this skill ever runs as an accept-or-reject gate, the pass threshold stays out of the scoring prompt | the critic closing the loop on its own 9/10 (the human decides here; a model scores, it never closes); the rubric ladder, which is prompt authoring; seed strings, which widen a distribution rather than test a fork; image and video generation, out of a review skill's scope |
+
+Installation note, 2026-09-02: this skill is installed three times on the Mac (the user copy, the plugin copy, and the Anthropic bundled copy) with three slightly different descriptions. Deduplicate before any of the above ships.
+
+## Harvest, 2026-09-28
+
+Partial source check, read-only, not a sweep: the retirement pass and three sources were not run (last row), so the next pass is a full sweep. Proposals are candidates until an eval separates the arms.
+
+| Source | Checked | State | Took | Rejected or deferred |
+|---|---|---|---|---|
+| pbakaus/impeccable | 2026-09-28 | Apache-2.0; c0f4952..114ea1d, 141 commits | proposed: placeholder contrast (cb56ed6); glow density gate and rendered line length (9f42da8); declared-token exemption (e0881d2), try | generate lane, component review, live/bake tooling: generator scope |
+| garrytan/gstack | 2026-09-28 | MIT; 85fd9db..65bfb0c, 33 commits | none | Aside/cookie/orchestration; now imports impeccable (c8f0c4e), so no longer an independent lineage |
+| bencium/bencium-marketplace | 2026-09-28 | MIT, LICENSE added 0e9d65b; 11 commits | WCAG 2.2 focus-obscured and drag alternatives (convergent); conspicuous-effect test, try | proof levels (covered by verify); generator workflow; typography ideas only (Butterick-derived) |
+| emilkowalski/skills | 2026-09-28 | MIT; 78761e1..d16ebe6, 7 commits | mobile-native: sub-16px inputs, safe-area pairing, emulation is not device evidence, try | write-swift, animate-expo: per-framework |
+| vercel-labs/web-interface-guidelines | 2026-09-28 | MIT; e3d624b, 4 commits | 2.4.11, 2.5.7, 2.2.2 into thresholds (proposed) | video/GIF encoding: implementation layer |
+| AccessLint/skills | 2026-09-28 | MIT declared, no LICENSE file since cf3b426; README-only change | none | |
+| uxKero/anydesign | 2026-09-28 | MIT; d81bd89 v0.6.0 | viewport-frame capture (proposed) | token digest: already our shape |
+| jakubkrehel, hallmark, wonjyou, Ashutos1997, rad-spacing, swiftui | 2026-09-28 | no commits since last read | | |
+| Mobbin, Pigford, WCAG/HIG/Material | not read 2026-09-28 | retirement pass not run; membership-gated; spec versions unchecked | | |

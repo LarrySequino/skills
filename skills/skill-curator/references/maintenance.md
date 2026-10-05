@@ -27,7 +27,7 @@ table above.
 2. `python3 scripts/audit.py ~/.claude/skills`, or wherever the user's library lives. Read the
    output as a user would. Anything it flags about *this* skill is fixed before anything else:
    the skill that audits the library does not get to fail its own audit.
-3. Run `scripts/overlap.py` with this skill as the target against any source that has been read
+3. Run `python3 scripts/overlap.py` with this skill as the target against any source that has been read
    during the session. Zero is the expected result and is recorded in `ATTRIBUTION.md` as the
    control; a non-zero result means text was carried over and `ATTRIBUTION.md` must say from
    where before anything is packaged.
@@ -324,3 +324,28 @@ joined the list.
 | Checked | What | Result |
 |---|---|---|
 | 2026-08-21 | First pass. `audit.py` written and run on a 12-skill library; found three bugs in itself (block-scalar frontmatter, boundary detection, collision metric) and fixed them. `overlap.py` bundled. Provenance check corrected from filename to content after it passed this very skill on a format doc. | Both self-checks PASS. This skill flagged itself NO-PROVENANCE until `ATTRIBUTION.md` was written. |
+
+## Harvest, 2026-09-02
+
+Sources read for the development-workflow review (`bench/dev-workflow-review/`), with what this skill took. Every item is a candidate until an eval separates the arms; none is measured yet.
+
+| Source | Checked | License | Took | Rejected |
+|---|---|---|---|---|
+| obra/superpowers `writing-skills` and the 2026-06-10 positive-instruction spec | 2026-09-01 | MIT | a description must never summarize the workflow; match the form to the failure (prohibition when there is no competing incentive, positive recipe when there is; nuance clauses dilute) | the persuasion-principles voice; the 1,150-line verbatim copy of Anthropic's guide |
+| pstack `reflect` synthesizer | 2026-09-01 | MIT | four filters for a skill edit: skill-was-used, already-covered, structural-mechanism, decision-changing | the Cursor transcript paths |
+| pstack, 12 commits v0.14.7 to adf3218 | 2026-09-29 | MIT | nothing yet; six tactics proposed for verify, diagnose, ship and the reviewer brief in the 2026-09-29 sweep doc, landing on the owner's answer | the rest are cuts of instructions the newer models do not need |
+| mvanhorn/last30days-skill `rerank.py` | 2026-09-29 | MIT; @084662b | fence fetched text and neutralize closing tags before a model reads it (`security-screen.md`) | overlap scan not yet run |
+| addyosmani/agent-skills | 2026-09-29 | MIT; @2686b62 | a step that can't be justified without naming a model goes in an issue, not the skill | overlap scan not yet run |
+| enesgules/dotfiles `find-docs` | 2026-09-29 | no license, idea only | one query per source, at most two retries | overlap scan not yet run |
+| EveryInc compound `ce-skill-work`, `ce-retune` | 2026-09-01 | MIT | noise floor before a delta; the halt taxonomy's phantom-handoff test; Codex truncates a skill prompt at 8,000 bytes; "a weaker model might need it" is not grounds for keep | the per-persona rubrics |
+| mattpocock `writing-for-agents`, in-progress `retro` | 2026-09-01 | MIT | the no-op test and the cache test; retro categories including no-ops | its negation paragraph, which asserts the opposite of what our evals found |
+| davidondrej `effective-agent-skills`, `folder-specific-claude-and-agents-md` | 2026-09-02 | MIT | the YAML colon lint; no absolute ALWAYS or NEVER without an explicit exception; nothing an agent can derive from `ls` or `grep`; add the rule the moment the user corrects something the file should have prevented | the other 300 lines, which restate Anthropic's guide |
+| ComposioHQ awesome-claude-skills, vendored `connect-apps-plugin` | 2026-09-02 | unfilled Apache placeholder | the override-plus-credential-write pattern, now in the security screen | everything else in the list |
+| Theo (t3.gg), "My AGENTS.md and SKILLS.md Breakdown," 2026-08-10 | 2026-09-02 | talk; ideas only | a `requires` field that gates a skill on its precondition and fails loud; split a skill once its halves are wanted independently; seed a rule with a matched bad and good example from a real failure; state always-on rules as overridable defaults | the file itself, which its author declines to publish |
+
+## The tightening standard
+
+Any pass that shortens a skill, a style, or a reference cuts only fat, duplicates, filler, and
+contradictions. Nothing with a defensible reason to belong is cut to hit a number; if it is too
+long and everything in it earns its place, the answer is a reference file and a pointer, not a
+deletion. The owner's rule from the output-styles tightening of 2026-08-20, written down 2026-09-03.

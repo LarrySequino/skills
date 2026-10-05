@@ -101,7 +101,8 @@ shared phrasing.
 
 Target-size and contrast figures come from **WCAG 2.2** (W3C), Apple's **Human Interface
 Guidelines**, and **Material Design 3**. Measurements are facts and carry no copyright; the
-guidelines' prose does, and none is reproduced. Apple's HIG is copyright Apple Inc. and
+guidelines' prose does, and none is reproduced. Apple's HIG (last changed 2025-06-09; per-platform
+control and minimum text sizes, numbers only) is copyright Apple Inc. and
 Material's documentation is Google's.
 
 **Not used:** Anthropic's `frontend-design` skill was examined and deliberately not
@@ -121,3 +122,24 @@ Nielsen's 10 Usability Heuristics · WCAG 2.2 (AA) · Refactoring UI
 (Wathan/Schoger) · Gestalt principles · Fitts's / Hick's / Miller's laws ·
 Apple HIG and Material target sizes · the 8-point grid. These are cited as
 external standards; no text from them is reproduced.
+
+## Harvested 2026-09-02
+
+- **jakubkrehel/skills**, MIT, Copyright (c) 2026 Jakub Krehel. Ideas reimplemented in fresh words in `references/thresholds.md` (motion as feedback, timed toasts) and `references/design-tropes.md` (decorative overlay, gray midpoint). No text reproduced; overlap scan on 2026-09-02.
+- **pbakaus/impeccable** 4.1.3, Apache 2.0. Statement of changes, per section 4b: no file is reproduced; three ideas from `craft-floor.md` (emoji as icons, the second-order default faces, browser surfaces at defaults) were reimplemented from scratch in `references/design-tropes.md`. Overlap scan on 2026-09-02.
+- **uxKero/anydesign**, MIT. Two report-stage ideas (diagnostic absence; abstain or justify), reimplemented; logged in `references/maintenance.md`.
+- **wholiver/swiftui-design-skill**, MIT. Five platform tells, reimplemented, scoped to Swift projects; logged in `references/maintenance.md`.
+- **Josh Pigford** (`design-audit`, `probe.js`), Initial Commit. Ideas and rewrites only, nothing quoted or copied, by the owner's call of 2026-09-02; license status and what was taken are in `references/maintenance.md`.
+
+## Harvested 2026-09-29
+
+Ideas and numbers only, each written fresh; no text reproduced.
+
+- **vercel-labs/web-interface-guidelines** @51af38a, MIT; **bencium/bencium-marketplace**, MIT; **emilkowalski/skills** (mobile-native), MIT; **pbakaus/impeccable** @0c09f4c, Apache-2.0. Together pointed at WCAG 2.2 AA 2.4.11, 2.5.7 and 2.2.2, now in `references/thresholds.md`. impeccable @9f42da8 also gave the dark-glow density gate, reimplemented and credited at the rule in `references/design-tropes.md`. bencium also contributed the subtraction test (`SKILL.md` Group E).
+- **uxKero/anydesign** @d81bd89, MIT. Capture in viewport-sized frames (`SKILL.md` §3).
+- **jakubkrehel/make-interfaces-feel-better** @35545ea, MIT. The per-dimension coverage table and the one-styling-system rule for fixes (`SKILL.md` §6), 10%-speed motion replay (`SKILL.md` §4 Motion), and icon stroke matched to text weight (`references/design-tropes.md`).
+- **garrytan/gstack** @943105f1, MIT. More space above a heading than below (`references/thresholds.md`).
+- **pbakaus/impeccable** @cb56ed6, Apache-2.0. Statement of changes, per section 4b: no file is reproduced; checking an input placeholder's contrast against the input's own background, reimplemented in `scripts/preflight.py`.
+- **obra/superpowers** issue #2301, MIT. Call bundled scripts through the interpreter, since packagers strip the executable bit (`SKILL.md` §5).
+- **material-components/material-web** design tokens, Apache-2.0. State-layer opacities and the emphasized-accelerate exit curve (`references/thresholds.md`). Numbers only; no file reproduced.
+

@@ -32,6 +32,27 @@ two bottom cards in particular have mismatched internal padding that reads as br
 **vertical rhythm that isn't on any consistent scale**. Fix the contrast, the symmetry and the grid
 and this jumps a full tier.
 
+## Coverage
+| Dimension | Status |
+|---|---|
+| Spacing, grid & rhythm | 2 findings |
+| Symmetry, balance & alignment | 4 findings |
+| Color & contrast | 1 finding |
+| Consistency & tokens | 2 findings, filed under Symmetry (redrawn cards) and Spacing (inter-card gap) |
+| Visual hierarchy | Clear |
+| Typography | Clear |
+| Color as composition | Clear |
+| Motion | Not reviewed: a static frame, no motion to observe |
+| Heuristics & cognitive load | Clear |
+| Accessibility | 1 finding, filed under Color & contrast |
+| States & feedback | Not reviewed: only the default state was supplied |
+| Content & microcopy | Clear |
+| Brand & feeling | Clear |
+| The category-reflex test | Clear |
+| Template-reuse gates | Clear |
+| The two-briefs test | Not reviewed: only one screen supplied |
+| The subtraction test | Clear |
+
 ## Findings by category
 
 ### Color & contrast

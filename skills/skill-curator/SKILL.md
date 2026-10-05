@@ -1,5 +1,6 @@
 ---
 name: skill-curator
+disable-model-invocation: true
 description: >
   Audit, evaluate, merge, and refresh a library of agent skills. Use when asked to review or clean up
   installed skills, check whether two skills collide on the same trigger, vet or compare third-party
@@ -29,7 +30,7 @@ Candidates arrive in four forms, and the procedure is the same once they're read
 Reading remote sources:
 
 - **Read the skill files, not the README.** READMEs describe intent, files describe behavior, and the gap between them is diagnostic. If only the README is reachable, say so and treat the assessment as provisional rather than guessing at contents.
-- **Fetch constraints are normal.** Directory listings are often blocked to automated access, and some tooling only permits fetching URLs that appeared in a prior search or fetch result. Search for the file first, use the raw or blob path, or use a mirror. Never reconstruct a file's contents from memory.
+- **Fetch constraints are normal.** Directory listings are often blocked to automated access, and some tooling only permits fetching URLs that appeared in a prior search or fetch result. Search for the file first, use the raw or blob path, or use a mirror. Never reconstruct a file's contents from memory. One search query per source and at most two retries per path, where the raw path, blob path and mirror are separate paths, not retries; then record the file as unreachable.
 - **Trace remixes to their origin.** Many published skills are recombinations of two or three upstream projects. Evaluate the original; the remix usually adds drift, not content. Say so when a source turns out to be derivative.
 - **Order by signal density.** Read the most substantial source first so later ones are diffs rather than full reads. Note which sources contributed nothing; that's the finding that saves the next pass.
 
@@ -39,7 +40,7 @@ Pick by what the user asked for. When unclear, ask which one.
 
 ### 1. Audit — "clean up my skills"
 
-**Run `scripts/audit.py <skills-dir>` first, and run it rather than reading it — `--help` is the interface for this and for `overlap.py`.** It does the arithmetic in steps 1, 2, 4, 4b and 5:
+**Run `python3 scripts/audit.py <skills-dir>` first, and run it rather than reading it — `--help` is the interface for this and for `overlap.py`.** It does the arithmetic in steps 1, 2, 4, 4b and 5:
 the inventory with line counts, description lengths and any version marker, the pairwise
 description comparison ranked
 by how rare the shared terms are, the bloat threshold, the per-scope count, and which skills
@@ -57,11 +58,11 @@ is everything in 3, 4a, 4c, 6 and 7.
 3. **Duplication check.** Two skills covering the same job are a merge candidate (job 3). Two skills covering adjacent jobs need boundary language, not a merge.
 4. **Bloat check.** A main file over roughly 400 lines should push detail into reference files; everything in the main file loads on every trigger.
 4a. **Scope check.** For each skill ask: is this used in only one project? If yes it belongs in that project's skill directory, not the global one. Global skills surface everywhere, so a project-specific skill in the global scope is noise in every unrelated session.
-4b. **Count check.** Skill catalogs have a discovery budget, and past a certain size some skills stop being surfaced at all. Treat roughly ten skills in a single scope as the trigger for a consolidation pass rather than a hard limit.
+4b. **Count check.** The listing has a budget, 1% of the context window by default, past which the least-used skills' descriptions are dropped silently, so count the routed descriptions per scope. Treat roughly ten routed skills in one scope as the trigger for a consolidation pass rather than a hard limit. A skill that should only be typed costs nothing on Claude Code: `disable-model-invocation: true` in a file you own, or `"user-invocable-only"` in `skillOverrides` for one you do not; Codex ignores `disable-model-invocation` and lists the description regardless, so keep descriptions short enough that their exclusion clauses still survive listing there. Stack- and product-specific skills belong in project scope; conversation-triggered skills in user scope.
 4c. **Content-staleness check.** A skill that names versions, tool names, file paths, or product behavior can be quietly wrong without being broken. Spot-check its factual claims against reality; stale content fails silently, which makes it worse than a skill that doesn't fire.
-5. **Provenance check.** Any skill with no record of where it came from or when it was last checked is a refresh candidate.
-6. **Usage check.** A skill invoked only by name should be marked explicit-only (in Claude Code, `disable-model-invocation: true` in the frontmatter) rather than left to compete in automatic routing. This keeps it available on request while removing it from the discovery budget.
-7. **Security pass.** Recommend an automated scan across the whole skills directory, not just newly added skills. Installed skills predate whatever screening exists now, and an already-installed payload is the one that matters.
+5. **Provenance check.** Any skill with no record of where it came from or when it was last checked is a refresh candidate. For every installed third-party skill, `diff -rq` the installed copy against its upstream at the pinned version; one command finds stale generations, local forks, and misattributions that a full read misses.
+6. **Usage check.** A skill invoked only by name should be marked explicit-only (in Claude Code, `disable-model-invocation: true` in the frontmatter) rather than left to compete in automatic routing. This keeps it available on request while removing it from the discovery budget on Claude Code; Codex ignores the flag and lists the skill's description regardless.
+7. **Security pass.** Recommend an automated scan across the whole skills directory, not just newly added skills. Installed skills predate whatever screening exists now, and an already-installed payload is the one that matters. The named patterns in [references/security-screen.md](references/security-screen.md) are greppable; run them first. Inventory the hooks as well: every `hooks` entry in user, project, and plugin settings, and every `hooks/hooks.json` in an enabled plugin, with the command each runs. A hook is code that runs unasked on every matching event, so it outranks a skill on the screen, and nobody lists them; a plugin installed for its skills was found running three scripts on every session start.
 
 Output a table plus ranked recommendations, each one of: merge, rewrite description, split, mark explicit-only, refresh, remove, leave alone. Say which are worth doing now and which can wait.
 
@@ -117,8 +118,9 @@ Take an item only if all of these hold:
 - **Specific and named**, with a real example rather than an abstract exhortation.
 - **Carries a concrete fix**, not just a prohibition.
 - **False-positive gated.** If it would flag legitimate work, it needs a tier, a cluster rule, a density threshold, or a carve-out. Flat bans on normal constructions cause their own failure mode: output that avoids every flagged shape converges on a different detectable sameness.
-- **Not already covered.** Search the existing files first; many "new" items are renames of something present.
+- **Not already covered.** Run `python3 scripts/redundancy.py <skill-dir> --staged` (or `--added <file>`) before the edit is accepted; it prints each added unit beside the existing unit that shares its rare terms, labeled REDUNDANT? or EXTENDS. A match is a sentence to add to the existing entry, not a new entry. It catches restatement, not a second entry on the same subject in different words, so read the neighbors of every addition as well. On 2026-09-02 four of about fifteen harvested additions duplicated entries the reader had been told to search for; the script was written that evening, and the pre-commit hook warns on a confident duplicate (it refused one until #379).
 - **Doesn't weaken an existing hard rule.** A hard constraint already in the skill outranks a new convenience.
+- **Model-independent.** A step that cannot be justified without naming a specific model is a tracker issue, not skill text; it goes stale with the model.
 - **Not bureaucracy.** Reject flag systems, tolerance matrices, scoring rubrics, and multi-axis profiles unless they change behavior. They consume context and rarely alter output.
 
 Prefer taking a principle over taking a wording. Two skills often express the same idea, and the clearer formulation wins regardless of which file it came from.
@@ -137,13 +139,17 @@ Most "my skill doesn't fire" problems are description problems, because the desc
 
 Rewriting bodies does nothing for routing. Rewrite descriptions.
 
+Two more description rules, each with a recorded failure behind it. A description must never summarize the workflow: one that said "code review between tasks" made the agent do one review where the body's flowchart showed two, and shortening it to the trigger alone fixed it. And an unquoted `description` containing a colon followed by a space parses in Claude Code and fails in strict YAML parsers such as Pi's; quote the value. Both are checks the audit can run over a library.
+
+A third rule reaches past the description into the body: a skill says what to do and never how the reply reads. Reply shape (length caps, "code first," "no explanation," bullet or prose) belongs to the active output style, and a skill that sets it collides with the style in every session it loads; Ponytail's Output section contradicted its own "governs what you build, not how you talk" line and the house style on every small diff (2026-09-03). The audit greps skill bodies for reply-shape language, and a third-party skill that carries it is vetted with that section struck.
+
 ## Provenance
 
 Every maintained skill should carry a harvest log: ranked sources with URLs, what each is good for, and a table of what version or state each was at when last checked. Without it, every update starts from zero and re-reads everything. See [references/harvest-log.md](references/harvest-log.md) for the format.
 
 ### Measure it, don't read for it
 
-Reading finds ideas. Only a scan finds copied expression, and the two questions have different answers. Run `scripts/overlap.py <skill-dir> <sources-dir>`, which compares the skill against every source in runs of about eight words: short enough to catch a lifted sentence, long enough to skip most coincidence. Read each hit rather than counting it. One generic sentence can collide by accident; a run of dozens of words, or many runs across one source, is the finding. Do this before writing anything down about where the skill came from.
+Reading finds ideas. Only a scan finds copied expression, and the two questions have different answers. Run `python3 scripts/overlap.py <skill-dir> <sources-dir>`, which compares the skill against every source in runs of about eight words: short enough to catch a lifted sentence, long enough to skip most coincidence. Read each hit rather than counting it. One generic sentence can collide by accident; a run of dozens of words, or many runs across one source, is the finding. Do this before writing anything down about where the skill came from.
 
 Four independent careful readings of one skill and one of its sources missed a 108-word identical block sitting in both. Nobody was careless; prose that says the same thing in the same domain reads as familiar rather than as identical, and a reader has no way to feel the difference between "I have seen this idea" and "I have seen these words in this order."
 
